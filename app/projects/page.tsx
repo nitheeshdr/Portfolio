@@ -1,9 +1,9 @@
 import { ContactCard } from "@/components/contact/contact-card";
-import { PROJECTS } from "@/components/projects/projects-data";
 import { Projects } from "@/components/projects/projects";
 import { JsonLd, breadcrumbSchema, projectsSchema } from "@/components/seo/json-ld";
 import { FadeIn } from "@/components/ui/motion-primitives";
 import { createMetadata } from "@/lib/metadata";
+import { getAllProjects } from "@/lib/projects-db";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
@@ -14,7 +14,9 @@ export const metadata: Metadata = createMetadata({
   path: "/projects",
 });
 
-export default function ProjectsPage(): ReactNode {
+export default async function ProjectsPage(): Promise<ReactNode> {
+  const projects = await getAllProjects();
+
   return (
     <main id="main-content" className="flex flex-1 flex-col">
       <JsonLd
@@ -24,7 +26,7 @@ export default function ProjectsPage(): ReactNode {
             { name: "Projects", path: "/projects" },
           ]),
           projectsSchema(
-            PROJECTS.map((p) => ({
+            projects.map((p) => ({
               name: p.name,
               description: p.description,
               url: p.liveUrl ?? p.githubUrl ?? p.playStoreUrl ?? p.dribbbleUrl ?? "",
@@ -45,8 +47,10 @@ export default function ProjectsPage(): ReactNode {
           </p>
         </FadeIn>
       </section>
-      <Projects showFilters />
+      <Projects projects={projects} showFilters />
       <ContactCard />
     </main>
   );
 }
+
+export const revalidate = 60;

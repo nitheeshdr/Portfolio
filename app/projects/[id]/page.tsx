@@ -6,7 +6,6 @@ import type { ReactNode } from "react";
 
 import { ContactCard } from "@/components/contact/contact-card";
 import { ProjectMedia } from "@/components/projects/projects";
-import { PROJECTS } from "@/components/projects/projects-data";
 import {
   JsonLd,
   breadcrumbSchema,
@@ -14,11 +13,13 @@ import {
 } from "@/components/seo/json-ld";
 import { FadeIn } from "@/components/ui/motion-primitives";
 import { createMetadata, siteConfig } from "@/lib/metadata";
+import { getAllProjects, getProjectBySlug } from "@/lib/projects-db";
 
 type Params = { id: string };
 
-export function generateStaticParams(): Params[] {
-  return PROJECTS.map((project) => ({ id: project.id }));
+export async function generateStaticParams(): Promise<Params[]> {
+  const projects = await getAllProjects();
+  return projects.map((project) => ({ id: project.id }));
 }
 
 export async function generateMetadata({
@@ -27,7 +28,7 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const project = PROJECTS.find((p) => p.id === id);
+  const project = await getProjectBySlug(id);
   if (!project) return {};
 
   return createMetadata({
@@ -44,7 +45,7 @@ export default async function ProjectDetailPage({
   params: Promise<Params>;
 }): Promise<ReactNode> {
   const { id } = await params;
-  const project = PROJECTS.find((p) => p.id === id);
+  const project = await getProjectBySlug(id);
   if (!project) notFound();
 
   const primaryUrl =
@@ -223,3 +224,5 @@ export default async function ProjectDetailPage({
     </main>
   );
 }
+
+export const revalidate = 60;

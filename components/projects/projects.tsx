@@ -7,7 +7,6 @@ import Link from "next/link";
 
 import { FadeIn } from "@/components/ui/motion-primitives";
 import {
-  PROJECTS,
   PROJECT_CATEGORIES,
   SCREENSHOT_RATIO,
   type Project,
@@ -18,12 +17,14 @@ const FILTERS = ["All", ...PROJECT_CATEGORIES] as const;
 type Filter = (typeof FILTERS)[number];
 
 export type ProjectsProps = {
+  projects: Project[];
   withHeadline?: boolean;
   viewMoreVisible?: boolean;
   showFilters?: boolean;
 };
 
 export function Projects({
+  projects,
   withHeadline = false,
   viewMoreVisible = false,
   showFilters = false,
@@ -32,8 +33,8 @@ export function Projects({
 
   const filtered =
     filter === "All"
-      ? PROJECTS
-      : PROJECTS.filter((p) => p.category === (filter as ProjectCategory));
+      ? projects
+      : projects.filter((p) => p.category === (filter as ProjectCategory));
   const items = viewMoreVisible ? filtered.slice(0, 4) : filtered;
 
   return (

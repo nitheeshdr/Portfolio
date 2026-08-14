@@ -5,6 +5,7 @@ import { Hero } from "@/components/hero/hero";
 import { Projects } from "@/components/projects/projects";
 import { JsonLd, profilePageSchema } from "@/components/seo/json-ld";
 import { createMetadata, siteConfig } from "@/lib/metadata";
+import { getAllProjects } from "@/lib/projects-db";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
@@ -13,13 +14,15 @@ export const metadata: Metadata = createMetadata({
   path: "/",
 });
 
-export default function HomePage(): ReactNode {
+export default async function HomePage(): Promise<ReactNode> {
+  const projects = await getAllProjects();
+
   return (
     <main id="main-content" className="flex flex-1 flex-col gap-10 sm:gap-14">
       <JsonLd items={[profilePageSchema("/")]} />
       <Hero />
       <AboutTeaser />
-      <Projects withHeadline viewMoreVisible />
+      <Projects projects={projects} withHeadline viewMoreVisible />
       <section className="mx-auto w-full max-w-275 px-6 sm:px-10">
         <Stack />
       </section>
@@ -27,3 +30,5 @@ export default function HomePage(): ReactNode {
     </main>
   );
 }
+
+export const revalidate = 60;

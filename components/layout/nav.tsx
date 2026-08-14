@@ -5,6 +5,7 @@ import {
   Github,
   Home as HomeIcon,
   Mail,
+  Newspaper,
   Share2,
   Youtube,
 } from "lucide-react";
@@ -28,6 +29,7 @@ const NAV_ITEMS: readonly NavItem[] = [
   { label: "Home", href: "/", icon: HomeIcon },
   { label: "Projects", href: "/projects", icon: FolderKanban },
   { label: "About", href: "/about", avatar: true },
+  { label: "Blog", href: "/blog", icon: Newspaper },
 ];
 
 const SOCIAL_LINKS = [
@@ -245,6 +247,8 @@ export function Nav(): ReactNode {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [socialsOpen]);
+
+  if (pathname.startsWith("/admin")) return null;
 
   return (
     <nav

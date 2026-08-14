@@ -154,6 +154,7 @@ export function websiteSchema() {
 const SITE_NAV_ITEMS = [
   { name: "Home", path: "/" },
   { name: "Projects", path: "/projects" },
+  { name: "Blog", path: "/blog" },
   { name: "About", path: "/about" },
 ] as const;
 
@@ -357,4 +358,84 @@ export function projectDetailSchema(project: ProjectDetailSchemaInput) {
   };
 
   return [softwareApplication, softwareSourceCode, webPage];
+}
+
+type BlogPostSchemaInput = {
+  title: string;
+  excerpt: string;
+  slug: string;
+  coverImage: string;
+  datePublished: string;
+  dateModified: string;
+  tags: string[];
+};
+
+/** Full detail-page schema for one blog post: a BlogPosting node plus the WebPage wrapper. */
+export function blogPostSchema(post: BlogPostSchemaInput) {
+  const pageUrl = `${siteConfig.url}/blog/${post.slug}`;
+  const postId = `${pageUrl}#article`;
+  const webPageId = `${pageUrl}#webpage`;
+
+  const blogPosting = {
+    "@type": "BlogPosting",
+    "@id": postId,
+    headline: post.title,
+    description: post.excerpt,
+    url: pageUrl,
+    datePublished: post.datePublished,
+    dateModified: post.dateModified,
+    author: PROJECT_CREATORS,
+    publisher: {
+      "@id": ORG_ID,
+      "@type": "Organization",
+      name: person.company.name,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteConfig.url}/brand/setups-works-mark.png`,
+      },
+    },
+    ...(post.coverImage ? { image: post.coverImage } : {}),
+    ...(post.tags.length ? { keywords: post.tags.join(", ") } : {}),
+    mainEntityOfPage: { "@id": webPageId },
+  };
+
+  const webPage = {
+    "@type": "WebPage",
+    "@id": webPageId,
+    url: pageUrl,
+    name: post.title,
+    description: post.excerpt,
+    isPartOf: { "@id": WEBSITE_ID },
+    about: { "@id": postId },
+    mainEntity: { "@id": postId },
+  };
+
+  return [blogPosting, webPage];
+}
+
+type BlogListSchemaInput = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  datePublished: string;
+};
+
+/** Blog listing page — a Blog node whose `blogPost` array links out to each BlogPosting's @id. */
+export function blogListSchema(posts: BlogListSchemaInput[]) {
+  return {
+    "@type": "Blog",
+    "@id": `${siteConfig.url}/blog#blog`,
+    url: `${siteConfig.url}/blog`,
+    name: `${person.name} — Blog`,
+    publisher: { "@id": ORG_ID },
+    author: { "@id": PERSON_ID },
+    blogPost: posts.map((post) => ({
+      "@type": "BlogPosting",
+      "@id": `${siteConfig.url}/blog/${post.slug}#article`,
+      headline: post.title,
+      description: post.excerpt,
+      url: `${siteConfig.url}/blog/${post.slug}`,
+      datePublished: post.datePublished,
+    })),
+  };
 }
