@@ -333,7 +333,7 @@ export function Stack(): ReactNode {
         </h3>
       </div>
 
-      <div className="border-foreground/5 bg-foreground/2 dark:bg-foreground/5 relative h-72 overflow-hidden rounded-4xl border sm:h-64">
+      <div className="border-foreground/5 bg-foreground/2 dark:bg-foreground/5 relative h-96 overflow-hidden rounded-4xl border sm:h-64">
         <button
           type="button"
           onClick={() => setResetKey((k) => k + 1)}
