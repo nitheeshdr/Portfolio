@@ -34,7 +34,7 @@ export default function ProjectsPage(): ReactNode {
           ),
         ]}
       />
-      <section className="mx-auto w-full max-w-275 px-6 pt-12 pb-16 sm:px-10 sm:pt-16 sm:pb-20">
+      <section className="mx-auto w-full max-w-275 px-6 pt-12 pb-16 sm:px-10 sm:pt-16 sm:pb-20 md:pt-28">
         <FadeIn className="flex flex-col items-center gap-5 text-center">
           <h1 className="font-serif text-[2.75rem] font-medium leading-[1.05] tracking-tight text-foreground md:text-[3.25rem] lg:text-[3.75rem]">
             My recent work
@@ -46,7 +46,7 @@ export default function ProjectsPage(): ReactNode {
       </section>
       <Projects />
       <ContactCard />
-      <div className="h-28 sm:h-32" />
+      <div className="h-20 sm:h-24" />
     </main>
   );
 }

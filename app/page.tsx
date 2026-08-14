@@ -15,7 +15,7 @@ export const metadata: Metadata = createMetadata({
 
 export default function HomePage(): ReactNode {
   return (
-    <main id="main-content" className="flex flex-1 flex-col gap-20 sm:gap-28">
+    <main id="main-content" className="flex flex-1 flex-col gap-10 sm:gap-14">
       <JsonLd items={[profilePageSchema("/")]} />
       <Hero />
       <AboutTeaser />
@@ -24,7 +24,7 @@ export default function HomePage(): ReactNode {
         <Stack />
       </section>
       <ContactCard />
-      <div className="h-28 sm:h-32" />
+      <div className="h-20 sm:h-24" />
     </main>
   );
 }
