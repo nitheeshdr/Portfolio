@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { Nav } from "@/components/layout/nav";
 import { PageBackdrop } from "@/components/layout/page-backdrop";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 
 /**
  * Decorative/marketing-site chrome — the ambient backdrop, corner frame, and
@@ -27,6 +28,7 @@ export function SiteChrome(): ReactNode {
         <path d="M5.50871e-06 0C-0.00788227 37.3001 8.99616 50.0116 50 50H5.50871e-06V0Z" fill="currentColor"/>
       </svg>
       <PageBackdrop />
+      <ThemeToggle />
       <Nav />
     </>
   );
