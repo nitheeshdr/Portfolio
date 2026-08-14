@@ -186,7 +186,6 @@ export default async function ProjectDetailPage({
       </section>
 
       <ContactCard />
-      <div className="h-20 sm:h-24" />
     </main>
   );
 }

@@ -90,7 +90,6 @@ export default function AboutPage(): ReactNode {
       </section>
 
       <ContactCard />
-      <div className="h-20 sm:h-24" />
     </main>
   );
 }

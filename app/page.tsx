@@ -24,7 +24,6 @@ export default function HomePage(): ReactNode {
         <Stack />
       </section>
       <ContactCard />
-      <div className="h-20 sm:h-24" />
     </main>
   );
 }

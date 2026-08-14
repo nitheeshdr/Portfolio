@@ -46,7 +46,6 @@ export default function ProjectsPage(): ReactNode {
       </section>
       <Projects />
       <ContactCard />
-      <div className="h-20 sm:h-24" />
     </main>
   );
 }
