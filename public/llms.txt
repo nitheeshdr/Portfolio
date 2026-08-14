@@ -1,0 +1,36 @@
+# Nitheesh Rajendran
+
+> Full-stack engineer and AI product builder based in Chennai, India. Founder & CEO of Setups Works (SaaS & AI product development studio) and CodeForge AI (AI-powered coding-interview platform). Also a web designer, digital marketer, and Indian filmmaker.
+
+Nitheesh Rajendran (also written Nitheesh D R) designs and ships production software end to end — architecture, AI/LLM integration, deployment, and post-launch support — across web, mobile, and developer tooling. He builds with React, Next.js, TypeScript, and Node.js on the web, and Flutter on mobile.
+
+## Pages
+
+- [Home](https://nitheeshdr.in/): Introduction, featured projects, contact.
+- [About](https://nitheeshdr.in/about): Background, experience, education, filmography, skills, and stack.
+- [Projects](https://nitheeshdr.in/projects): Full list of shipped SaaS platforms, AI products, and mobile apps.
+
+## Projects
+
+- [CodeForge AI](https://codeforgeai.io) ([code](https://github.com/CodeForgeAI-io/Codeforge-AI)): AI-powered coding-interview platform with a real-time AI mentor, live multi-language execution, contests, and gamified prep.
+- [PulseCommerce](https://github.com/nitheeshdr/PulseCommerce): AI commerce-intelligence platform for WooCommerce — RFM segmentation, churn prediction, revenue forecasting, and an AI Commerce Agent.
+- [Community Finance](https://finance-village-web.vercel.app) ([code](https://github.com/nitheeshdr/Community-Finance)): Multi-tenant finance SaaS for community groups with Razorpay AutoPay subscriptions.
+- [Setups Works](https://setups.works) ([code](https://github.com/nitheeshdr/Setups-Works)): The digital agency/studio Nitheesh founded — SaaS and AI product development for clients.
+- [AI Expense Tracker](https://github.com/nitheeshdr/AI-Expense-Tracker-App): Privacy-first Flutter finance app that parses bank/UPI SMS on-device. Published on the Google Play Store.
+- [Inventory Management](https://github.com/nitheeshdr/Inventory-Management): Job-work and inventory tracking system built for a manufacturing client.
+- [Job-Email](https://job-email-teal.vercel.app) ([code](https://github.com/nitheeshdr/Job-Email)): Cold-email campaign manager for job applications with access-locked workspaces.
+
+## Background
+
+- Education: B.Tech, Computer Science Engineering (AI & ML), Vels Institute of Science, Technology & Advanced Studies (VISTAS), Chennai — 2022–2026.
+- Security research: responsible-disclosure OWASP-based assessment of a Government of Tamil Nadu web application.
+- Filmography: writer/director of the short films "Neram" and "Number Thaan Kaasu" — see [IMDb](https://www.imdb.com/name/nm16304237/).
+
+## Contact & profiles
+
+- Email: nitheeshdr@gmail.com
+- [GitHub](https://github.com/nitheeshdr)
+- [LinkedIn](https://www.linkedin.com/in/nitheeshdr/)
+- [Instagram](https://www.instagram.com/nitheesh.rajendran/)
+- [YouTube](https://www.youtube.com/@nitheeshrajendran)
+- [IMDb](https://www.imdb.com/name/nm16304237/)

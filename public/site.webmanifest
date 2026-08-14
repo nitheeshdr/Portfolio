@@ -1,0 +1,22 @@
+{
+  "name": "Nitheesh Rajendran — Full Stack Engineer & AI Product Builder",
+  "short_name": "Nitheesh Rajendran",
+  "description": "Portfolio of Nitheesh Rajendran, founder of Setups Works — full stack developer and AI product engineer in Chennai, India.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0066FF",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/apple-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
