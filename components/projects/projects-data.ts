@@ -325,13 +325,14 @@ export const PROJECTS: Project[] = [
     category: "UI/UX Design",
     kind: "design",
     headline:
-      "A UI concept for a streaming platform — browse, watch, and profile flows.",
+      "A UI concept for a free movie-streaming app — home, movie details, and seat booking.",
     description:
-      "A UI/UX design exploration for a Netflix-style streaming platform, covering browse and discovery, the watch screen, and profile flows. Designed in Figma as a portfolio concept piece.",
+      "A UI/UX design concept for a free streaming platform, covering the home screen with categories and recommendations, a movie detail page, and a seat/showtime booking screen. Designed in Figma as a portfolio concept piece.",
     meta: "UI/UX Design",
     dribbbleUrl: "https://dribbble.com/shots/23384359-WOW-Flix-Streaming-Platform",
     language: "Figma",
-    gradient: "linear-gradient(140deg, #18181b 0%, #dc2626 60%, #18181b 100%)",
+    image: "/projects/wow-flix.jpg",
+    imageAlt: "WOW Flix streaming app UI — home, movie detail, and seat booking screens",
   },
   {
     id: "the-kitchen-food-app",
@@ -340,13 +341,14 @@ export const PROJECTS: Project[] = [
     category: "UI/UX Design",
     kind: "design",
     headline:
-      "A UI concept for a food-delivery app — menu browsing, cart, and ordering.",
+      "A UI concept for a food-ordering app — home, product detail, and checkout.",
     description:
-      "A UI/UX design concept for a food-ordering app, covering restaurant discovery, menu browsing, and the cart and ordering flow. Designed in Figma as a portfolio concept piece.",
+      "A UI/UX design concept for a food-ordering app, covering the home screen with quick actions and recommendations, a product detail page with nutrition info, and a cart/checkout flow with promo codes. Designed in Figma as a portfolio concept piece.",
     meta: "UI/UX Design",
     dribbbleUrl: "https://dribbble.com/shots/21326194-The-Kitchen-Food-App-UI",
     language: "Figma",
-    gradient: "linear-gradient(140deg, #7c2d12 0%, #f97316 60%, #7c2d12 100%)",
+    image: "/projects/the-kitchen-food-app.png",
+    imageAlt: "The Kitchen food app UI — home, product detail, and checkout screens",
   },
   {
     id: "wow-bank-app-concept",
@@ -355,13 +357,14 @@ export const PROJECTS: Project[] = [
     category: "UI/UX Design",
     kind: "design",
     headline:
-      "A UI concept for a digital banking app — accounts, transfers, and cards.",
+      "A UI concept for a neobank's onboarding and sign-in flow.",
     description:
-      "A UI/UX design concept for a mobile banking app, covering account overview, transfers, and card management screens. Designed in Figma as a portfolio concept piece.",
+      "A UI/UX design concept for a digital-only bank, covering the onboarding screen, social/password sign-in, and email entry. Designed in Figma as a portfolio concept piece.",
     meta: "UI/UX Design",
     dribbbleUrl: "https://dribbble.com/shots/21328351-WOW-Bank-App-UI-Concept",
     language: "Figma",
-    gradient: "linear-gradient(140deg, #052e16 0%, #16a34a 60%, #052e16 100%)",
+    image: "/projects/wow-bank-app-concept.png",
+    imageAlt: "WOW Bank app UI — onboarding, sign-in, and email entry screens",
   },
 ];
 
