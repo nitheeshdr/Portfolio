@@ -6,6 +6,7 @@ import {
   JsonLd,
   organizationSchema,
   personSchema,
+  siteNavigationSchema,
   websiteSchema,
 } from "@/components/seo/json-ld";
 import { baseMetadata } from "@/lib/metadata";
@@ -56,7 +57,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} min-h-screen bg-background font-sans text-foreground antialiased`}
       >
         <JsonLd
-          items={[personSchema(), organizationSchema(), websiteSchema()]}
+          items={[
+            personSchema(),
+            organizationSchema(),
+            websiteSchema(),
+            ...siteNavigationSchema(),
+          ]}
         />
         <Providers>
           <div className="site-frame site-frame--top" aria-hidden="true" />

@@ -138,7 +138,31 @@ export function websiteSchema() {
     description: siteConfig.description,
     inLanguage: "en",
     publisher: { "@id": PERSON_ID },
+    hasPart: SITE_NAV_ITEMS.map((item) => ({
+      "@id": `${siteConfig.url}${item.path}#navitem`,
+    })),
   };
+}
+
+const SITE_NAV_ITEMS = [
+  { name: "Home", path: "/" },
+  { name: "Projects", path: "/projects" },
+  { name: "About", path: "/about" },
+] as const;
+
+/**
+ * SiteNavigationElement nodes for the primary nav — a signal (not a
+ * guarantee) that helps Google generate sitelinks under the search result.
+ * Sitelinks themselves are algorithmic; this just states the site's main
+ * sections explicitly rather than leaving them to be inferred from the DOM.
+ */
+export function siteNavigationSchema() {
+  return SITE_NAV_ITEMS.map((item) => ({
+    "@type": "SiteNavigationElement",
+    "@id": `${siteConfig.url}${item.path}#navitem`,
+    name: item.name,
+    url: `${siteConfig.url}${item.path}`,
+  }));
 }
 
 /** Marks a page as the profile page for the Person, e.g. the homepage or /about. */
