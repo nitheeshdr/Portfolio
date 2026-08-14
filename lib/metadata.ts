@@ -99,6 +99,9 @@ export function createMetadata({
       canonical: path,
     },
     openGraph: {
+      type: "website",
+      locale: "en_US",
+      siteName: siteConfig.name,
       title: title ?? siteConfig.name,
       description: description ?? siteConfig.description,
       url,
@@ -109,6 +112,7 @@ export function createMetadata({
         : {}),
     },
     twitter: {
+      card: "summary_large_image",
       title: title ?? siteConfig.name,
       description: description ?? siteConfig.description,
       ...(image ? { images: [image] } : {}),
