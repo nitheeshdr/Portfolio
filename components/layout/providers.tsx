@@ -2,6 +2,7 @@
 
 import { ReducedMotionProvider } from "@/lib/motion";
 import { SmoothScroll } from "@/components/layout/smooth-scroll";
+import { ContactModalProvider } from "@/components/contact/contact-modal-context";
 import { ThemeProvider } from "next-themes";
 import type { ReactNode } from "react";
 
@@ -14,7 +15,9 @@ export function Providers({ children }: { children: ReactNode }): ReactNode {
       disableTransitionOnChange
     >
       <ReducedMotionProvider>
-        <SmoothScroll>{children}</SmoothScroll>
+        <ContactModalProvider>
+          <SmoothScroll>{children}</SmoothScroll>
+        </ContactModalProvider>
       </ReducedMotionProvider>
     </ThemeProvider>
   );
