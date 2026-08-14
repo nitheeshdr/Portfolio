@@ -1,11 +1,19 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
-export const alt = "Nitheesh Rajendran — Full Stack Engineer & AI Product Builder";
-export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
+export const OG_SIZE = { width: 1200, height: 630 };
 
-export default function OpengraphImage() {
+/** Shared branded template for every route's opengraph-image — keeps social cards visually consistent site-wide. */
+export function renderOgImage({
+  eyebrow = "nitheeshdr.in",
+  title,
+  subtitle,
+  footer = "Nitheesh Rajendran",
+}: {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  footer?: string;
+}): ImageResponse {
   return new ImageResponse(
     (
       <div
@@ -38,43 +46,37 @@ export default function OpengraphImage() {
           >
             N
           </div>
-          <div style={{ fontSize: 28, color: "rgba(255,255,255,0.65)" }}>
-            nitheeshdr.in
-          </div>
+          <div style={{ fontSize: 28, color: "rgba(255,255,255,0.65)" }}>{eyebrow}</div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           <div
             style={{
-              fontSize: 68,
+              fontSize: title.length > 32 ? 56 : 68,
               fontWeight: 600,
               color: "white",
               lineHeight: 1.08,
               letterSpacing: "-0.02em",
             }}
           >
-            Nitheesh Rajendran
+            {title}
           </div>
-          <div
-            style={{
-              fontSize: 34,
-              color: "rgba(255,255,255,0.7)",
-              letterSpacing: "-0.01em",
-            }}
-          >
-            Full-stack engineer &amp; AI product builder
-          </div>
-          <div
-            style={{
-              fontSize: 26,
-              color: "rgba(255,255,255,0.45)",
-            }}
-          >
-            Founder, Setups Works
-          </div>
+          {subtitle ? (
+            <div
+              style={{
+                fontSize: 32,
+                color: "rgba(255,255,255,0.7)",
+                letterSpacing: "-0.01em",
+                lineHeight: 1.3,
+              }}
+            >
+              {subtitle}
+            </div>
+          ) : null}
+          <div style={{ fontSize: 26, color: "rgba(255,255,255,0.45)" }}>{footer}</div>
         </div>
       </div>
     ),
-    { ...size }
+    { ...OG_SIZE }
   );
 }

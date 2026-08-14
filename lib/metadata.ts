@@ -6,7 +6,6 @@ export const siteConfig = {
   shortName: "Nitheesh",
   description: person.summary,
   url: person.links.website,
-  ogImage: "/og-image.png",
   creator: "@nitheeshdr",
   authors: [
     {
@@ -62,20 +61,11 @@ export const baseMetadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
-    images: [
-      {
-        url: siteConfig.ogImage,
-        width: 1200,
-        height: 630,
-        alt: siteConfig.name,
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: siteConfig.name,
     description: siteConfig.description,
-    images: [siteConfig.ogImage],
   },
   icons: {
     icon: "/icon.svg",
@@ -101,7 +91,6 @@ export function createMetadata({
   noIndex?: boolean;
 }): Metadata {
   const url = `${siteConfig.url}${path}`;
-  const ogImage = image ?? siteConfig.ogImage;
 
   return {
     ...(title ? { title } : {}),
@@ -113,19 +102,16 @@ export function createMetadata({
       title: title ?? siteConfig.name,
       description: description ?? siteConfig.description,
       url,
-      images: [
-        {
-          url: ogImage,
-          width: 1200,
-          height: 630,
-          alt: title ?? siteConfig.name,
-        },
-      ],
+      // No `images` here when `image` is omitted — Next.js falls back to the
+      // nearest route-segment opengraph-image.tsx (dynamic, per-page) instead.
+      ...(image
+        ? { images: [{ url: image, width: 1200, height: 630, alt: title ?? siteConfig.name }] }
+        : {}),
     },
     twitter: {
       title: title ?? siteConfig.name,
       description: description ?? siteConfig.description,
-      images: [ogImage],
+      ...(image ? { images: [image] } : {}),
     },
     ...(noIndex && {
       robots: {

@@ -6,12 +6,14 @@ import { Projects } from "@/components/projects/projects";
 import { JsonLd, profilePageSchema } from "@/components/seo/json-ld";
 import { createMetadata, siteConfig } from "@/lib/metadata";
 import { getAllProjects } from "@/lib/projects-db";
+import { person } from "@/lib/person";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 export const metadata: Metadata = createMetadata({
   description: siteConfig.description,
   path: "/",
+  image: person.portraitSrc,
 });
 
 export default async function HomePage(): Promise<ReactNode> {
