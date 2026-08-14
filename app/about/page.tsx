@@ -32,7 +32,7 @@ export default function AboutPage(): ReactNode {
           ]),
         ]}
       />
-      <section className="mx-auto w-full max-w-312 pt-28 sm:pt-40">
+      <section className="mx-auto w-full max-w-312 pt-6 sm:pt-8">
         <PolaroidStrip />
       </section>
 
@@ -90,7 +90,7 @@ export default function AboutPage(): ReactNode {
       </section>
 
       <ContactCard />
-      <div className="h-12 sm:h-16" />
+      <div className="h-28 sm:h-32" />
     </main>
   );
 }

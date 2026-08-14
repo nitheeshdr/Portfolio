@@ -1,29 +1,77 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
-import { motion } from "motion/react";
+import {
+  FolderKanban,
+  Github,
+  Home as HomeIcon,
+  Mail,
+  Moon,
+  Share2,
+  Sun,
+  Youtube,
+} from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useTheme } from "next-themes";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
   useSyncExternalStore,
   type ReactNode,
 } from "react";
 
+import { Dock, DockIcon } from "@/components/ui/dock";
+import { person } from "@/lib/person";
+
 type NavItem = {
   label: string;
   href: string;
+  icon?: typeof HomeIcon;
+  avatar?: boolean;
 };
 
 const NAV_ITEMS: readonly NavItem[] = [
-  { label: "Home", href: "/" },
-  { label: "Projects", href: "/projects" },
-  { label: "About", href: "/about" },
+  { label: "Home", href: "/", icon: HomeIcon },
+  { label: "Projects", href: "/projects", icon: FolderKanban },
+  { label: "About", href: "/about", avatar: true },
 ];
+
+const SOCIAL_LINKS = [
+  { label: "Email", href: `mailto:${person.email}`, lucideIcon: Mail, bg: "#525252" },
+  { label: "LinkedIn", href: person.links.linkedin, imageSrc: "/linkedin.svg", bg: "#0A66C2" },
+  { label: "GitHub", href: person.links.github, lucideIcon: Github, bg: "#181717" },
+  {
+    label: "Instagram",
+    href: person.links.instagram,
+    imageSrc: "/icons/instagram.svg",
+    bg: "linear-gradient(45deg, #F58529, #DD2A7B, #8134AF, #515BD4)",
+  },
+  { label: "YouTube", href: person.links.youtube, lucideIcon: Youtube, bg: "#FF0000" },
+  { label: "IMDb", href: person.links.imdb, imageSrc: "/icons/imdb.svg", bg: "#F5C518", light: true },
+] as const;
+
+function IconTooltip({
+  label,
+  children,
+}: {
+  label: string;
+  children: ReactNode;
+}): ReactNode {
+  return (
+    <div className="group relative flex h-full w-full items-center justify-center">
+      {children}
+      <span
+        role="tooltip"
+        className="border-foreground/8 bg-background text-foreground pointer-events-none absolute bottom-full left-1/2 mb-2.5 -translate-x-1/2 rounded-lg border px-2.5 py-1 text-xs font-medium whitespace-nowrap opacity-0 shadow-sm transition-opacity duration-150 group-hover:opacity-100"
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
 
 function useIsMounted(): boolean {
   return useSyncExternalStore(
@@ -89,18 +137,18 @@ function NavThemeToggle(): ReactNode {
           : "Toggle theme"
       }
       aria-pressed={mounted ? isDark : undefined}
-      className="focus-ring relative inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-background ring-1 ring-foreground/8 transition-colors"
+      className="focus-ring relative flex h-full w-full cursor-pointer items-center justify-center rounded-full text-foreground/70 transition-colors hover:text-foreground"
     >
-      <span aria-hidden="true" className="relative h-4 w-4">
+      <span aria-hidden="true" className="relative h-[45%] w-[45%]">
         <Sun
-          className={`absolute inset-0 h-4 w-4 text-foreground transition-all duration-300 ${
+          className={`absolute inset-0 h-full w-full transition-all duration-300 ${
             mounted && isDark
               ? "rotate-0 scale-100 opacity-100"
               : "-rotate-90 scale-0 opacity-0"
           }`}
         />
         <Moon
-          className={`absolute inset-0 h-4 w-4 text-foreground transition-all duration-300 ${
+          className={`absolute inset-0 h-full w-full transition-all duration-300 ${
             mounted && !isDark
               ? "rotate-0 scale-100 opacity-100"
               : "rotate-90 scale-0 opacity-0"
@@ -111,96 +159,177 @@ function NavThemeToggle(): ReactNode {
   );
 }
 
+function ProfileDockIcon({
+  open,
+  onToggle,
+}: {
+  open: boolean;
+  onToggle: () => void;
+}): ReactNode {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-label={open ? "Hide social links" : "Show social links"}
+      aria-expanded={open}
+      className={`focus-ring flex h-full w-full cursor-pointer items-center justify-center rounded-full transition-colors ${
+        open ? "bg-foreground/10 text-foreground" : "text-foreground/60 hover:text-foreground"
+      }`}
+    >
+      <Share2 className="h-[45%] w-[45%]" strokeWidth={2.25} aria-hidden="true" />
+    </button>
+  );
+}
+
+function SocialLinkButton({
+  href,
+  label,
+  lucideIcon: LucideIcon,
+  imageSrc,
+  bg,
+  light,
+}: {
+  href: string;
+  label: string;
+  lucideIcon?: typeof Mail;
+  imageSrc?: string;
+  bg: string;
+  light?: boolean;
+}): ReactNode {
+  const isExternal = href.startsWith("http");
+  return (
+    <Link
+      href={href}
+      aria-label={label}
+      {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      style={{ background: bg }}
+      className="focus-ring inline-flex h-10 w-10 items-center justify-center rounded-full text-white shadow-sm transition-transform hover:scale-110"
+    >
+      {LucideIcon ? (
+        <LucideIcon className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+      ) : imageSrc ? (
+        <Image
+          src={imageSrc}
+          alt=""
+          width={16}
+          height={16}
+          aria-hidden="true"
+          className={`max-h-4 max-w-4 object-contain ${light ? "" : "brightness-0 invert"}`}
+        />
+      ) : null}
+    </Link>
+  );
+}
+
 export function Nav(): ReactNode {
   const pathname = usePathname();
-  const listRef = useRef<HTMLUListElement>(null);
-  const itemRefs = useRef<Array<HTMLLIElement | null>>([]);
-  const [pillRect, setPillRect] = useState<{
-    x: number;
-    width: number;
-  } | null>(null);
-  const [hasMeasured, setHasMeasured] = useState(false);
+  const [socialsOpen, setSocialsOpen] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
 
-  const activeIndex = NAV_ITEMS.findIndex((item) =>
-    item.href === "/"
-      ? pathname === "/"
-      : pathname === item.href || pathname.startsWith(`${item.href}/`)
-  );
-
-  useLayoutEffect(() => {
-    const list = listRef.current;
-    const activeEl =
-      activeIndex >= 0 ? itemRefs.current[activeIndex] : null;
-    if (!list || !activeEl) {
-      setPillRect(null);
-      return;
-    }
-    const listRect = list.getBoundingClientRect();
-    const itemRect = activeEl.getBoundingClientRect();
-    setPillRect({
-      x: itemRect.left - listRect.left,
-      width: itemRect.width,
-    });
-  }, [activeIndex, pathname]);
+  const [lastPathname, setLastPathname] = useState(pathname);
+  if (pathname !== lastPathname) {
+    setLastPathname(pathname);
+    setSocialsOpen(false);
+  }
 
   useEffect(() => {
-    if (!pillRect) return;
-    const id = requestAnimationFrame(() => setHasMeasured(true));
-    return () => cancelAnimationFrame(id);
-  }, [pillRect]);
+    if (!socialsOpen) return;
+
+    const handlePointerDown = (e: PointerEvent): void => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setSocialsOpen(false);
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent): void => {
+      if (e.key === "Escape") setSocialsOpen(false);
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [socialsOpen]);
 
   return (
     <nav
+      ref={navRef}
       aria-label="Primary"
-      className="fixed left-1/2 top-6 z-50 -translate-x-1/2"
+      className="fixed left-1/2 bottom-6 z-50 -translate-x-1/2"
     >
-      <div className="flex items-center gap-1 rounded-full bg-background p-1.5 shadow-sm border border-foreground/8">
-        <ul ref={listRef} className="relative flex items-center gap-1">
-          {pillRect && (
-            <motion.span
-              aria-hidden="true"
-              initial={false}
-              animate={{ x: pillRect.x, width: pillRect.width }}
-              transition={
-                hasMeasured
-                  ? { type: "spring", stiffness: 380, damping: 32 }
-                  : { duration: 0 }
-              }
-              style={{ left: 0, top: 0, bottom: 0 }}
-              className="absolute rounded-full bg-foreground/5 ring-1 ring-foreground/8"
-            />
-          )}
-          {NAV_ITEMS.map((item, index) => {
-            const isActive = index === activeIndex;
-            return (
-              <li
-                key={item.href}
-                ref={(el) => {
-                  itemRefs.current[index] = el;
-                }}
-                className="relative"
-              >
+      <Dock iconSize={48} iconMagnification={68} iconDistance={120}>
+        {NAV_ITEMS.map((item) => {
+          const isActive =
+            item.href === "/"
+              ? pathname === "/"
+              : pathname === item.href || pathname.startsWith(`${item.href}/`);
+          const Icon = item.icon;
+          return (
+            <DockIcon key={item.href}>
+              <IconTooltip label={item.label}>
                 <Link
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
-                  className="focus-ring relative inline-flex cursor-pointer items-center justify-center rounded-full px-4 py-1.5 text-sm font-medium transition-colors duration-300"
+                  aria-label={item.label}
+                  className={`focus-ring flex h-full w-full items-center justify-center rounded-full transition-colors ${
+                    isActive
+                      ? "bg-foreground/10 text-foreground"
+                      : "text-foreground/60 hover:text-foreground"
+                  }`}
                 >
-                  <span
-                    className={
-                      isActive
-                        ? "relative z-10 text-foreground"
-                        : "relative z-10 text-foreground/60 hover:text-foreground"
-                    }
-                  >
-                    {item.label}
-                  </span>
+                  {item.avatar ? (
+                    <div
+                      className={`relative h-[70%] w-[70%] overflow-hidden rounded-full ring-1 ${
+                        isActive ? "ring-foreground/25" : "ring-foreground/10"
+                      }`}
+                    >
+                      <Image
+                        src="/avatar.jpg"
+                        alt=""
+                        fill
+                        sizes="40px"
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : Icon ? (
+                    <Icon className="h-[45%] w-[45%]" strokeWidth={2.25} aria-hidden="true" />
+                  ) : null}
                 </Link>
-              </li>
-            );
-          })}
-        </ul>
-        <NavThemeToggle />
-      </div>
+              </IconTooltip>
+            </DockIcon>
+          );
+        })}
+        <DockIcon>
+          <IconTooltip label="Social links">
+            <ProfileDockIcon
+              open={socialsOpen}
+              onToggle={() => setSocialsOpen((v) => !v)}
+            />
+          </IconTooltip>
+        </DockIcon>
+        <DockIcon disableMagnification>
+          <IconTooltip label="Theme">
+            <NavThemeToggle />
+          </IconTooltip>
+        </DockIcon>
+      </Dock>
+
+      <AnimatePresence>
+        {socialsOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 8, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.96 }}
+            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="border-foreground/8 bg-background absolute bottom-full left-1/2 mb-3 flex -translate-x-1/2 items-center gap-2 rounded-full border p-2 shadow-sm"
+          >
+            {SOCIAL_LINKS.map((link) => (
+              <SocialLinkButton key={link.label} {...link} />
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }

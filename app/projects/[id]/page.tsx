@@ -74,7 +74,7 @@ export default async function ProjectDetailPage({
         ]}
       />
 
-      <section className="mx-auto w-full max-w-275 px-6 pt-28 pb-16 sm:px-10 sm:pt-40 sm:pb-20">
+      <section className="mx-auto w-full max-w-275 px-6 pt-12 pb-16 sm:px-10 sm:pt-16 sm:pb-20">
         <FadeIn>
           <Link
             href="/projects"
@@ -186,7 +186,7 @@ export default async function ProjectDetailPage({
       </section>
 
       <ContactCard />
-      <div className="h-12 sm:h-16" />
+      <div className="h-28 sm:h-32" />
     </main>
   );
 }
