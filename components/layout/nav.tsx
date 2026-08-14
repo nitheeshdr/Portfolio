@@ -255,9 +255,18 @@ function SocialLinkButton({
 
 const SCROLL_DELTA_THRESHOLD = 6;
 const SCROLL_TOP_THRESHOLD = 80;
+const ICON_ONLY_THRESHOLD = 500;
 
-function useCompactOnScroll(): boolean {
-  const [compact, setCompact] = useState(false);
+type NavScrollState = "full" | "compact" | "icon";
+
+/**
+ * Full size near the top; a slightly smaller/faded dock once scrolled down;
+ * and — only when `iconOnly` is enabled (the home page) — collapses all the
+ * way to a single icon after a deep scroll down. Any upward scroll restores
+ * the full dock immediately, without needing to reach the top.
+ */
+function useNavScrollState(iconOnly: boolean): NavScrollState {
+  const [state, setState] = useState<NavScrollState>("full");
   const lastY = useRef(0);
 
   useEffect(() => {
@@ -271,11 +280,13 @@ function useCompactOnScroll(): boolean {
         const delta = currentY - lastY.current;
 
         if (currentY < SCROLL_TOP_THRESHOLD) {
-          setCompact(false);
+          setState("full");
         } else if (delta > SCROLL_DELTA_THRESHOLD) {
-          setCompact(true);
+          setState(
+            iconOnly && currentY > ICON_ONLY_THRESHOLD ? "icon" : "compact"
+          );
         } else if (delta < -SCROLL_DELTA_THRESHOLD) {
-          setCompact(false);
+          setState("full");
         }
 
         lastY.current = currentY;
@@ -285,16 +296,24 @@ function useCompactOnScroll(): boolean {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [iconOnly]);
 
-  return compact;
+  return state;
 }
 
 export function Nav(): ReactNode {
   const pathname = usePathname();
   const [socialsOpen, setSocialsOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
-  const compact = useCompactOnScroll();
+  const navState = useNavScrollState(true);
+  const compact = navState !== "full";
+
+  const currentNavItem =
+    NAV_ITEMS.find((item) =>
+      item.href === "/"
+        ? pathname === "/"
+        : pathname === item.href || pathname.startsWith(`${item.href}/`)
+    ) ?? NAV_ITEMS[0]!;
 
   const [lastPathname, setLastPathname] = useState(pathname);
   if (pathname !== lastPathname) {
@@ -328,75 +347,117 @@ export function Nav(): ReactNode {
       aria-label="Primary"
       className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2"
     >
-      <motion.div
-        animate={{
-          scale: compact ? 0.78 : 1,
-          opacity: compact ? 0.88 : 1,
-        }}
-        transition={{ type: "spring", stiffness: 400, damping: 32 }}
-      >
-      <Dock iconSize={48} iconMagnification={68} iconDistance={120}>
-          {NAV_ITEMS.map((item) => {
-            const isActive =
-              item.href === "/"
-                ? pathname === "/"
-                : pathname === item.href ||
-                  pathname.startsWith(`${item.href}/`);
-            const Icon = item.icon;
-            return (
-              <DockIcon key={item.href}>
-                <IconTooltip label={item.label}>
-                  <Link
-                    href={item.href}
-                    aria-current={isActive ? "page" : undefined}
-                    aria-label={item.label}
-                    className={`focus-ring flex h-full w-full items-center justify-center rounded-full transition-colors ${
-                      isActive
-                        ? "bg-foreground/10 text-foreground"
-                        : "text-foreground/60 hover:text-foreground"
-                    }`}
-                  >
-                    {item.avatar ? (
-                      <div
-                        className={`relative h-[70%] w-[70%] overflow-hidden rounded-full ring-1 ${
-                          isActive ? "ring-foreground/25" : "ring-foreground/10"
+      <AnimatePresence mode="wait" initial={false}>
+        {navState === "icon" ? (
+          <motion.button
+            key="icon-pill"
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            aria-label={`Back to top — ${currentNavItem.label}`}
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.85 }}
+            transition={{ type: "spring", stiffness: 400, damping: 32 }}
+            className="border-foreground/8 bg-background focus-ring flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2.5 shadow-sm"
+          >
+            {currentNavItem.avatar ? (
+              <div className="ring-foreground/10 relative h-5 w-5 shrink-0 overflow-hidden rounded-full ring-1">
+                <Image
+                  src="/avatar.jpg"
+                  alt=""
+                  fill
+                  sizes="20px"
+                  className="object-cover"
+                />
+              </div>
+            ) : currentNavItem.icon ? (
+              <currentNavItem.icon
+                className="text-foreground h-4 w-4"
+                strokeWidth={2.25}
+                aria-hidden="true"
+              />
+            ) : null}
+            <span className="text-foreground text-sm font-medium tracking-tight">
+              {currentNavItem.label}
+            </span>
+          </motion.button>
+        ) : (
+          <motion.div
+            key="dock"
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{
+              opacity: compact ? 0.88 : 1,
+              scale: compact ? 0.78 : 1,
+            }}
+            exit={{ opacity: 0, scale: 0.85 }}
+            transition={{ type: "spring", stiffness: 400, damping: 32 }}
+          >
+            <Dock iconSize={48} iconMagnification={68} iconDistance={120}>
+              {NAV_ITEMS.map((item) => {
+                const isActive =
+                  item.href === "/"
+                    ? pathname === "/"
+                    : pathname === item.href ||
+                      pathname.startsWith(`${item.href}/`);
+                const Icon = item.icon;
+                return (
+                  <DockIcon key={item.href}>
+                    <IconTooltip label={item.label}>
+                      <Link
+                        href={item.href}
+                        aria-current={isActive ? "page" : undefined}
+                        aria-label={item.label}
+                        className={`focus-ring flex h-full w-full items-center justify-center rounded-full transition-colors ${
+                          isActive
+                            ? "bg-foreground/10 text-foreground"
+                            : "text-foreground/60 hover:text-foreground"
                         }`}
                       >
-                        <Image
-                          src="/avatar.jpg"
-                          alt=""
-                          fill
-                          sizes="40px"
-                          className="object-cover"
-                        />
-                      </div>
-                    ) : Icon ? (
-                      <Icon
-                        className="h-[45%] w-[45%]"
-                        strokeWidth={2.25}
-                        aria-hidden="true"
-                      />
-                    ) : null}
-                  </Link>
+                        {item.avatar ? (
+                          <div
+                            className={`relative h-[70%] w-[70%] overflow-hidden rounded-full ring-1 ${
+                              isActive
+                                ? "ring-foreground/25"
+                                : "ring-foreground/10"
+                            }`}
+                          >
+                            <Image
+                              src="/avatar.jpg"
+                              alt=""
+                              fill
+                              sizes="40px"
+                              className="object-cover"
+                            />
+                          </div>
+                        ) : Icon ? (
+                          <Icon
+                            className="h-[45%] w-[45%]"
+                            strokeWidth={2.25}
+                            aria-hidden="true"
+                          />
+                        ) : null}
+                      </Link>
+                    </IconTooltip>
+                  </DockIcon>
+                );
+              })}
+              <DockIcon>
+                <IconTooltip label="Social links">
+                  <ProfileDockIcon
+                    open={socialsOpen}
+                    onToggle={() => setSocialsOpen((v) => !v)}
+                  />
                 </IconTooltip>
               </DockIcon>
-            );
-          })}
-          <DockIcon>
-            <IconTooltip label="Social links">
-              <ProfileDockIcon
-                open={socialsOpen}
-                onToggle={() => setSocialsOpen((v) => !v)}
-              />
-            </IconTooltip>
-          </DockIcon>
-          <DockIcon disableMagnification>
-            <IconTooltip label="Theme">
-              <NavThemeToggle />
-            </IconTooltip>
-          </DockIcon>
-      </Dock>
-      </motion.div>
+              <DockIcon disableMagnification>
+                <IconTooltip label="Theme">
+                  <NavThemeToggle />
+                </IconTooltip>
+              </DockIcon>
+            </Dock>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {socialsOpen && (
