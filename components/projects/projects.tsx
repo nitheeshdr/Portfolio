@@ -1,21 +1,40 @@
-import { ArrowRight, ArrowUpRight, Github } from "lucide-react";
-import type { ReactNode } from "react";
+"use client";
+
+import { ArrowRight, ArrowUpRight, Github, Smartphone } from "lucide-react";
+import { useState, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
 import { FadeIn } from "@/components/ui/motion-primitives";
-import { PROJECTS, SCREENSHOT_RATIO, type Project } from "./projects-data";
+import {
+  PROJECTS,
+  PROJECT_CATEGORIES,
+  SCREENSHOT_RATIO,
+  type Project,
+  type ProjectCategory,
+} from "./projects-data";
+
+const FILTERS = ["All", ...PROJECT_CATEGORIES] as const;
+type Filter = (typeof FILTERS)[number];
 
 export type ProjectsProps = {
   withHeadline?: boolean;
   viewMoreVisible?: boolean;
+  showFilters?: boolean;
 };
 
 export function Projects({
   withHeadline = false,
   viewMoreVisible = false,
+  showFilters = false,
 }: ProjectsProps): ReactNode {
-  const items = viewMoreVisible ? PROJECTS.slice(0, 4) : PROJECTS;
+  const [filter, setFilter] = useState<Filter>("All");
+
+  const filtered =
+    filter === "All"
+      ? PROJECTS
+      : PROJECTS.filter((p) => p.category === (filter as ProjectCategory));
+  const items = viewMoreVisible ? filtered.slice(0, 4) : filtered;
 
   return (
     <section className="relative w-full">
@@ -30,6 +49,26 @@ export function Projects({
               shipped end to end, code on GitHub.
             </p>
           </FadeIn>
+        ) : null}
+
+        {showFilters ? (
+          <div className="mb-8 flex flex-wrap items-center justify-center gap-2 sm:mb-10">
+            {FILTERS.map((f) => (
+              <button
+                key={f}
+                type="button"
+                onClick={() => setFilter(f)}
+                aria-pressed={filter === f}
+                className={`focus-ring cursor-pointer rounded-full border px-4 py-1.5 text-sm font-medium tracking-tight transition-colors ${
+                  filter === f
+                    ? "border-foreground/10 bg-foreground text-background"
+                    : "border-foreground/8 bg-background text-foreground/65 hover:text-foreground"
+                }`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
         ) : null}
 
         <div className="columns-1 gap-6 md:columns-2 md:gap-7">
@@ -137,15 +176,28 @@ function ProjectCard({
           </div>
 
           <div className="flex shrink-0 items-center gap-1.5">
-            <Link
-              href={project.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`${project.name} on GitHub`}
-              className="focus-ring border-foreground/10 text-foreground/70 hover:text-foreground inline-flex h-8 w-8 items-center justify-center rounded-lg border bg-background transition-colors"
-            >
-              <Github className="h-3.5 w-3.5" aria-hidden="true" />
-            </Link>
+            {project.githubUrl ? (
+              <Link
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${project.name} on GitHub`}
+                className="focus-ring border-foreground/10 text-foreground/70 hover:text-foreground inline-flex h-8 w-8 items-center justify-center rounded-lg border bg-background transition-colors"
+              >
+                <Github className="h-3.5 w-3.5" aria-hidden="true" />
+              </Link>
+            ) : null}
+            {project.playStoreUrl ? (
+              <Link
+                href={project.playStoreUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${project.name} on Google Play`}
+                className="focus-ring border-foreground/10 text-foreground/70 hover:text-foreground inline-flex h-8 w-8 items-center justify-center rounded-lg border bg-background transition-colors"
+              >
+                <Smartphone className="h-3.5 w-3.5" aria-hidden="true" />
+              </Link>
+            ) : null}
             {project.liveUrl ? (
               <Link
                 href={project.liveUrl}

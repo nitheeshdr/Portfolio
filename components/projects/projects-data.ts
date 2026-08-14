@@ -1,12 +1,17 @@
+export const PROJECT_CATEGORIES = ["Web Development", "App Development"] as const;
+export type ProjectCategory = (typeof PROJECT_CATEGORIES)[number];
+
 export type Project = {
   id: string;
   name: string;
   iconLabel: string;
+  category: ProjectCategory;
   headline: string;
   description: string;
   meta: string;
-  githubUrl: string;
+  githubUrl?: string;
   liveUrl?: string;
+  playStoreUrl?: string;
   language: string;
   /** Screenshot, when one exists that's safe to publish (no third-party client data). */
   image?: string;
@@ -32,6 +37,7 @@ export const PROJECTS: Project[] = [
     id: "codeforge-ai",
     name: "CodeForge AI",
     iconLabel: "CodeForge AI",
+    category: "Web Development",
     headline:
       "An AI-powered coding-interview platform with a real-time AI mentor, live multi-language execution, and gamified prep.",
     description:
@@ -73,6 +79,7 @@ export const PROJECTS: Project[] = [
     id: "pulsecommerce",
     name: "PulseCommerce",
     iconLabel: "PulseCommerce",
+    category: "Web Development",
     headline:
       "An AI commerce-intelligence platform for WooCommerce, turning store data into segments, churn signals, and revenue forecasts.",
     description:
@@ -106,6 +113,7 @@ export const PROJECTS: Project[] = [
     id: "community-finance",
     name: "Community Finance",
     iconLabel: "Community Finance",
+    category: "Web Development",
     headline:
       "A multi-tenant finance SaaS for community groups, with AutoPay subscriptions and shared type-safe contracts.",
     description:
@@ -141,6 +149,7 @@ export const PROJECTS: Project[] = [
     id: "setups-works",
     name: "Setups Works",
     iconLabel: "Setups Works",
+    category: "Web Development",
     headline:
       "The studio I founded — a SaaS & AI product development shop shipping client platforms end to end.",
     description:
@@ -173,6 +182,7 @@ export const PROJECTS: Project[] = [
     id: "ai-expense-tracker",
     name: "AI Expense Tracker",
     iconLabel: "AI Expense Tracker",
+    category: "App Development",
     headline:
       "A privacy-first Flutter finance app that reads bank & UPI SMS on-device — no manual entry.",
     description:
@@ -204,6 +214,7 @@ export const PROJECTS: Project[] = [
     id: "inventory-management",
     name: "Inventory Management",
     iconLabel: "Inventory Management",
+    category: "Web Development",
     headline:
       "A job-work and inventory tracking system built for a manufacturing client's factory floor.",
     description:
@@ -226,6 +237,7 @@ export const PROJECTS: Project[] = [
     id: "job-email",
     name: "Job-Email",
     iconLabel: "Job-Email",
+    category: "Web Development",
     headline:
       "A cold-email campaign manager for job applications, with access-locked campaign workspaces.",
     description:
@@ -243,6 +255,55 @@ export const PROJECTS: Project[] = [
       "Access-locked campaign workspaces for job-application outreach",
       "Templated email sending via Nodemailer",
       "JWT-authenticated access to keep drafts private",
+    ],
+  },
+  {
+    id: "kids-word-puzzle",
+    name: "Kids Word Puzzle",
+    iconLabel: "Kids Word Puzzle",
+    category: "App Development",
+    headline:
+      "A word-matching puzzle game that helps kids build vocabulary, spelling, and cognitive skills.",
+    description:
+      "Kid-friendly word matching game for preschoolers and young learners, with multiple difficulty levels and offline play. Published on the Google Play Store under Setups Works.",
+    meta: "Founder & Product Engineer, 2026",
+    playStoreUrl:
+      "https://play.google.com/store/apps/details?id=com.setupsworks.missingwords",
+    language: "Android",
+    logo: "/brand/kids-word-puzzle-icon.webp",
+    gradient: "linear-gradient(140deg, #92400e 0%, #f59e0b 60%, #92400e 100%)",
+    applicationCategory: "GameApplication",
+    operatingSystem: "Android",
+    features: [
+      "Matches words with pictures to reinforce recognition and spelling",
+      "Multiple difficulty levels for progressive learning",
+      "Offline play — no internet connection required",
+      "Designed for preschoolers, kindergarteners, and early learners",
+    ],
+  },
+  {
+    id: "ultimate-maths-quiz",
+    name: "Ultimate Maths Quiz",
+    iconLabel: "Ultimate Maths Quiz",
+    category: "App Development",
+    headline:
+      "A gamified math-learning app with quizzes, real-time duels, and a PDF worksheet generator for Grades 1–10.",
+    description:
+      "Interactive math practice from arithmetic through percentages, decimals, and fractions, with a step-by-step Learn Mode, daily challenges, real-time Duel Mode, and an exportable worksheet generator for teachers and parents. Available in 11 languages on the Google Play Store under Setups Works.",
+    meta: "Founder & Product Engineer, 2026",
+    playStoreUrl:
+      "https://play.google.com/store/apps/details?id=com.setupsworks.mathematics",
+    language: "Android",
+    logo: "/brand/ultimate-maths-quiz-icon.webp",
+    gradient: "linear-gradient(140deg, #1e40af 0%, #3b82f6 60%, #1e40af 100%)",
+    applicationCategory: "EducationApplication",
+    operatingSystem: "Android",
+    features: [
+      "Gamified quizzes across arithmetic, percentages, decimals, fractions, and factorials",
+      "Real-time Duel Mode for head-to-head competition",
+      "Worksheet Generator — exportable, customizable PDF worksheets for teachers and parents",
+      "Daily challenges with detailed score analytics",
+      "Available in 11 languages",
     ],
   },
 ];

@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowUpRight, Github } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Github, Smartphone } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -47,7 +47,8 @@ export default async function ProjectDetailPage({
   const project = PROJECTS.find((p) => p.id === id);
   if (!project) notFound();
 
-  const primaryUrl = project.liveUrl ?? project.githubUrl;
+  const primaryUrl =
+    project.liveUrl ?? project.githubUrl ?? project.playStoreUrl ?? "";
 
   return (
     <main id="main-content" className="flex flex-1 flex-col">
@@ -63,7 +64,7 @@ export default async function ProjectDetailPage({
             description: project.description,
             url: primaryUrl,
             pageUrl: `${siteConfig.url}/projects/${project.id}`,
-            codeRepository: project.githubUrl,
+            ...(project.githubUrl ? { codeRepository: project.githubUrl } : {}),
             programmingLanguage: project.language,
             applicationCategory: project.applicationCategory,
             operatingSystem: project.operatingSystem,
@@ -103,15 +104,28 @@ export default async function ProjectDetailPage({
             </div>
 
             <div className="flex shrink-0 items-center gap-3">
-              <Link
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="focus-ring border-foreground/8 group inline-flex cursor-pointer items-center gap-2 rounded-xl border bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-foreground/5"
-              >
-                <Github className="h-4 w-4" aria-hidden="true" />
-                View code
-              </Link>
+              {project.githubUrl ? (
+                <Link
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="focus-ring border-foreground/8 group inline-flex cursor-pointer items-center gap-2 rounded-xl border bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-foreground/5"
+                >
+                  <Github className="h-4 w-4" aria-hidden="true" />
+                  View code
+                </Link>
+              ) : null}
+              {project.playStoreUrl ? (
+                <Link
+                  href={project.playStoreUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="focus-ring border-foreground/8 group inline-flex cursor-pointer items-center gap-2 rounded-xl border bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-foreground/5"
+                >
+                  <Smartphone className="h-4 w-4" aria-hidden="true" />
+                  Get it on Google Play
+                </Link>
+              ) : null}
               {project.liveUrl ? (
                 <Link
                   href={project.liveUrl}

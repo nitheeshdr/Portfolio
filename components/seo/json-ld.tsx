@@ -197,7 +197,7 @@ type ProjectSchemaInput = {
   name: string;
   description: string;
   url: string;
-  codeRepository: string;
+  codeRepository?: string;
   programmingLanguage?: string;
 };
 
@@ -217,11 +217,13 @@ export function projectsSchema(projects: ProjectSchemaInput[]) {
       "@type": "ListItem",
       position: index + 1,
       item: {
-        "@type": "SoftwareSourceCode",
+        "@type": project.codeRepository ? "SoftwareSourceCode" : "SoftwareApplication",
         name: project.name,
         description: project.description,
         url: project.url,
-        codeRepository: project.codeRepository,
+        ...(project.codeRepository
+          ? { codeRepository: project.codeRepository }
+          : {}),
         ...(project.programmingLanguage
           ? { programmingLanguage: project.programmingLanguage }
           : {}),
@@ -265,13 +267,28 @@ export function projectDetailSchema(project: ProjectDetailSchemaInput) {
     author: PROJECT_CREATORS,
     creator: PROJECT_CREATORS,
     publisher: { "@id": ORG_ID },
-    isBasedOn: { "@id": sourceCodeId },
+    ...(project.codeRepository ? { isBasedOn: { "@id": sourceCodeId } } : {}),
     ...(project.techStack?.length ? { keywords: project.techStack.join(", ") } : {}),
     ...(project.features?.length ? { featureList: project.features.join(", ") } : {}),
     ...(project.image
       ? { screenshot: `${siteConfig.url}${project.image}`, image: `${siteConfig.url}${project.image}` }
       : {}),
   };
+
+  const webPage = {
+    "@type": "WebPage",
+    "@id": webPageId,
+    url: project.pageUrl,
+    name: project.name,
+    description: project.description,
+    isPartOf: { "@id": WEBSITE_ID },
+    about: { "@id": softwareId },
+    mainEntity: { "@id": softwareId },
+  };
+
+  if (!project.codeRepository) {
+    return [softwareApplication, webPage];
+  }
 
   const softwareSourceCode = {
     "@type": "SoftwareSourceCode",
@@ -284,17 +301,6 @@ export function projectDetailSchema(project: ProjectDetailSchemaInput) {
       : {}),
     author: PROJECT_CREATORS,
     creator: PROJECT_CREATORS,
-  };
-
-  const webPage = {
-    "@type": "WebPage",
-    "@id": webPageId,
-    url: project.pageUrl,
-    name: project.name,
-    description: project.description,
-    isPartOf: { "@id": WEBSITE_ID },
-    about: { "@id": softwareId },
-    mainEntity: { "@id": softwareId },
   };
 
   return [softwareApplication, softwareSourceCode, webPage];

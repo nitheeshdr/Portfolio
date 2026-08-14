@@ -27,8 +27,8 @@ export default function ProjectsPage(): ReactNode {
             PROJECTS.map((p) => ({
               name: p.name,
               description: p.description,
-              url: p.liveUrl ?? p.githubUrl,
-              codeRepository: p.githubUrl,
+              url: p.liveUrl ?? p.githubUrl ?? p.playStoreUrl ?? "",
+              ...(p.githubUrl ? { codeRepository: p.githubUrl } : {}),
               programmingLanguage: p.language,
             }))
           ),
@@ -44,7 +44,7 @@ export default function ProjectsPage(): ReactNode {
           </p>
         </FadeIn>
       </section>
-      <Projects />
+      <Projects showFilters />
       <ContactCard />
     </main>
   );
