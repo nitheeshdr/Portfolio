@@ -77,6 +77,7 @@ export function ContactCard(): ReactNode {
                 <div className="flex flex-col items-center gap-1 text-center">
                   <p className="text-[13px] tracking-tight text-foreground/70">
                     &copy; 2026 Nitheesh Rajendran
+                    <span className="text-foreground/40"> (@nitheeshdr)</span>
                   </p>
                   <p className="text-[12px] tracking-tight text-foreground/45">
                     Chennai, India

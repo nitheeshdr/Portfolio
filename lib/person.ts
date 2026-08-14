@@ -7,7 +7,13 @@
 export const person = {
   name: "Nitheesh Rajendran",
   legalName: "Nitheesh D R",
-  alternateNames: ["Nitheesh D R", "Nitheesh DR", "Nitheesh D.R."],
+  alternateNames: [
+    "Nitheesh D R",
+    "Nitheesh DR",
+    "Nitheesh D.R.",
+    "Nitheeshdr",
+    "Nitheesh Rajendran DR",
+  ],
   givenName: "Nitheesh",
   familyName: "Rajendran",
   jobTitles: [

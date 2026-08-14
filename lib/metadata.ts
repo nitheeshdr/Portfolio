@@ -16,6 +16,8 @@ export const siteConfig = {
   ],
   keywords: [
     "Nitheesh Rajendran",
+    "Nitheeshdr",
+    "Nitheesh DR",
     "Nitheesh D R",
     "Setups Works",
     "CodeForge AI",
