@@ -74,7 +74,7 @@ export default async function ProjectDetailPage({
         ]}
       />
 
-      <section className="mx-auto w-full max-w-275 px-6 pt-40 pb-16 sm:px-10 sm:pt-56 sm:pb-20">
+      <section className="mx-auto w-full max-w-275 px-6 pt-28 pb-16 sm:px-10 sm:pt-40 sm:pb-20">
         <FadeIn>
           <Link
             href="/projects"

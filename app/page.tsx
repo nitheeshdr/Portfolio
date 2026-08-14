@@ -1,4 +1,5 @@
 import { AboutTeaser } from "@/components/about/about-teaser";
+import { Stack } from "@/components/about/stack";
 import { ContactCard } from "@/components/contact/contact-card";
 import { Hero } from "@/components/hero/hero";
 import { Projects } from "@/components/projects/projects";
@@ -19,6 +20,9 @@ export default function HomePage(): ReactNode {
       <Hero />
       <AboutTeaser />
       <Projects withHeadline viewMoreVisible />
+      <section className="mx-auto w-full max-w-275 px-6 sm:px-10">
+        <Stack />
+      </section>
       <ContactCard />
       <div className="h-12 sm:h-16" />
     </main>

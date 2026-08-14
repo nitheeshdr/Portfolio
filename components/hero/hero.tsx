@@ -1,16 +1,13 @@
 import type { ReactNode } from "react";
 
 import { HeroCtas } from "./hero-ctas";
+import { PolaroidFlashcards } from "@/components/about/polaroid-strip";
 import { FadeIn, ScaleUnblur } from "@/components/ui/motion-primitives";
-import { PortraitMorph } from "./portrait-morph";
-
-const PORTRAIT_SRC = "/portrait.jpg";
-const PORTRAIT_HOVER_SRC = "/avatar.jpg";
 
 export function Hero(): ReactNode {
   return (
     <section className="relative w-full">
-      <div className="mx-auto w-full max-w-275 px-6 pt-44 pb-24 sm:px-10 sm:pt-56 sm:pb-32">
+      <div className="mx-auto w-full max-w-275 px-6 pt-28 pb-24 sm:px-10 sm:pt-40 sm:pb-32">
         <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-8">
           <FadeIn className="flex flex-col gap-4">
             <p className="text-[20px] leading-tight tracking-tight font-medium text-foreground">
@@ -36,16 +33,8 @@ export function Hero(): ReactNode {
             <HeroCtas />
           </FadeIn>
 
-          <ScaleUnblur className="flex justify-stretch md:justify-end">
-            <div className="relative aspect-square w-full md:max-w-105 overflow-hidden rounded-4xl border border-foreground/8 bg-background p-1.5 shadow-sm">
-              <div className="relative h-full w-full overflow-hidden rounded-[1.6rem]">
-                <PortraitMorph
-                  srcA={PORTRAIT_SRC}
-                  srcB={PORTRAIT_HOVER_SRC}
-                  alt="Nitheesh Rajendran portrait"
-                />
-              </div>
-            </div>
+          <ScaleUnblur className="flex justify-center md:justify-end">
+            <PolaroidFlashcards className="w-full sm:max-w-sm" />
           </ScaleUnblur>
         </div>
       </div>

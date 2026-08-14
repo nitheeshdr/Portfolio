@@ -32,7 +32,7 @@ export default function AboutPage(): ReactNode {
           ]),
         ]}
       />
-      <section className="mx-auto w-full max-w-312 pt-40 sm:pt-56">
+      <section className="mx-auto w-full max-w-312 pt-28 sm:pt-40">
         <PolaroidStrip />
       </section>
 
