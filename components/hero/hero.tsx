@@ -18,11 +18,11 @@ export function Hero(): ReactNode {
               , I&rsquo;m Nitheesh Rajendran
             </p>
 
-            <h1 className="text-[2.75rem] font-medium leading-[1.05] tracking-tight text-foreground md:text-[2.5rem] lg:text-[3.65rem]">
-              <span className="block whitespace-nowrap">
+            <h1 className="text-[2.1rem] font-medium leading-[1.1] tracking-tight text-foreground sm:text-[2.75rem] sm:leading-[1.05] md:text-[2.5rem] lg:text-[3.65rem]">
+              <span className="block sm:whitespace-nowrap">
                 Full-stack engineer &
               </span>
-              <span className="block whitespace-nowrap">AI product builder</span>
+              <span className="block sm:whitespace-nowrap">AI product builder</span>
             </h1>
 
             <p className="max-w-[36ch] text-[22px] leading-[1.4] tracking-tight text-foreground/65">
