@@ -43,7 +43,10 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(
 
     const renderChildren = (): React.ReactNode => {
       return React.Children.map(children, (child) => {
-        if (React.isValidElement<DockIconProps>(child) && child.type === DockIcon) {
+        if (
+          React.isValidElement<DockIconProps>(child) &&
+          child.type === DockIcon
+        ) {
           return React.cloneElement(child, {
             ...child.props,
             mouseX,
@@ -63,7 +66,7 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(
         onMouseMove={(e) => mouseX.set(e.pageX)}
         onMouseLeave={() => mouseX.set(Infinity)}
         className={cn(
-          "mx-auto flex h-[58px] w-max items-center justify-center gap-2 rounded-2xl border border-foreground/8 bg-background p-2 shadow-sm",
+          "border-foreground/8 bg-background mx-auto flex h-[58px] w-max items-center justify-center gap-2 rounded-2xl border p-2 shadow-sm",
           direction === "top" && "items-start",
           direction === "middle" && "items-center",
           direction === "bottom" && "items-end",
@@ -77,8 +80,10 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(
 );
 Dock.displayName = "Dock";
 
-export interface DockIconProps
-  extends Omit<MotionProps & React.HTMLAttributes<HTMLDivElement>, "children"> {
+export interface DockIconProps extends Omit<
+  MotionProps & React.HTMLAttributes<HTMLDivElement>,
+  "children"
+> {
   size?: number;
   magnification?: number;
   disableMagnification?: boolean;

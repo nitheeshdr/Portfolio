@@ -81,8 +81,7 @@ export const baseMetadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   verification: {
-    // Fill in with the Search Console token when available:
-    // google: "",
+    google: "uH8AwiyTQRveEutMVXpmFTDTuRtUeANLFJbHk71kStk",
   },
 };
 

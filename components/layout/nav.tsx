@@ -40,17 +40,43 @@ const NAV_ITEMS: readonly NavItem[] = [
 ];
 
 const SOCIAL_LINKS = [
-  { label: "Email", href: `mailto:${person.email}`, lucideIcon: Mail, bg: "#525252" },
-  { label: "LinkedIn", href: person.links.linkedin, imageSrc: "/linkedin.svg", bg: "#0A66C2" },
-  { label: "GitHub", href: person.links.github, lucideIcon: Github, bg: "#181717" },
+  {
+    label: "Email",
+    href: `mailto:${person.email}`,
+    lucideIcon: Mail,
+    bg: "#525252",
+  },
+  {
+    label: "LinkedIn",
+    href: person.links.linkedin,
+    imageSrc: "/linkedin.svg",
+    bg: "#0A66C2",
+  },
+  {
+    label: "GitHub",
+    href: person.links.github,
+    lucideIcon: Github,
+    bg: "#181717",
+  },
   {
     label: "Instagram",
     href: person.links.instagram,
     imageSrc: "/icons/instagram.svg",
     bg: "linear-gradient(45deg, #F58529, #DD2A7B, #8134AF, #515BD4)",
   },
-  { label: "YouTube", href: person.links.youtube, lucideIcon: Youtube, bg: "#FF0000" },
-  { label: "IMDb", href: person.links.imdb, imageSrc: "/icons/imdb.svg", bg: "#F5C518", light: true },
+  {
+    label: "YouTube",
+    href: person.links.youtube,
+    lucideIcon: Youtube,
+    bg: "#FF0000",
+  },
+  {
+    label: "IMDb",
+    href: person.links.imdb,
+    imageSrc: "/icons/imdb.svg",
+    bg: "#F5C518",
+    light: true,
+  },
 ] as const;
 
 function IconTooltip({
@@ -137,21 +163,21 @@ function NavThemeToggle(): ReactNode {
           : "Toggle theme"
       }
       aria-pressed={mounted ? isDark : undefined}
-      className="focus-ring relative flex h-full w-full cursor-pointer items-center justify-center rounded-full text-foreground/70 transition-colors hover:text-foreground"
+      className="focus-ring text-foreground/70 hover:text-foreground relative flex h-full w-full cursor-pointer items-center justify-center rounded-full transition-colors"
     >
       <span aria-hidden="true" className="relative h-[45%] w-[45%]">
         <Sun
           className={`absolute inset-0 h-full w-full transition-all duration-300 ${
             mounted && isDark
-              ? "rotate-0 scale-100 opacity-100"
-              : "-rotate-90 scale-0 opacity-0"
+              ? "scale-100 rotate-0 opacity-100"
+              : "scale-0 -rotate-90 opacity-0"
           }`}
         />
         <Moon
           className={`absolute inset-0 h-full w-full transition-all duration-300 ${
             mounted && !isDark
-              ? "rotate-0 scale-100 opacity-100"
-              : "rotate-90 scale-0 opacity-0"
+              ? "scale-100 rotate-0 opacity-100"
+              : "scale-0 rotate-90 opacity-0"
           }`}
         />
       </span>
@@ -173,10 +199,16 @@ function ProfileDockIcon({
       aria-label={open ? "Hide social links" : "Show social links"}
       aria-expanded={open}
       className={`focus-ring flex h-full w-full cursor-pointer items-center justify-center rounded-full transition-colors ${
-        open ? "bg-foreground/10 text-foreground" : "text-foreground/60 hover:text-foreground"
+        open
+          ? "bg-foreground/10 text-foreground"
+          : "text-foreground/60 hover:text-foreground"
       }`}
     >
-      <Share2 className="h-[45%] w-[45%]" strokeWidth={2.25} aria-hidden="true" />
+      <Share2
+        className="h-[45%] w-[45%]"
+        strokeWidth={2.25}
+        aria-hidden="true"
+      />
     </button>
   );
 }
@@ -256,63 +288,68 @@ export function Nav(): ReactNode {
     <nav
       ref={navRef}
       aria-label="Primary"
-      className="fixed left-1/2 bottom-6 z-50 -translate-x-1/2"
+      className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2"
     >
       <Dock iconSize={48} iconMagnification={68} iconDistance={120}>
-        {NAV_ITEMS.map((item) => {
-          const isActive =
-            item.href === "/"
-              ? pathname === "/"
-              : pathname === item.href || pathname.startsWith(`${item.href}/`);
-          const Icon = item.icon;
-          return (
-            <DockIcon key={item.href}>
-              <IconTooltip label={item.label}>
-                <Link
-                  href={item.href}
-                  aria-current={isActive ? "page" : undefined}
-                  aria-label={item.label}
-                  className={`focus-ring flex h-full w-full items-center justify-center rounded-full transition-colors ${
-                    isActive
-                      ? "bg-foreground/10 text-foreground"
-                      : "text-foreground/60 hover:text-foreground"
-                  }`}
-                >
-                  {item.avatar ? (
-                    <div
-                      className={`relative h-[70%] w-[70%] overflow-hidden rounded-full ring-1 ${
-                        isActive ? "ring-foreground/25" : "ring-foreground/10"
-                      }`}
-                    >
-                      <Image
-                        src="/avatar.jpg"
-                        alt=""
-                        fill
-                        sizes="40px"
-                        className="object-cover"
+          {NAV_ITEMS.map((item) => {
+            const isActive =
+              item.href === "/"
+                ? pathname === "/"
+                : pathname === item.href ||
+                  pathname.startsWith(`${item.href}/`);
+            const Icon = item.icon;
+            return (
+              <DockIcon key={item.href}>
+                <IconTooltip label={item.label}>
+                  <Link
+                    href={item.href}
+                    aria-current={isActive ? "page" : undefined}
+                    aria-label={item.label}
+                    className={`focus-ring flex h-full w-full items-center justify-center rounded-full transition-colors ${
+                      isActive
+                        ? "bg-foreground/10 text-foreground"
+                        : "text-foreground/60 hover:text-foreground"
+                    }`}
+                  >
+                    {item.avatar ? (
+                      <div
+                        className={`relative h-[70%] w-[70%] overflow-hidden rounded-full ring-1 ${
+                          isActive ? "ring-foreground/25" : "ring-foreground/10"
+                        }`}
+                      >
+                        <Image
+                          src="/avatar.jpg"
+                          alt=""
+                          fill
+                          sizes="40px"
+                          className="object-cover"
+                        />
+                      </div>
+                    ) : Icon ? (
+                      <Icon
+                        className="h-[45%] w-[45%]"
+                        strokeWidth={2.25}
+                        aria-hidden="true"
                       />
-                    </div>
-                  ) : Icon ? (
-                    <Icon className="h-[45%] w-[45%]" strokeWidth={2.25} aria-hidden="true" />
-                  ) : null}
-                </Link>
-              </IconTooltip>
-            </DockIcon>
-          );
-        })}
-        <DockIcon>
-          <IconTooltip label="Social links">
-            <ProfileDockIcon
-              open={socialsOpen}
-              onToggle={() => setSocialsOpen((v) => !v)}
-            />
-          </IconTooltip>
-        </DockIcon>
-        <DockIcon disableMagnification>
-          <IconTooltip label="Theme">
-            <NavThemeToggle />
-          </IconTooltip>
-        </DockIcon>
+                    ) : null}
+                  </Link>
+                </IconTooltip>
+              </DockIcon>
+            );
+          })}
+          <DockIcon>
+            <IconTooltip label="Social links">
+              <ProfileDockIcon
+                open={socialsOpen}
+                onToggle={() => setSocialsOpen((v) => !v)}
+              />
+            </IconTooltip>
+          </DockIcon>
+          <DockIcon disableMagnification>
+            <IconTooltip label="Theme">
+              <NavThemeToggle />
+            </IconTooltip>
+          </DockIcon>
       </Dock>
 
       <AnimatePresence>
