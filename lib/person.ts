@@ -36,7 +36,7 @@ export const person = {
   tagline: ["Full-stack engineer &", "AI product builder"],
   summary:
     "Full Stack Developer and Product Engineer with experience designing and shipping AI-powered SaaS platforms, business intelligence systems, and scalable web applications using React, Next.js, TypeScript, and Node.js.",
-  bio: "Founder of Setups Works, an AI & SaaS product studio in Chennai. I design and ship full-stack products end to end — from architecture and AI integration to deployment and production support — across web, mobile, and developer tooling.",
+  bio: "Founder & CEO of Setups Works, an AI & SaaS product studio in Chennai. I design and ship full-stack products end to end — from architecture and AI integration to deployment and production support — across web, mobile, and developer tooling.",
   location: "Chennai, Tamil Nadu, India",
   homeLocation: "Elavur, Tamil Nadu, India",
   family: {

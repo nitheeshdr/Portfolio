@@ -59,8 +59,8 @@ export function Hero(): ReactNode {
             </h1>
 
             <p className="max-w-[36ch] text-[22px] leading-[1.4] tracking-tight text-foreground/65">
-              Founder of Setups Works, building AI-powered SaaS platforms and
-              production software end to end.
+              Founder &amp; CEO of Setups Works, building AI-powered SaaS
+              platforms and production software end to end.
             </p>
 
             <HeroCtas />
