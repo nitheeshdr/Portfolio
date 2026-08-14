@@ -199,6 +199,8 @@ type ProjectSchemaInput = {
   url: string;
   codeRepository?: string;
   programmingLanguage?: string;
+  /** "design" (Dribbble UI shots) gets CreativeWork instead of SoftwareApplication/SoftwareSourceCode. */
+  kind?: "software" | "design";
 };
 
 /**
@@ -208,7 +210,7 @@ type ProjectSchemaInput = {
  */
 const PROJECT_CREATORS = [{ "@id": PERSON_ID }, { "@id": ORG_ID }];
 
-/** One SoftwareSourceCode node per shipped project, credited to Person + Organization. */
+/** One SoftwareSourceCode/CreativeWork node per project, credited to Person + Organization. */
 export function projectsSchema(projects: ProjectSchemaInput[]) {
   return {
     "@type": "ItemList",
@@ -217,10 +219,18 @@ export function projectsSchema(projects: ProjectSchemaInput[]) {
       "@type": "ListItem",
       position: index + 1,
       item: {
-        "@type": project.codeRepository ? "SoftwareSourceCode" : "SoftwareApplication",
+        "@type":
+          project.kind === "design"
+            ? "CreativeWork"
+            : project.codeRepository
+              ? "SoftwareSourceCode"
+              : "SoftwareApplication",
         name: project.name,
         description: project.description,
         url: project.url,
+        ...(project.kind === "design"
+          ? { genre: "User Interface Design" }
+          : {}),
         ...(project.codeRepository
           ? { codeRepository: project.codeRepository }
           : {}),
@@ -237,24 +247,60 @@ export function projectsSchema(projects: ProjectSchemaInput[]) {
 type ProjectDetailSchemaInput = ProjectSchemaInput & {
   /** Detail-page URL on this site (not the live product URL). */
   pageUrl: string;
-  applicationCategory: string;
-  operatingSystem: string;
+  /** Required for "software" kind (the default); unused for "design". */
+  applicationCategory?: string;
+  operatingSystem?: string;
   techStack?: string[];
   features?: string[];
   image?: string;
 };
 
 /**
- * Full detail-page schema for one project: a SoftwareApplication node (the
- * rich-result type Google actually recognizes for apps/products, carrying
- * category, OS, and feature data) plus the SoftwareSourceCode node linked
- * via `isBasedOn`, and a WebPage wrapper tying the page itself to both.
- * Both nodes credit the Person and the Organization he founded.
+ * Full detail-page schema for one project. Design pieces (kind: "design",
+ * Dribbble shots) get a CreativeWork node — they're visual design work, not
+ * shipped software, so SoftwareApplication would misrepresent them. Software
+ * projects get a SoftwareApplication node (the rich-result type Google
+ * recognizes for apps/products) plus a SoftwareSourceCode node linked via
+ * `isBasedOn` when a repo exists. Both cases get a WebPage wrapper, and both
+ * credit the Person and the Organization he founded.
  */
 export function projectDetailSchema(project: ProjectDetailSchemaInput) {
+  const webPageId = `${project.pageUrl}#webpage`;
+
+  if (project.kind === "design") {
+    const creativeWorkId = `${project.pageUrl}#creativework`;
+
+    const creativeWork = {
+      "@type": "CreativeWork",
+      "@id": creativeWorkId,
+      name: project.name,
+      description: project.description,
+      url: project.url,
+      genre: "User Interface Design",
+      author: PROJECT_CREATORS,
+      creator: PROJECT_CREATORS,
+      publisher: { "@id": ORG_ID },
+      ...(project.image
+        ? { image: `${siteConfig.url}${project.image}` }
+        : {}),
+    };
+
+    const webPage = {
+      "@type": "WebPage",
+      "@id": webPageId,
+      url: project.pageUrl,
+      name: project.name,
+      description: project.description,
+      isPartOf: { "@id": WEBSITE_ID },
+      about: { "@id": creativeWorkId },
+      mainEntity: { "@id": creativeWorkId },
+    };
+
+    return [creativeWork, webPage];
+  }
+
   const softwareId = `${project.pageUrl}#software`;
   const sourceCodeId = `${project.pageUrl}#sourcecode`;
-  const webPageId = `${project.pageUrl}#webpage`;
 
   const softwareApplication = {
     "@type": "SoftwareApplication",
@@ -262,8 +308,8 @@ export function projectDetailSchema(project: ProjectDetailSchemaInput) {
     name: project.name,
     description: project.description,
     url: project.url,
-    applicationCategory: project.applicationCategory,
-    operatingSystem: project.operatingSystem,
+    applicationCategory: project.applicationCategory ?? "WebApplication",
+    operatingSystem: project.operatingSystem ?? "Web",
     author: PROJECT_CREATORS,
     creator: PROJECT_CREATORS,
     publisher: { "@id": ORG_ID },

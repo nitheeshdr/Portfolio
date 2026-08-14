@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowUpRight, Github, Smartphone } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Github, Palette, Smartphone } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -48,7 +48,11 @@ export default async function ProjectDetailPage({
   if (!project) notFound();
 
   const primaryUrl =
-    project.liveUrl ?? project.githubUrl ?? project.playStoreUrl ?? "";
+    project.liveUrl ??
+    project.githubUrl ??
+    project.playStoreUrl ??
+    project.dribbbleUrl ??
+    "";
 
   return (
     <main id="main-content" className="flex flex-1 flex-col">
@@ -66,8 +70,13 @@ export default async function ProjectDetailPage({
             pageUrl: `${siteConfig.url}/projects/${project.id}`,
             ...(project.githubUrl ? { codeRepository: project.githubUrl } : {}),
             programmingLanguage: project.language,
-            applicationCategory: project.applicationCategory,
-            operatingSystem: project.operatingSystem,
+            ...(project.kind ? { kind: project.kind } : {}),
+            ...(project.applicationCategory
+              ? { applicationCategory: project.applicationCategory }
+              : {}),
+            ...(project.operatingSystem
+              ? { operatingSystem: project.operatingSystem }
+              : {}),
             ...(project.techStack ? { techStack: project.techStack } : {}),
             ...(project.features ? { features: project.features } : {}),
             ...(project.image ? { image: project.image } : {}),
@@ -138,6 +147,17 @@ export default async function ProjectDetailPage({
                     className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                     aria-hidden="true"
                   />
+                </Link>
+              ) : null}
+              {project.dribbbleUrl ? (
+                <Link
+                  href={project.dribbbleUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="focus-ring group inline-flex cursor-pointer items-center gap-2 rounded-xl bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors"
+                >
+                  <Palette className="h-4 w-4" aria-hidden="true" />
+                  View on Dribbble
                 </Link>
               ) : null}
             </div>

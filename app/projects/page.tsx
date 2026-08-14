@@ -27,9 +27,10 @@ export default function ProjectsPage(): ReactNode {
             PROJECTS.map((p) => ({
               name: p.name,
               description: p.description,
-              url: p.liveUrl ?? p.githubUrl ?? p.playStoreUrl ?? "",
+              url: p.liveUrl ?? p.githubUrl ?? p.playStoreUrl ?? p.dribbbleUrl ?? "",
               ...(p.githubUrl ? { codeRepository: p.githubUrl } : {}),
               programmingLanguage: p.language,
+              ...(p.kind ? { kind: p.kind } : {}),
             }))
           ),
         ]}

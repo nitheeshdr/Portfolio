@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ArrowUpRight, Github, Smartphone } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Github, Palette, Smartphone } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -207,6 +207,17 @@ function ProjectCard({
                 className="focus-ring border-foreground/10 text-foreground/70 hover:text-foreground inline-flex h-8 w-8 items-center justify-center rounded-lg border bg-background transition-colors"
               >
                 <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </Link>
+            ) : null}
+            {project.dribbbleUrl ? (
+              <Link
+                href={project.dribbbleUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${project.name} on Dribbble`}
+                className="focus-ring border-foreground/10 text-foreground/70 hover:text-foreground inline-flex h-8 w-8 items-center justify-center rounded-lg border bg-background transition-colors"
+              >
+                <Palette className="h-3.5 w-3.5" aria-hidden="true" />
               </Link>
             ) : null}
           </div>

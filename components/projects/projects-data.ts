@@ -1,4 +1,8 @@
-export const PROJECT_CATEGORIES = ["Web Development", "App Development"] as const;
+export const PROJECT_CATEGORIES = [
+  "Web Development",
+  "App Development",
+  "UI/UX Design",
+] as const;
 export type ProjectCategory = (typeof PROJECT_CATEGORIES)[number];
 
 export type Project = {
@@ -12,6 +16,8 @@ export type Project = {
   githubUrl?: string;
   liveUrl?: string;
   playStoreUrl?: string;
+  /** Dribbble shot URL — used for UI/UX design pieces instead of code/store links. */
+  dribbbleUrl?: string;
   language: string;
   /** Screenshot, when one exists that's safe to publish (no third-party client data). */
   image?: string;
@@ -24,10 +30,16 @@ export type Project = {
   /** Shown on the project detail page only. */
   techStack?: string[];
   features?: string[];
-  /** schema.org SoftwareApplication.applicationCategory, e.g. "BusinessApplication". */
-  applicationCategory: string;
-  /** schema.org SoftwareApplication.operatingSystem, e.g. "Web" or "Android". */
-  operatingSystem: string;
+  /**
+   * "design" pieces (Dribbble shots) get CreativeWork JSON-LD instead of
+   * SoftwareApplication — they're visual design work, not shipped software.
+   * Defaults to "software" when omitted.
+   */
+  kind?: "software" | "design";
+  /** schema.org SoftwareApplication.applicationCategory, e.g. "BusinessApplication". Software projects only. */
+  applicationCategory?: string;
+  /** schema.org SoftwareApplication.operatingSystem, e.g. "Web" or "Android". Software projects only. */
+  operatingSystem?: string;
 };
 
 const SCREENSHOT_RATIO = 2560 / 1600;
@@ -305,6 +317,51 @@ export const PROJECTS: Project[] = [
       "Daily challenges with detailed score analytics",
       "Available in 11 languages",
     ],
+  },
+  {
+    id: "wow-flix",
+    name: "WOW Flix",
+    iconLabel: "WOW Flix",
+    category: "UI/UX Design",
+    kind: "design",
+    headline:
+      "A UI concept for a streaming platform — browse, watch, and profile flows.",
+    description:
+      "A UI/UX design exploration for a Netflix-style streaming platform, covering browse and discovery, the watch screen, and profile flows. Designed in Figma as a portfolio concept piece.",
+    meta: "UI/UX Design",
+    dribbbleUrl: "https://dribbble.com/shots/23384359-WOW-Flix-Streaming-Platform",
+    language: "Figma",
+    gradient: "linear-gradient(140deg, #18181b 0%, #dc2626 60%, #18181b 100%)",
+  },
+  {
+    id: "the-kitchen-food-app",
+    name: "The Kitchen",
+    iconLabel: "The Kitchen",
+    category: "UI/UX Design",
+    kind: "design",
+    headline:
+      "A UI concept for a food-delivery app — menu browsing, cart, and ordering.",
+    description:
+      "A UI/UX design concept for a food-ordering app, covering restaurant discovery, menu browsing, and the cart and ordering flow. Designed in Figma as a portfolio concept piece.",
+    meta: "UI/UX Design",
+    dribbbleUrl: "https://dribbble.com/shots/21326194-The-Kitchen-Food-App-UI",
+    language: "Figma",
+    gradient: "linear-gradient(140deg, #7c2d12 0%, #f97316 60%, #7c2d12 100%)",
+  },
+  {
+    id: "wow-bank-app-concept",
+    name: "WOW Bank",
+    iconLabel: "WOW Bank",
+    category: "UI/UX Design",
+    kind: "design",
+    headline:
+      "A UI concept for a digital banking app — accounts, transfers, and cards.",
+    description:
+      "A UI/UX design concept for a mobile banking app, covering account overview, transfers, and card management screens. Designed in Figma as a portfolio concept piece.",
+    meta: "UI/UX Design",
+    dribbbleUrl: "https://dribbble.com/shots/21328351-WOW-Bank-App-UI-Concept",
+    language: "Figma",
+    gradient: "linear-gradient(140deg, #052e16 0%, #16a34a 60%, #052e16 100%)",
   },
 ];
 
