@@ -31,7 +31,7 @@ export const siteConfig = {
 export const baseMetadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} — Full Stack Engineer & AI Product Builder`,
+    default: `${siteConfig.name} - Portfolio`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
@@ -103,7 +103,7 @@ export function createMetadata({
   const ogImage = image ?? siteConfig.ogImage;
 
   return {
-    title,
+    ...(title ? { title } : {}),
     description,
     alternates: {
       canonical: path,
