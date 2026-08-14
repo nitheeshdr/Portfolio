@@ -1,6 +1,6 @@
 # Nitheesh Rajendran
 
-> Full-stack engineer and AI product builder based in Chennai, India. Founder & CEO of Setups Works (SaaS & AI product development studio) and CodeForge AI (AI-powered coding-interview platform). Also a web designer, digital marketer, and Indian filmmaker.
+> Full-stack engineer and AI product builder based in Chennai, India. Founder & CEO of Setups Works (SaaS & AI product development studio) and CodeForge AI (AI-powered coding-interview platform). Also a UI/UX designer, digital marketer, and Indian filmmaker.
 
 Nitheesh Rajendran (also written Nitheesh D R) designs and ships production software end to end — architecture, AI/LLM integration, deployment, and post-launch support — across web, mobile, and developer tooling. He builds with React, Next.js, TypeScript, and Node.js on the web, and Flutter on mobile.
 
@@ -8,17 +8,29 @@ Nitheesh Rajendran (also written Nitheesh D R) designs and ships production soft
 
 - [Home](https://nitheeshdr.in/): Introduction, featured projects, contact.
 - [About](https://nitheeshdr.in/about): Background, experience, education, filmography, skills, and stack.
-- [Projects](https://nitheeshdr.in/projects): Full list of shipped SaaS platforms, AI products, and mobile apps.
+- [Projects](https://nitheeshdr.in/projects): Full list of shipped SaaS platforms, AI products, mobile apps, and UI/UX design work.
+- [Blog](https://nitheeshdr.in/blog): Writing on software engineering, AI products, and building at Setups Works.
 
-## Projects
+## Web & AI products
 
 - [CodeForge AI](https://codeforgeai.io) ([code](https://github.com/CodeForgeAI-io/Codeforge-AI)): AI-powered coding-interview platform with a real-time AI mentor, live multi-language execution, contests, and gamified prep.
 - [PulseCommerce](https://github.com/nitheeshdr/PulseCommerce): AI commerce-intelligence platform for WooCommerce — RFM segmentation, churn prediction, revenue forecasting, and an AI Commerce Agent.
 - [Community Finance](https://finance-village-web.vercel.app) ([code](https://github.com/nitheeshdr/Community-Finance)): Multi-tenant finance SaaS for community groups with Razorpay AutoPay subscriptions.
 - [Setups Works](https://setups.works) ([code](https://github.com/nitheeshdr/Setups-Works)): The digital agency/studio Nitheesh founded — SaaS and AI product development for clients.
-- [AI Expense Tracker](https://github.com/nitheeshdr/AI-Expense-Tracker-App): Privacy-first Flutter finance app that parses bank/UPI SMS on-device. Published on the Google Play Store.
 - [Inventory Management](https://github.com/nitheeshdr/Inventory-Management): Job-work and inventory tracking system built for a manufacturing client.
 - [Job-Email](https://job-email-teal.vercel.app) ([code](https://github.com/nitheeshdr/Job-Email)): Cold-email campaign manager for job applications with access-locked workspaces.
+
+## Mobile apps
+
+- [AI Expense Tracker](https://github.com/nitheeshdr/AI-Expense-Tracker-App): Privacy-first Flutter finance app that parses bank/UPI SMS on-device.
+- [Kids Word Puzzle](https://play.google.com/store/apps/details?id=com.setupsworks.missingwords): Word-matching puzzle game for preschoolers and young learners, on Google Play under Setups Works.
+- [Ultimate Maths Quiz](https://play.google.com/store/apps/details?id=com.setupsworks.mathematics): Gamified math-learning app with quizzes, real-time duels, and a worksheet generator, on Google Play under Setups Works.
+
+## UI/UX design
+
+- [WOW Flix](https://dribbble.com/shots/23384359-WOW-Flix-Streaming-Platform): UI concept for a free movie-streaming app.
+- [The Kitchen](https://dribbble.com/shots/21326194-The-Kitchen-Food-App-UI): UI concept for a food-ordering app.
+- [WOW Bank](https://dribbble.com/shots/21328351-WOW-Bank-App-UI-Concept): UI concept for a neobank onboarding and sign-in flow.
 
 ## Background
 
@@ -34,3 +46,4 @@ Nitheesh Rajendran (also written Nitheesh D R) designs and ships production soft
 - [Instagram](https://www.instagram.com/nitheesh.rajendran/)
 - [YouTube](https://www.youtube.com/@nitheeshrajendran)
 - [IMDb](https://www.imdb.com/name/nm16304237/)
+- [Dribbble](https://dribbble.com/nitheeshdr)
