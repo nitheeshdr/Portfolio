@@ -52,7 +52,7 @@ export const person = {
     crunchbase: "https://www.crunchbase.com/person/nitheesh-rajendran",
     wikidata: "https://www.wikidata.org/wiki/Q140500455",
     /** Google Knowledge Panel share link — helps Google reconcile this Person entity with its existing panel. */
-    knowledgePanel: "https://share.google/R49gz3hj0ZA74MmQt",
+    knowledgePanel: "https://share.google/jTjYj8LeszVeOSqF7",
   },
   identifiers: {
     wikidataId: "Q140500455",
