@@ -53,6 +53,13 @@ export function personSchema() {
     familyName: person.familyName,
     jobTitle: person.jobTitles,
     description: person.bio,
+    /**
+     * Subtitle-style disambiguation text (distinct from the full `description`
+     * bio) — the closest schema.org lever to a Knowledge Panel subtitle.
+     * Google's "suggest an edit" form only accepts factual corrections, not
+     * custom subtitle text; this is the structured-data path instead.
+     */
+    disambiguatingDescription: `${person.company.role} of ${person.company.name}`,
     url: siteConfig.url,
     image: {
       "@type": "ImageObject",
