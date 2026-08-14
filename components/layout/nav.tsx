@@ -253,10 +253,48 @@ function SocialLinkButton({
   );
 }
 
+const SCROLL_DELTA_THRESHOLD = 6;
+const SCROLL_TOP_THRESHOLD = 80;
+
+function useCompactOnScroll(): boolean {
+  const [compact, setCompact] = useState(false);
+  const lastY = useRef(0);
+
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = (): void => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const currentY = window.scrollY;
+        const delta = currentY - lastY.current;
+
+        if (currentY < SCROLL_TOP_THRESHOLD) {
+          setCompact(false);
+        } else if (delta > SCROLL_DELTA_THRESHOLD) {
+          setCompact(true);
+        } else if (delta < -SCROLL_DELTA_THRESHOLD) {
+          setCompact(false);
+        }
+
+        lastY.current = currentY;
+        ticking = false;
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return compact;
+}
+
 export function Nav(): ReactNode {
   const pathname = usePathname();
   const [socialsOpen, setSocialsOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
+  const compact = useCompactOnScroll();
 
   const [lastPathname, setLastPathname] = useState(pathname);
   if (pathname !== lastPathname) {
@@ -290,6 +328,13 @@ export function Nav(): ReactNode {
       aria-label="Primary"
       className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2"
     >
+      <motion.div
+        animate={{
+          scale: compact ? 0.78 : 1,
+          opacity: compact ? 0.88 : 1,
+        }}
+        transition={{ type: "spring", stiffness: 400, damping: 32 }}
+      >
       <Dock iconSize={48} iconMagnification={68} iconDistance={120}>
           {NAV_ITEMS.map((item) => {
             const isActive =
@@ -351,6 +396,7 @@ export function Nav(): ReactNode {
             </IconTooltip>
           </DockIcon>
       </Dock>
+      </motion.div>
 
       <AnimatePresence>
         {socialsOpen && (
