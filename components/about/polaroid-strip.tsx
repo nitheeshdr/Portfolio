@@ -9,13 +9,14 @@ import {
 } from "motion/react";
 import Image from "next/image";
 import {
+  useEffect,
   useRef,
   useState,
   useSyncExternalStore,
   type ReactNode,
 } from "react";
 
-type Polaroid = {
+export type Polaroid = {
   id: string;
   rotate: number;
   src: string;
@@ -120,9 +121,12 @@ const SWIPE_THRESHOLD = 90;
 /** Tap-or-swipe stack of flashcards. */
 export function PolaroidFlashcards({
   className = "w-[13rem]",
+  onActiveChange,
 }: {
   /** Controls the stack's width — height follows via the 3:4 aspect ratio. */
   className?: string;
+  /** Called with the currently-front photo whenever it changes (including on mount). */
+  onActiveChange?: (photo: Polaroid) => void;
 } = {}): ReactNode {
   const [active, setActive] = useState(0);
   const count = PHOTOS.length;
@@ -134,6 +138,11 @@ export function PolaroidFlashcards({
     offset,
     photo: PHOTOS[(active + offset) % count] ?? PHOTOS[0]!,
   }));
+
+  useEffect(() => {
+    onActiveChange?.(front);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [front.id]);
 
   return (
     <div className="flex w-full flex-col items-center gap-4">
