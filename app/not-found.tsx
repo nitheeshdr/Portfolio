@@ -1,6 +1,7 @@
 "use client";
 
-import { Home, RotateCcw, FolderKanban } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHouse, faArrowRotateLeft, faFolderTree } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
@@ -86,7 +87,7 @@ export default function NotFound(): ReactNode {
         onClick={() => setJokeIndex((v) => (v + 1) % JOKES.length)}
         className="focus-ring relative mt-2 inline-flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-medium text-foreground/50 transition-colors hover:text-foreground"
       >
-        <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
+        <FontAwesomeIcon icon={faArrowRotateLeft} className="h-3.5 w-3.5" aria-hidden="true" />
         Another one
       </button>
 
@@ -95,14 +96,14 @@ export default function NotFound(): ReactNode {
           href="/"
           className="focus-ring inline-flex cursor-pointer items-center gap-2 rounded-xl bg-foreground px-5 py-2.5 text-sm font-medium text-background shadow-sm transition-transform hover:scale-105"
         >
-          <Home className="h-4 w-4" aria-hidden="true" />
+          <FontAwesomeIcon icon={faHouse} className="h-4 w-4" aria-hidden="true" />
           Take me home
         </Link>
         <Link
           href="/projects"
           className="focus-ring border-foreground/8 inline-flex cursor-pointer items-center gap-2 rounded-xl border bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-foreground/5"
         >
-          <FolderKanban className="h-4 w-4" aria-hidden="true" />
+          <FontAwesomeIcon icon={faFolderTree} className="h-4 w-4" aria-hidden="true" />
           See projects instead
         </Link>
       </div>

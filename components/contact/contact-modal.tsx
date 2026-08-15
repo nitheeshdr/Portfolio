@@ -1,6 +1,12 @@
 "use client";
 
-import { Check, Loader2, Mail, X } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCheck,
+  faEnvelope,
+  faSpinner,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 
@@ -111,13 +117,13 @@ export function ContactModal({
               aria-label="Close"
               className="focus-ring border-foreground/8 text-foreground/60 hover:text-foreground bg-background absolute top-4 right-4 inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border transition-colors"
             >
-              <X className="h-4 w-4" aria-hidden="true" />
+              <FontAwesomeIcon icon={faXmark} className="h-4 w-4" aria-hidden="true" />
             </button>
 
             {status === "sent" ? (
               <div className="flex flex-col items-center gap-3 py-8 text-center">
                 <span className="bg-foreground text-background flex h-12 w-12 items-center justify-center rounded-full">
-                  <Check className="h-5 w-5" aria-hidden="true" />
+                  <FontAwesomeIcon icon={faCheck} className="h-5 w-5" aria-hidden="true" />
                 </span>
                 <h2 className="font-serif text-[1.5rem] font-medium tracking-tight text-foreground">
                   Message sent
@@ -206,12 +212,12 @@ export function ContactModal({
                   >
                     {status === "sending" ? (
                       <>
-                        <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                        <FontAwesomeIcon icon={faSpinner} className="h-4 w-4 animate-spin" aria-hidden="true" />
                         Sending...
                       </>
                     ) : (
                       <>
-                        <Mail className="h-4 w-4" aria-hidden="true" />
+                        <FontAwesomeIcon icon={faEnvelope} className="h-4 w-4" aria-hidden="true" />
                         Send message
                       </>
                     )}

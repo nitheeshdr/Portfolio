@@ -1,14 +1,20 @@
 "use client";
 
-import { FolderKanban, LayoutDashboard, LogOut, Newspaper } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFolderTree,
+  faTableCellsLarge,
+  faRightFromBracket,
+  faNewspaper,
+} from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
 
 const LINKS = [
-  { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { label: "Blog", href: "/admin/blog", icon: Newspaper },
-  { label: "Projects", href: "/admin/projects", icon: FolderKanban },
+  { label: "Dashboard", href: "/admin", icon: faTableCellsLarge },
+  { label: "Blog", href: "/admin/blog", icon: faNewspaper },
+  { label: "Projects", href: "/admin/projects", icon: faFolderTree },
 ] as const;
 
 export function AdminSidebar(): ReactNode {
@@ -46,7 +52,7 @@ export function AdminSidebar(): ReactNode {
                   : "text-foreground/60 hover:text-foreground hover:bg-foreground/5"
               }`}
             >
-              <Icon className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+              <FontAwesomeIcon icon={Icon} className="h-4 w-4" aria-hidden="true" />
               {link.label}
             </Link>
           );
@@ -59,7 +65,7 @@ export function AdminSidebar(): ReactNode {
         disabled={loggingOut}
         className="focus-ring text-foreground/60 hover:text-foreground hover:bg-foreground/5 flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-[14px] font-medium tracking-tight transition-colors disabled:opacity-60"
       >
-        <LogOut className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+        <FontAwesomeIcon icon={faRightFromBracket} className="h-4 w-4" aria-hidden="true" />
         {loggingOut ? "Signing out..." : "Sign out"}
       </button>
     </aside>

@@ -1,4 +1,5 @@
-import { ArrowLeft } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -67,7 +68,8 @@ export default async function BlogPostPage({
             href="/blog"
             className="focus-ring text-foreground/60 hover:text-foreground group mb-8 flex w-fit items-center gap-1.5 text-sm font-medium tracking-tight transition-colors"
           >
-            <ArrowLeft
+            <FontAwesomeIcon
+              icon={faArrowLeft}
               className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5"
               aria-hidden="true"
             />

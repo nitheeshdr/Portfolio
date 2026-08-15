@@ -1,4 +1,5 @@
-import { Plus } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { getAllPosts } from "@/lib/blog";
@@ -22,7 +23,7 @@ export default async function AdminBlogListPage(): Promise<ReactNode> {
           href="/admin/blog/new"
           className="focus-ring bg-foreground text-background inline-flex cursor-pointer items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium"
         >
-          <Plus className="h-4 w-4" aria-hidden="true" />
+          <FontAwesomeIcon icon={faPlus} className="h-4 w-4" aria-hidden="true" />
           New post
         </Link>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
-import { Lock } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLock } from "@fortawesome/free-solid-svg-icons";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, type FormEvent, type ReactNode } from "react";
 
@@ -43,7 +44,7 @@ export function AdminLoginForm(): ReactNode {
   return (
     <div className="border-foreground/10 w-full max-w-sm rounded-4xl border p-8">
       <div className="bg-foreground text-background mb-5 inline-flex h-11 w-11 items-center justify-center rounded-full">
-        <Lock className="h-4.5 w-4.5" aria-hidden="true" />
+        <FontAwesomeIcon icon={faLock} className="h-4.5 w-4.5" aria-hidden="true" />
       </div>
       <h1 className="font-serif text-[1.75rem] font-medium tracking-tight text-foreground">
         Admin

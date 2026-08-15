@@ -1,6 +1,7 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 import { useTheme } from "next-themes";
 import { useSyncExternalStore, type ReactNode } from "react";
 
@@ -71,14 +72,16 @@ export function ThemeToggle(): ReactNode {
       className="focus-ring border-foreground/8 bg-background text-foreground/70 hover:text-foreground fixed top-4 right-4 z-50 inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border shadow-sm transition-colors sm:top-6 sm:right-6"
     >
       <span aria-hidden="true" className="relative h-[45%] w-[45%]">
-        <Sun
+        <FontAwesomeIcon
+          icon={faSun}
           className={`absolute inset-0 h-full w-full transition-all duration-300 ${
             mounted && isDark
               ? "scale-100 rotate-0 opacity-100"
               : "scale-0 -rotate-90 opacity-0"
           }`}
         />
-        <Moon
+        <FontAwesomeIcon
+          icon={faMoon}
           className={`absolute inset-0 h-full w-full transition-all duration-300 ${
             mounted && !isDark
               ? "scale-100 rotate-0 opacity-100"

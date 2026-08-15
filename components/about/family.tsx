@@ -1,4 +1,5 @@
-import { Users } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import type { ReactNode } from "react";
 
 import { person } from "@/lib/person";
@@ -26,7 +27,7 @@ function FamilyRow({ label, value }: { label: string; value: string }): ReactNod
         aria-hidden="true"
         style={{ borderRadius: 12 }}
       >
-        <Users className="h-4 w-4 text-foreground/50" strokeWidth={2} />
+        <FontAwesomeIcon icon={faUsers} className="h-4 w-4 text-foreground/50" />
       </span>
       <div className="flex min-w-0 flex-col">
         <span className="text-foreground/50 text-[12px] tracking-tight uppercase">

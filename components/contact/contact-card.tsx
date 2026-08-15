@@ -1,4 +1,7 @@
-import { Github, Mail, Youtube } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { faGithub, faYoutube } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -45,7 +48,7 @@ export function ContactCard(): ReactNode {
                   <SocialIcon
                     href={`mailto:${person.email}`}
                     label="Email"
-                    lucideIcon={Mail}
+                    faIcon={faEnvelope}
                   />
                   <SocialIcon
                     href={person.links.linkedin}
@@ -55,7 +58,7 @@ export function ContactCard(): ReactNode {
                   <SocialIcon
                     href={person.links.github}
                     label="GitHub"
-                    lucideIcon={Github}
+                    faIcon={faGithub}
                   />
                   <SocialIcon
                     href={person.links.instagram}
@@ -65,7 +68,7 @@ export function ContactCard(): ReactNode {
                   <SocialIcon
                     href={person.links.youtube}
                     label="YouTube"
-                    lucideIcon={Youtube}
+                    faIcon={faYoutube}
                   />
                   <SocialIcon
                     href={person.links.imdb}
@@ -95,14 +98,14 @@ export function ContactCard(): ReactNode {
 function SocialIcon({
   href,
   label,
-  lucideIcon: LucideIcon,
+  faIcon,
   imageSrc,
   invert = true,
   size = 14,
 }: {
   href: string;
   label: string;
-  lucideIcon?: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  faIcon?: IconDefinition;
   imageSrc?: string;
   invert?: boolean;
   size?: number;
@@ -118,8 +121,8 @@ function SocialIcon({
       className="border-foreground/8 hover:border-foreground/15 focus-ring inline-flex h-11 w-11 items-center justify-center rounded-xl border bg-background text-foreground/70 transition-colors hover:text-foreground"
       {...props}
     >
-      {LucideIcon ? (
-        <LucideIcon className="h-4 w-4" strokeWidth={2.5} aria-hidden="true" />
+      {faIcon ? (
+        <FontAwesomeIcon icon={faIcon} className="h-4 w-4" aria-hidden="true" />
       ) : imageSrc ? (
         <Image
           src={imageSrc}

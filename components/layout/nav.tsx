@@ -1,14 +1,15 @@
 "use client";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
-  FolderKanban,
-  Github,
-  Home as HomeIcon,
-  Mail,
-  Newspaper,
-  Share2,
-  Youtube,
-} from "lucide-react";
+  faEnvelope,
+  faFolderTree,
+  faHouse,
+  faNewspaper,
+  faShareNodes,
+} from "@fortawesome/free-solid-svg-icons";
+import { faGithub, faYoutube } from "@fortawesome/free-brands-svg-icons";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,22 +22,22 @@ import { person } from "@/lib/person";
 type NavItem = {
   label: string;
   href: string;
-  icon?: typeof HomeIcon;
+  icon?: IconDefinition;
   avatar?: boolean;
 };
 
 const NAV_ITEMS: readonly NavItem[] = [
-  { label: "Home", href: "/", icon: HomeIcon },
-  { label: "Projects", href: "/projects", icon: FolderKanban },
+  { label: "Home", href: "/", icon: faHouse },
+  { label: "Projects", href: "/projects", icon: faFolderTree },
   { label: "About", href: "/about", avatar: true },
-  { label: "Blog", href: "/blog", icon: Newspaper },
+  { label: "Blog", href: "/blog", icon: faNewspaper },
 ];
 
 const SOCIAL_LINKS = [
   {
     label: "Email",
     href: `mailto:${person.email}`,
-    lucideIcon: Mail,
+    faIcon: faEnvelope,
     bg: "#525252",
   },
   {
@@ -48,7 +49,7 @@ const SOCIAL_LINKS = [
   {
     label: "GitHub",
     href: person.links.github,
-    lucideIcon: Github,
+    faIcon: faGithub,
     bg: "#181717",
   },
   {
@@ -60,7 +61,7 @@ const SOCIAL_LINKS = [
   {
     label: "YouTube",
     href: person.links.youtube,
-    lucideIcon: Youtube,
+    faIcon: faYoutube,
     bg: "#FF0000",
   },
   {
@@ -111,9 +112,9 @@ function ProfileDockIcon({
           : "text-foreground/60 hover:text-foreground"
       }`}
     >
-      <Share2
+      <FontAwesomeIcon
+        icon={faShareNodes}
         className="h-[45%] w-[45%]"
-        strokeWidth={2.25}
         aria-hidden="true"
       />
     </button>
@@ -123,14 +124,14 @@ function ProfileDockIcon({
 function SocialLinkButton({
   href,
   label,
-  lucideIcon: LucideIcon,
+  faIcon,
   imageSrc,
   bg,
   light,
 }: {
   href: string;
   label: string;
-  lucideIcon?: typeof Mail;
+  faIcon?: IconDefinition;
   imageSrc?: string;
   bg: string;
   light?: boolean;
@@ -144,8 +145,8 @@ function SocialLinkButton({
       style={{ background: bg }}
       className="focus-ring inline-flex h-10 w-10 items-center justify-center rounded-full text-white shadow-sm transition-transform hover:scale-110"
     >
-      {LucideIcon ? (
-        <LucideIcon className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+      {faIcon ? (
+        <FontAwesomeIcon icon={faIcon} className="h-4 w-4" aria-hidden="true" />
       ) : imageSrc ? (
         <Image
           src={imageSrc}
@@ -280,9 +281,9 @@ export function Nav(): ReactNode {
                 />
               </div>
             ) : currentNavItem.icon ? (
-              <currentNavItem.icon
+              <FontAwesomeIcon
+                icon={currentNavItem.icon}
                 className="text-foreground h-4 w-4"
-                strokeWidth={2.25}
                 aria-hidden="true"
               />
             ) : null}
@@ -339,9 +340,9 @@ export function Nav(): ReactNode {
                             />
                           </div>
                         ) : Icon ? (
-                          <Icon
+                          <FontAwesomeIcon
+                            icon={Icon}
                             className="h-[45%] w-[45%]"
-                            strokeWidth={2.25}
                             aria-hidden="true"
                           />
                         ) : null}

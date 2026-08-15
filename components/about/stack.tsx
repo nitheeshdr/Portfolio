@@ -1,6 +1,7 @@
 "use client";
 
-import { RotateCcw, Wrench } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRotateLeft, faWrench } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 type Chip = {
@@ -323,9 +324,9 @@ export function Stack(): ReactNode {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-2">
-        <Wrench
+        <FontAwesomeIcon
+          icon={faWrench}
           className="h-3.5 w-3.5 text-foreground/45"
-          strokeWidth={2.25}
           aria-hidden="true"
         />
         <h3 className="text-foreground text-[15px] font-semibold tracking-tight">
@@ -340,9 +341,9 @@ export function Stack(): ReactNode {
           aria-label="Reset stack"
           className="focus-ring border-foreground/8 bg-background text-foreground/70 hover:text-foreground absolute top-3 right-3 z-20 inline-flex h-9 w-9 items-center justify-center rounded-xl border transition-colors"
         >
-          <RotateCcw
+          <FontAwesomeIcon
+            icon={faArrowRotateLeft}
             className="h-4 w-4"
-            strokeWidth={2.25}
             aria-hidden="true"
           />
         </button>

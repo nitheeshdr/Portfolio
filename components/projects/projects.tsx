@@ -1,6 +1,13 @@
 "use client";
 
-import { ArrowRight, ArrowUpRight, Github, Palette, Smartphone } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowRight,
+  faArrowUpRightFromSquare,
+  faMobileScreen,
+  faPalette,
+} from "@fortawesome/free-solid-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { useState, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -85,7 +92,8 @@ export function Projects({
               className="border border-foreground/8 focus-ring group inline-flex cursor-pointer items-center gap-2 rounded-xl bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-foreground/5"
             >
               View all projects
-              <ArrowRight
+              <FontAwesomeIcon
+                icon={faArrowRight}
                 className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5"
                 aria-hidden="true"
               />
@@ -185,7 +193,7 @@ function ProjectCard({
                 aria-label={`${project.name} on GitHub`}
                 className="focus-ring border-foreground/10 text-foreground/70 hover:text-foreground inline-flex h-8 w-8 items-center justify-center rounded-lg border bg-background transition-colors"
               >
-                <Github className="h-3.5 w-3.5" aria-hidden="true" />
+                <FontAwesomeIcon icon={faGithub} className="h-3.5 w-3.5" aria-hidden="true" />
               </Link>
             ) : null}
             {project.playStoreUrl ? (
@@ -196,7 +204,7 @@ function ProjectCard({
                 aria-label={`${project.name} on Google Play`}
                 className="focus-ring border-foreground/10 text-foreground/70 hover:text-foreground inline-flex h-8 w-8 items-center justify-center rounded-lg border bg-background transition-colors"
               >
-                <Smartphone className="h-3.5 w-3.5" aria-hidden="true" />
+                <FontAwesomeIcon icon={faMobileScreen} className="h-3.5 w-3.5" aria-hidden="true" />
               </Link>
             ) : null}
             {project.liveUrl ? (
@@ -207,7 +215,7 @@ function ProjectCard({
                 aria-label={`Open ${project.name}`}
                 className="focus-ring border-foreground/10 text-foreground/70 hover:text-foreground inline-flex h-8 w-8 items-center justify-center rounded-lg border bg-background transition-colors"
               >
-                <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="h-3.5 w-3.5" aria-hidden="true" />
               </Link>
             ) : null}
             {project.dribbbleUrl ? (
@@ -218,7 +226,7 @@ function ProjectCard({
                 aria-label={`${project.name} on Dribbble`}
                 className="focus-ring border-foreground/10 text-foreground/70 hover:text-foreground inline-flex h-8 w-8 items-center justify-center rounded-lg border bg-background transition-colors"
               >
-                <Palette className="h-3.5 w-3.5" aria-hidden="true" />
+                <FontAwesomeIcon icon={faPalette} className="h-3.5 w-3.5" aria-hidden="true" />
               </Link>
             ) : null}
           </div>

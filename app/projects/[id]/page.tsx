@@ -1,4 +1,11 @@
-import { ArrowLeft, ArrowUpRight, Github, Palette, Smartphone } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowLeft,
+  faArrowUpRightFromSquare,
+  faMobileScreen,
+  faPalette,
+} from "@fortawesome/free-solid-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -91,7 +98,8 @@ export default async function ProjectDetailPage({
             href="/projects"
             className="focus-ring text-foreground/60 hover:text-foreground group mb-8 inline-flex items-center gap-1.5 text-sm font-medium tracking-tight transition-colors"
           >
-            <ArrowLeft
+            <FontAwesomeIcon
+              icon={faArrowLeft}
               className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5"
               aria-hidden="true"
             />
@@ -121,7 +129,7 @@ export default async function ProjectDetailPage({
                   rel="noopener noreferrer"
                   className="focus-ring border-foreground/8 group inline-flex cursor-pointer items-center gap-2 rounded-xl border bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-foreground/5"
                 >
-                  <Github className="h-4 w-4" aria-hidden="true" />
+                  <FontAwesomeIcon icon={faGithub} className="h-4 w-4" aria-hidden="true" />
                   View code
                 </Link>
               ) : null}
@@ -132,7 +140,7 @@ export default async function ProjectDetailPage({
                   rel="noopener noreferrer"
                   className="focus-ring border-foreground/8 group inline-flex cursor-pointer items-center gap-2 rounded-xl border bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-foreground/5"
                 >
-                  <Smartphone className="h-4 w-4" aria-hidden="true" />
+                  <FontAwesomeIcon icon={faMobileScreen} className="h-4 w-4" aria-hidden="true" />
                   Get it on Google Play
                 </Link>
               ) : null}
@@ -144,7 +152,8 @@ export default async function ProjectDetailPage({
                   className="focus-ring group inline-flex cursor-pointer items-center gap-2 rounded-xl bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors"
                 >
                   Visit site
-                  <ArrowUpRight
+                  <FontAwesomeIcon
+                    icon={faArrowUpRightFromSquare}
                     className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                     aria-hidden="true"
                   />
@@ -157,7 +166,7 @@ export default async function ProjectDetailPage({
                   rel="noopener noreferrer"
                   className="focus-ring group inline-flex cursor-pointer items-center gap-2 rounded-xl bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors"
                 >
-                  <Palette className="h-4 w-4" aria-hidden="true" />
+                  <FontAwesomeIcon icon={faPalette} className="h-4 w-4" aria-hidden="true" />
                   View on Dribbble
                 </Link>
               ) : null}

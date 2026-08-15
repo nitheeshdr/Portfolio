@@ -1,4 +1,5 @@
-import { FolderKanban, Newspaper } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFolderTree, faNewspaper } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { getAllPosts } from "@/lib/blog";
@@ -25,7 +26,7 @@ export default async function AdminDashboardPage(): Promise<ReactNode> {
           className="border-foreground/10 hover:bg-foreground/2 dark:hover:bg-foreground/5 focus-ring flex flex-col gap-3 rounded-3xl border p-6 transition-colors"
         >
           <span className="bg-foreground/10 text-foreground inline-flex h-10 w-10 items-center justify-center rounded-full">
-            <Newspaper className="h-4.5 w-4.5" aria-hidden="true" />
+            <FontAwesomeIcon icon={faNewspaper} className="h-4.5 w-4.5" aria-hidden="true" />
           </span>
           <span className="text-foreground text-[15px] font-semibold tracking-tight">
             Blog posts
@@ -40,7 +41,7 @@ export default async function AdminDashboardPage(): Promise<ReactNode> {
           className="border-foreground/10 hover:bg-foreground/2 dark:hover:bg-foreground/5 focus-ring flex flex-col gap-3 rounded-3xl border p-6 transition-colors"
         >
           <span className="bg-foreground/10 text-foreground inline-flex h-10 w-10 items-center justify-center rounded-full">
-            <FolderKanban className="h-4.5 w-4.5" aria-hidden="true" />
+            <FontAwesomeIcon icon={faFolderTree} className="h-4.5 w-4.5" aria-hidden="true" />
           </span>
           <span className="text-foreground text-[15px] font-semibold tracking-tight">
             Projects

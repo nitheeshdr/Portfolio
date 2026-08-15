@@ -1,7 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { Mail } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import type { ReactNode } from "react";
 
@@ -43,7 +44,7 @@ export function ContactButton(): ReactNode {
               transition={{ duration: 0.35, ease: EASE }}
               className="inline-flex items-center gap-2 whitespace-nowrap"
             >
-              <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
+              <FontAwesomeIcon icon={faEnvelope} className="h-4 w-4 shrink-0" aria-hidden="true" />
               <span className="tabular-nums">{EMAIL}</span>
             </motion.span>
           ) : (
@@ -56,7 +57,7 @@ export function ContactButton(): ReactNode {
               transition={{ duration: 0.35, ease: EASE }}
               className="inline-flex items-center gap-2 whitespace-nowrap"
             >
-              <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
+              <FontAwesomeIcon icon={faEnvelope} className="h-4 w-4 shrink-0" aria-hidden="true" />
               <span>Contact</span>
             </motion.span>
           )}

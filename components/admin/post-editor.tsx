@@ -1,6 +1,7 @@
 "use client";
 
-import { ImagePlus, Loader2 } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImage, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent, type ReactNode } from "react";
@@ -170,12 +171,12 @@ export function PostEditor({ post }: { post?: BlogPost }): ReactNode {
             <label className="border-foreground/15 hover:bg-foreground/2 dark:hover:bg-foreground/5 focus-ring flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed px-3.5 py-3 text-[13px] font-medium tracking-tight text-foreground/70 transition-colors">
               {uploading ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                  <FontAwesomeIcon icon={faSpinner} className="h-4 w-4 animate-spin" aria-hidden="true" />
                   Uploading...
                 </>
               ) : (
                 <>
-                  <ImagePlus className="h-4 w-4" aria-hidden="true" />
+                  <FontAwesomeIcon icon={faImage} className="h-4 w-4" aria-hidden="true" />
                   {coverImage ? "Replace image" : "Upload image"}
                 </>
               )}

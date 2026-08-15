@@ -1,6 +1,7 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useState, type ReactNode } from "react";
@@ -129,7 +130,7 @@ export function Experience(): ReactNode {
               transition={{ duration: 0.25 }}
               className="inline-flex"
             >
-              <ChevronDown className="h-4 w-4" aria-hidden="true" />
+              <FontAwesomeIcon icon={faChevronDown} className="h-4 w-4" aria-hidden="true" />
             </motion.span>
           </button>
         )}

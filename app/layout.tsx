@@ -1,3 +1,5 @@
+import { config as faConfig } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
 import { Providers } from "@/components/layout/providers";
 import { SiteChrome } from "@/components/layout/site-chrome";
 import { SkipToContent } from "@/components/layout/skip-to-content";
@@ -13,6 +15,10 @@ import type { Metadata, Viewport } from "next";
 import { Fraunces, Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import "./globals.css";
+
+// Import the CSS ourselves (above) instead of relying on FontAwesome's
+// runtime <style> injection — avoids a flash of oversized icons on load.
+faConfig.autoAddCss = false;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

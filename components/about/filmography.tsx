@@ -1,4 +1,5 @@
-import { Clapperboard, ExternalLink } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClapperboard, faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -24,15 +25,16 @@ export function Filmography(): ReactNode {
               aria-hidden="true"
               style={{ borderRadius: 14 }}
             >
-              <Clapperboard
+              <FontAwesomeIcon
+                icon={faClapperboard}
                 className="h-5 w-5 text-foreground/60"
-                strokeWidth={2}
               />
             </span>
             <div className="flex min-w-0 flex-1 flex-col gap-1">
               <span className="text-foreground inline-flex items-center gap-1.5 text-[17px] font-semibold tracking-tight sm:text-[18px]">
                 {film.title}
-                <ExternalLink
+                <FontAwesomeIcon
+                  icon={faArrowUpRightFromSquare}
                   className="h-3.5 w-3.5 text-foreground/35 transition-colors group-hover:text-foreground/60"
                   aria-hidden="true"
                 />

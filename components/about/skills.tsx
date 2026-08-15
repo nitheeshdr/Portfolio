@@ -1,27 +1,28 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
-  BrainCircuit,
-  Cloud,
-  Code2,
-  Database,
-  MonitorSmartphone,
-  Server,
-  ShieldCheck,
-  Wrench,
-  type LucideIcon,
-} from "lucide-react";
+  faBrain,
+  faCloud,
+  faCode,
+  faDatabase,
+  faLaptopCode,
+  faServer,
+  faShieldHalved,
+  faWrench,
+} from "@fortawesome/free-solid-svg-icons";
 import type { ReactNode } from "react";
 
 import { person } from "@/lib/person";
 
-const GROUP_ICONS: Record<string, LucideIcon> = {
-  Languages: Code2,
-  Frontend: MonitorSmartphone,
-  Backend: Server,
-  Data: Database,
-  "AI & LLMs": BrainCircuit,
-  "Cloud & DevOps": Cloud,
-  Security: ShieldCheck,
-  "Tools & Platforms": Wrench,
+const GROUP_ICONS: Record<string, IconDefinition> = {
+  Languages: faCode,
+  Frontend: faLaptopCode,
+  Backend: faServer,
+  Data: faDatabase,
+  "AI & LLMs": faBrain,
+  "Cloud & DevOps": faCloud,
+  Security: faShieldHalved,
+  "Tools & Platforms": faWrench,
 };
 
 export function Skills(): ReactNode {
@@ -32,13 +33,13 @@ export function Skills(): ReactNode {
       </h3>
       <div className="flex flex-col gap-4 rounded-4xl border border-foreground/5 bg-foreground/2 p-4 sm:gap-5 sm:p-5 dark:bg-foreground/5">
         {person.skillGroups.map((group) => {
-          const Icon = GROUP_ICONS[group.label] ?? Code2;
+          const Icon = GROUP_ICONS[group.label] ?? faCode;
           return (
             <div key={group.label} className="flex flex-col gap-2.5">
               <div className="flex items-center gap-2 px-1">
-                <Icon
+                <FontAwesomeIcon
+                  icon={Icon}
                   className="h-3.5 w-3.5 text-foreground/45"
-                  strokeWidth={2.25}
                   aria-hidden="true"
                 />
                 <span className="text-[13px] font-medium tracking-tight text-foreground/55 uppercase">
