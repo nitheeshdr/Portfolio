@@ -107,6 +107,8 @@ export function LoveLetterEditor({
 
       <p className="text-foreground/40 text-[12px] tracking-tight">
         Shown one at a time, in this order, in a handwriting font when she opens the envelope.
+        Wrap a word in <code className="text-foreground/60">**double asterisks**</code> to hide
+        it behind a secret cipher until she hovers or taps it.
       </p>
 
       {error ? <p className="text-[13px] tracking-tight text-red-500">{error}</p> : null}

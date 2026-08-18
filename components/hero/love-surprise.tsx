@@ -10,8 +10,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { LetterText } from "./letter-text";
+import type { PublicLetterSegment } from "@/lib/love-letter";
 
-const TRIGGER = "love";
+const TRIGGER = (process.env.NEXT_PUBLIC_LOVE_TRIGGER ?? "love").toLowerCase();
 const HEART_COUNT = 26;
 const HEARTS_DURATION_MS = 2600;
 const ENVELOPE_OPEN_TO_LETTER_MS = 900;
@@ -38,7 +40,7 @@ function generateHearts(): FallingHeart[] {
   }));
 }
 
-export function LoveSurprise({ letters }: { letters: string[] }): ReactNode {
+export function LoveSurprise({ letters }: { letters: PublicLetterSegment[][] }): ReactNode {
   const [stage, setStage] = useState<Stage | null>(null);
   const [envelopeOpen, setEnvelopeOpen] = useState(false);
   const [letterIndex, setLetterIndex] = useState(0);
@@ -265,7 +267,7 @@ export function LoveSurprise({ letters }: { letters: string[] }): ReactNode {
                         transition={{ duration: 0.25 }}
                         className="font-handwriting text-[1.65rem] leading-[1.35] font-medium whitespace-pre-wrap text-neutral-800 sm:text-[1.85rem]"
                       >
-                        {letters[letterIndex]}
+                        <LetterText segments={letters[letterIndex]!} letterIndex={letterIndex} />
                       </motion.p>
                     </AnimatePresence>
                   </div>

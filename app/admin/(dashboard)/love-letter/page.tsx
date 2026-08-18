@@ -12,7 +12,9 @@ export default async function AdminLoveLetterPage(): Promise<ReactNode> {
           Love letters
         </h1>
         <p className="text-foreground/60 mt-1 text-[14px] tracking-tight">
-          Shown on the home page when someone types &ldquo;love&rdquo; on the keyboard and opens the envelope.
+          Shown on the home page when someone types the secret trigger word on the keyboard and
+          opens the envelope. The trigger word lives in the <code>NEXT_PUBLIC_LOVE_TRIGGER</code>{" "}
+          env var, not here, so it isn&rsquo;t sitting in this page&rsquo;s source.
         </p>
       </div>
       <LoveLetterEditor initialLetters={letters} />

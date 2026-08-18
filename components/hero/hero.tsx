@@ -8,8 +8,9 @@ import { HeroCtas } from "./hero-ctas";
 import { LoveSurprise } from "./love-surprise";
 import { PolaroidFlashcards, type Polaroid } from "@/components/about/polaroid-strip";
 import { FadeIn, ScaleUnblur } from "@/components/ui/motion-primitives";
+import type { PublicLetterSegment } from "@/lib/love-letter";
 
-export function Hero({ letters }: { letters: string[] }): ReactNode {
+export function Hero({ letters }: { letters: PublicLetterSegment[][] }): ReactNode {
   const [ambient, setAmbient] = useState<Polaroid | null>(null);
 
   return (
