@@ -64,6 +64,15 @@ export function LoveSurprise({ letters }: { letters: string[] }): ReactNode {
   }, [stage]);
 
   useEffect(() => {
+    if (!stage) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [stage]);
+
+  useEffect(() => {
     if (stage !== "hearts") return;
     const timer = window.setTimeout(() => setStage("envelope"), HEARTS_DURATION_MS);
     return () => window.clearTimeout(timer);
@@ -86,6 +95,7 @@ export function LoveSurprise({ letters }: { letters: string[] }): ReactNode {
     <AnimatePresence>
       {stage ? (
         <motion.div
+          data-lenis-prevent
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -240,7 +250,7 @@ export function LoveSurprise({ letters }: { letters: string[] }): ReactNode {
                     </>
                   ) : null}
 
-                  <div className="overflow-y-auto px-8 py-10 sm:px-14 sm:py-12">
+                  <div data-lenis-prevent className="min-h-0 overflow-y-auto px-8 py-10 sm:px-14 sm:py-12">
                     <div className="mb-4 flex items-center gap-2 text-red-500">
                       <FontAwesomeIcon icon={faHeartSolid} className="h-5 w-5" aria-hidden="true" />
                       <FontAwesomeIcon icon={faHeartSolid} className="h-5 w-5" aria-hidden="true" />
@@ -262,19 +272,24 @@ export function LoveSurprise({ letters }: { letters: string[] }): ReactNode {
                 </div>
 
                 {hasMultiple ? (
-                  <div className="flex items-center gap-2">
-                    {letters.map((_, i) => (
-                      <button
-                        key={i}
-                        type="button"
-                        onClick={() => setLetterIndex(i)}
-                        aria-label={`Go to letter ${i + 1}`}
-                        aria-current={i === letterIndex ? "true" : undefined}
-                        className={`h-2 cursor-pointer rounded-full transition-all ${
-                          i === letterIndex ? "w-6 bg-white" : "w-2 bg-white/40"
-                        }`}
-                      />
-                    ))}
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="flex items-center gap-2">
+                      {letters.map((_, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => setLetterIndex(i)}
+                          aria-label={`Go to letter ${i + 1}`}
+                          aria-current={i === letterIndex ? "true" : undefined}
+                          className={`h-2 cursor-pointer rounded-full transition-all ${
+                            i === letterIndex ? "w-6 bg-white" : "w-2 bg-white/40"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-[12px] tracking-tight text-white/50">
+                      {letterIndex + 1} / {letters.length}
+                    </span>
                   </div>
                 ) : null}
               </motion.div>
