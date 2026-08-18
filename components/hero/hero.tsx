@@ -5,14 +5,16 @@ import Image from "next/image";
 import { useState, type ReactNode } from "react";
 
 import { HeroCtas } from "./hero-ctas";
+import { LoveSurprise } from "./love-surprise";
 import { PolaroidFlashcards, type Polaroid } from "@/components/about/polaroid-strip";
 import { FadeIn, ScaleUnblur } from "@/components/ui/motion-primitives";
 
-export function Hero(): ReactNode {
+export function Hero({ letters }: { letters: string[] }): ReactNode {
   const [ambient, setAmbient] = useState<Polaroid | null>(null);
 
   return (
     <section className="relative w-full">
+      <LoveSurprise letters={letters} />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"

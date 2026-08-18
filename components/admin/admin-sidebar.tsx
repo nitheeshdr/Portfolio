@@ -6,6 +6,7 @@ import {
   faTableCellsLarge,
   faRightFromBracket,
   faNewspaper,
+  faHeart,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -15,6 +16,7 @@ const LINKS = [
   { label: "Dashboard", href: "/admin", icon: faTableCellsLarge },
   { label: "Blog", href: "/admin/blog", icon: faNewspaper },
   { label: "Projects", href: "/admin/projects", icon: faFolderTree },
+  { label: "Love letter", href: "/admin/love-letter", icon: faHeart },
 ] as const;
 
 export function AdminSidebar(): ReactNode {
