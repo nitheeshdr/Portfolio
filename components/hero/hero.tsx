@@ -6,16 +6,25 @@ import { useState, type ReactNode } from "react";
 
 import { HeroCtas } from "./hero-ctas";
 import { LoveSurprise } from "./love-surprise";
-import { PolaroidFlashcards, type Polaroid } from "@/components/about/polaroid-strip";
+import {
+  PolaroidFlashcards,
+  type Polaroid,
+} from "@/components/about/polaroid-strip";
 import { FadeIn, ScaleUnblur } from "@/components/ui/motion-primitives";
 import type { PublicLetterSegment } from "@/lib/love-letter";
 
-export function Hero({ letters }: { letters: PublicLetterSegment[][] }): ReactNode {
+export function Hero({
+  letters,
+  envelopeEnabled,
+}: {
+  letters: PublicLetterSegment[][];
+  envelopeEnabled: boolean;
+}): ReactNode {
   const [ambient, setAmbient] = useState<Polaroid | null>(null);
 
   return (
     <section className="relative w-full">
-      <LoveSurprise letters={letters} />
+      <LoveSurprise letters={letters} envelopeEnabled={envelopeEnabled} />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
@@ -40,13 +49,13 @@ export function Hero({ letters }: { letters: PublicLetterSegment[][] }): ReactNo
             </motion.div>
           ) : null}
         </AnimatePresence>
-        <div className="absolute inset-0 bg-gradient-to-b from-background/10 via-background/40 to-background" />
+        <div className="from-background/10 via-background/40 to-background absolute inset-0 bg-gradient-to-b" />
       </div>
 
       <div className="mx-auto w-full max-w-275 px-6 pt-6 pb-4 sm:px-10 sm:pt-8 sm:pb-6 md:pt-20">
         <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-8">
           <FadeIn className="flex flex-col gap-4">
-            <p className="text-[20px] leading-tight tracking-tight font-medium text-foreground">
+            <p className="text-foreground text-[20px] leading-tight font-medium tracking-tight">
               Hey
               <span aria-hidden="true" className="mx-0.5">
                 👋
@@ -54,14 +63,16 @@ export function Hero({ letters }: { letters: PublicLetterSegment[][] }): ReactNo
               , I&rsquo;m Nitheesh Rajendran
             </p>
 
-            <h1 className="text-[2.1rem] font-medium leading-[1.1] tracking-tight text-foreground sm:text-[2.75rem] sm:leading-[1.05] md:text-[2.5rem] lg:text-[3.65rem]">
+            <h1 className="text-foreground text-[2.1rem] leading-[1.1] font-medium tracking-tight sm:text-[2.75rem] sm:leading-[1.05] md:text-[2.5rem] lg:text-[3.65rem]">
               <span className="block sm:whitespace-nowrap">
                 Full-stack engineer &
               </span>
-              <span className="block sm:whitespace-nowrap">AI product builder</span>
+              <span className="block sm:whitespace-nowrap">
+                AI product builder
+              </span>
             </h1>
 
-            <p className="max-w-[36ch] text-[22px] leading-[1.4] tracking-tight text-foreground/65">
+            <p className="text-foreground/65 max-w-[36ch] text-[22px] leading-[1.4] tracking-tight">
               Founder &amp; CEO of Setups Works, building AI-powered SaaS
               platforms and production software end to end.
             </p>

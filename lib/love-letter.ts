@@ -1,5 +1,9 @@
 import { getDb } from "@/lib/mongodb";
-import { encodeSecret, parseSecretSegments, type LetterSegment } from "@/lib/secret-cipher";
+import {
+  encodeSecret,
+  parseSecretSegments,
+  type LetterSegment,
+} from "@/lib/secret-cipher";
 
 const COLLECTION = "love_letter";
 const DOC_ID = "singleton";
@@ -20,12 +24,14 @@ Nitheesh`,
 
 export type LoveLetters = {
   letters: string[];
+  envelopeEnabled: boolean;
   updatedAt: string;
 };
 
 type LoveLetterDoc = {
   _id: string;
   letters: string[];
+  envelopeEnabled?: boolean;
   updatedAt: Date;
 };
 
@@ -38,20 +44,31 @@ export async function getLoveLetters(): Promise<LoveLetters> {
   const collection = await getCollection();
   const doc = await collection.findOne({ _id: DOC_ID });
   if (!doc || !doc.letters.length) {
-    return { letters: DEFAULT_LETTERS, updatedAt: new Date(0).toISOString() };
+    return {
+      letters: DEFAULT_LETTERS,
+      envelopeEnabled: true,
+      updatedAt: new Date(0).toISOString(),
+    };
   }
-  return { letters: doc.letters, updatedAt: doc.updatedAt.toISOString() };
+  return {
+    letters: doc.letters,
+    envelopeEnabled: doc.envelopeEnabled ?? true,
+    updatedAt: doc.updatedAt.toISOString(),
+  };
 }
 
-export async function updateLoveLetters(letters: string[]): Promise<LoveLetters> {
+export async function updateLoveLetters(
+  letters: string[],
+  envelopeEnabled: boolean
+): Promise<LoveLetters> {
   const collection = await getCollection();
   const updatedAt = new Date();
   await collection.updateOne(
     { _id: DOC_ID },
-    { $set: { letters, updatedAt } },
+    { $set: { letters, envelopeEnabled, updatedAt } },
     { upsert: true }
   );
-  return { letters, updatedAt: updatedAt.toISOString() };
+  return { letters, envelopeEnabled, updatedAt: updatedAt.toISOString() };
 }
 
 /** Public segment shape sent to the client: secret words are replaced with their
@@ -61,16 +78,24 @@ export type PublicLetterSegment =
   | { type: "text"; value: string }
   | { type: "secret"; display: string };
 
-export async function getPublicLoveLetters(): Promise<PublicLetterSegment[][]> {
-  const { letters } = await getLoveLetters();
-  return letters.map((letter) =>
-    parseSecretSegments(letter).map(
-      (segment): PublicLetterSegment =>
-        segment.type === "secret"
-          ? { type: "secret", display: encodeSecret(segment.value) }
-          : { type: "text", value: segment.value }
-    )
-  );
+export type PublicLoveLetters = {
+  letters: PublicLetterSegment[][];
+  envelopeEnabled: boolean;
+};
+
+export async function getPublicLoveLetters(): Promise<PublicLoveLetters> {
+  const { letters, envelopeEnabled } = await getLoveLetters();
+  return {
+    envelopeEnabled,
+    letters: letters.map((letter) =>
+      parseSecretSegments(letter).map(
+        (segment): PublicLetterSegment =>
+          segment.type === "secret"
+            ? { type: "secret", display: encodeSecret(segment.value) }
+            : { type: "text", value: segment.value }
+      )
+    ),
+  };
 }
 
 /** Looks up the plaintext for one secret segment, server-side only. */

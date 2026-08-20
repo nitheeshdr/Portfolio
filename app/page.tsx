@@ -18,12 +18,18 @@ export const metadata: Metadata = createMetadata({
 });
 
 export default async function HomePage(): Promise<ReactNode> {
-  const [projects, letters] = await Promise.all([getAllProjects(), getPublicLoveLetters()]);
+  const [projects, loveLetters] = await Promise.all([
+    getAllProjects(),
+    getPublicLoveLetters(),
+  ]);
 
   return (
     <main id="main-content" className="flex flex-1 flex-col gap-10 sm:gap-14">
       <JsonLd items={[profilePageSchema("/")]} />
-      <Hero letters={letters} />
+      <Hero
+        letters={loveLetters.letters}
+        envelopeEnabled={loveLetters.envelopeEnabled}
+      />
       <AboutTeaser />
       <Projects projects={projects} withHeadline viewMoreVisible />
       <section className="mx-auto w-full max-w-275 px-6 sm:px-10">

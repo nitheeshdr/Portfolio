@@ -40,7 +40,13 @@ function generateHearts(): FallingHeart[] {
   }));
 }
 
-export function LoveSurprise({ letters }: { letters: PublicLetterSegment[][] }): ReactNode {
+export function LoveSurprise({
+  letters,
+  envelopeEnabled,
+}: {
+  letters: PublicLetterSegment[][];
+  envelopeEnabled: boolean;
+}): ReactNode {
   const [stage, setStage] = useState<Stage | null>(null);
   const [envelopeOpen, setEnvelopeOpen] = useState(false);
   const [letterIndex, setLetterIndex] = useState(0);
@@ -76,9 +82,12 @@ export function LoveSurprise({ letters }: { letters: PublicLetterSegment[][] }):
 
   useEffect(() => {
     if (stage !== "hearts") return;
-    const timer = window.setTimeout(() => setStage("envelope"), HEARTS_DURATION_MS);
+    const timer = window.setTimeout(
+      () => setStage(envelopeEnabled ? "envelope" : "letter"),
+      HEARTS_DURATION_MS
+    );
     return () => window.clearTimeout(timer);
-  }, [stage]);
+  }, [stage, envelopeEnabled]);
 
   const openEnvelope = (): void => {
     setEnvelopeOpen(true);
@@ -103,12 +112,16 @@ export function LoveSurprise({ letters }: { letters: PublicLetterSegment[][] }):
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4 }}
           onClick={() => {
-            if (stage === "hearts") setStage("envelope");
+            if (stage === "hearts")
+              setStage(envelopeEnabled ? "envelope" : "letter");
             else if (stage === "letter") close();
           }}
           className="fixed inset-0 z-[200] flex cursor-pointer items-center justify-center overflow-hidden bg-black/75 backdrop-blur-sm"
         >
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0"
+          >
             {hearts.map((h) => (
               <motion.span
                 key={h.id}
@@ -147,14 +160,18 @@ export function LoveSurprise({ letters }: { letters: PublicLetterSegment[][] }):
               >
                 <motion.div
                   animate={{ scale: [1, 1.15, 1] }}
-                  transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
+                  transition={{
+                    duration: 1.1,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
                 >
                   <FontAwesomeIcon
                     icon={faHeartOutline}
                     className="h-24 w-24 text-white drop-shadow-[0_0_20px_rgba(244,63,94,0.6)] sm:h-32 sm:w-32"
                   />
                 </motion.div>
-                <p className="font-serif flex flex-wrap items-center justify-center gap-3 text-[1.75rem] font-medium tracking-tight text-white sm:text-[2.5rem]">
+                <p className="flex flex-wrap items-center justify-center gap-3 font-serif text-[1.75rem] font-medium tracking-tight text-white sm:text-[2.5rem]">
                   I love you Prakalyaaaa
                   <FontAwesomeIcon
                     icon={faHeartSolid}
@@ -184,10 +201,21 @@ export function LoveSurprise({ letters }: { letters: PublicLetterSegment[][] }):
                   I love you Prakalyaaaa
                 </p>
 
-                <div className={`love-envelope ${envelopeOpen ? "is-open" : ""}`}>
-                  <div className="love-envelope-fold love-envelope-fold--left" aria-hidden="true" />
-                  <div className="love-envelope-fold love-envelope-fold--right" aria-hidden="true" />
-                  <div className="love-envelope-fold love-envelope-fold--bottom" aria-hidden="true" />
+                <div
+                  className={`love-envelope ${envelopeOpen ? "is-open" : ""}`}
+                >
+                  <div
+                    className="love-envelope-fold love-envelope-fold--left"
+                    aria-hidden="true"
+                  />
+                  <div
+                    className="love-envelope-fold love-envelope-fold--right"
+                    aria-hidden="true"
+                  />
+                  <div
+                    className="love-envelope-fold love-envelope-fold--bottom"
+                    aria-hidden="true"
+                  />
                   <div className="love-envelope-body" aria-hidden="true" />
 
                   <motion.div
@@ -195,7 +223,11 @@ export function LoveSurprise({ letters }: { letters: PublicLetterSegment[][] }):
                     style={{ top: "20%" }}
                     initial={{ y: 6 }}
                     animate={envelopeOpen ? { y: -54 } : { y: 6 }}
-                    transition={{ duration: 0.7, delay: envelopeOpen ? 0.35 : 0, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{
+                      duration: 0.7,
+                      delay: envelopeOpen ? 0.35 : 0,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
                   />
 
                   <div className="love-envelope-flap" aria-hidden="true" />
@@ -228,35 +260,70 @@ export function LoveSurprise({ letters }: { letters: PublicLetterSegment[][] }):
                     aria-label="Close letter"
                     className="focus-ring absolute top-3 right-3 z-10 inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/10 text-black/50 transition-colors hover:bg-black/15 hover:text-black/70"
                   >
-                    <FontAwesomeIcon icon={faXmark} className="h-4 w-4" aria-hidden="true" />
+                    <FontAwesomeIcon
+                      icon={faXmark}
+                      className="h-4 w-4"
+                      aria-hidden="true"
+                    />
                   </button>
 
                   {hasMultiple ? (
                     <>
                       <button
                         type="button"
-                        onClick={() => setLetterIndex((i) => (i === 0 ? letters.length - 1 : i - 1))}
+                        onClick={() =>
+                          setLetterIndex((i) =>
+                            i === 0 ? letters.length - 1 : i - 1
+                          )
+                        }
                         aria-label="Previous letter"
                         className="focus-ring absolute top-1/2 left-2 z-10 inline-flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-black/10 text-black/50 transition-colors hover:bg-black/15 hover:text-black/70"
                       >
-                        <FontAwesomeIcon icon={faChevronLeft} className="h-4 w-4" aria-hidden="true" />
+                        <FontAwesomeIcon
+                          icon={faChevronLeft}
+                          className="h-4 w-4"
+                          aria-hidden="true"
+                        />
                       </button>
                       <button
                         type="button"
-                        onClick={() => setLetterIndex((i) => (i === letters.length - 1 ? 0 : i + 1))}
+                        onClick={() =>
+                          setLetterIndex((i) =>
+                            i === letters.length - 1 ? 0 : i + 1
+                          )
+                        }
                         aria-label="Next letter"
                         className="focus-ring absolute top-1/2 right-2 z-10 inline-flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-black/10 text-black/50 transition-colors hover:bg-black/15 hover:text-black/70"
                       >
-                        <FontAwesomeIcon icon={faChevronRight} className="h-4 w-4" aria-hidden="true" />
+                        <FontAwesomeIcon
+                          icon={faChevronRight}
+                          className="h-4 w-4"
+                          aria-hidden="true"
+                        />
                       </button>
                     </>
                   ) : null}
 
-                  <div data-lenis-prevent className="min-h-0 overflow-y-auto px-8 py-10 sm:px-14 sm:py-12">
+                  <div
+                    data-lenis-prevent
+                    className="min-h-0 overflow-y-auto px-8 py-10 sm:px-14 sm:py-12"
+                  >
                     <div className="mb-4 flex items-center gap-2 text-red-500">
-                      <FontAwesomeIcon icon={faHeartSolid} className="h-5 w-5" aria-hidden="true" />
-                      <FontAwesomeIcon icon={faHeartSolid} className="h-5 w-5" aria-hidden="true" />
-                      <FontAwesomeIcon icon={faHeartSolid} className="h-5 w-5" aria-hidden="true" />
+                      <FontAwesomeIcon
+                        icon={faHeartSolid}
+                        className="h-5 w-5"
+                        aria-hidden="true"
+                      />
+                      <FontAwesomeIcon
+                        icon={faHeartSolid}
+                        className="h-5 w-5"
+                        aria-hidden="true"
+                      />
+                      <FontAwesomeIcon
+                        icon={faHeartSolid}
+                        className="h-5 w-5"
+                        aria-hidden="true"
+                      />
                     </div>
                     <AnimatePresence mode="wait">
                       <motion.p
@@ -267,7 +334,10 @@ export function LoveSurprise({ letters }: { letters: PublicLetterSegment[][] }):
                         transition={{ duration: 0.25 }}
                         className="font-handwriting text-[1.65rem] leading-[1.35] font-medium whitespace-pre-wrap text-neutral-800 sm:text-[1.85rem]"
                       >
-                        <LetterText segments={letters[letterIndex]!} letterIndex={letterIndex} />
+                        <LetterText
+                          segments={letters[letterIndex]!}
+                          letterIndex={letterIndex}
+                        />
                       </motion.p>
                     </AnimatePresence>
                   </div>
@@ -284,7 +354,9 @@ export function LoveSurprise({ letters }: { letters: PublicLetterSegment[][] }):
                           aria-label={`Go to letter ${i + 1}`}
                           aria-current={i === letterIndex ? "true" : undefined}
                           className={`h-2 cursor-pointer rounded-full transition-all ${
-                            i === letterIndex ? "w-6 bg-white" : "w-2 bg-white/40"
+                            i === letterIndex
+                              ? "w-6 bg-white"
+                              : "w-2 bg-white/40"
                           }`}
                         />
                       ))}
