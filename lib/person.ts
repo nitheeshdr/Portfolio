@@ -164,6 +164,21 @@ export const person = {
     "Engineered and deployed 5+ production software platforms across web and mobile",
     "Conducted a responsible-disclosure security assessment of StartupTN (Government of Tamil Nadu) using OWASP methodology",
   ],
+  awards: [
+    {
+      title: "Letter of Recognition — Responsible Security Disclosure",
+      issuer: "StartupTN (Tamil Nadu Startup and Innovation Mission)",
+      issuerUrl: "https://www.startuptn.in",
+      issuerLogo:
+        "https://res.cloudinary.com/da9j5n4g4/image/upload/v1787574641/portfolio/yenit56mzz9z6imkiex0.jpg",
+      date: "August 2026",
+      dateISO: "2026-08-19",
+      description:
+        "Recognized by TANSIM for responsibly identifying, reporting, and verifying the remediation of security vulnerabilities on the StartupTN platform using OWASP methodology.",
+      image:
+        "https://res.cloudinary.com/da9j5n4g4/image/upload/v1787574976/portfolio/nzzd8yt9aotubr8zglbd.jpg",
+    },
+  ],
   languages: ["English", "Tamil"],
   filmography: [
     {

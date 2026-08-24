@@ -28,12 +28,6 @@ const ENTRIES: Entry[] = [
     period: "2026 – Present",
     logoSrc: "/brand/codeforge-ai-icon.svg",
   },
-  {
-    company: "StartupTN (Govt. of Tamil Nadu)",
-    role: "Independent Security Researcher",
-    period: "2026",
-    brand: "#0f766e",
-  },
 ];
 
 const COLLAPSED_COUNT = 2.5;
@@ -130,7 +124,11 @@ export function Experience(): ReactNode {
               transition={{ duration: 0.25 }}
               className="inline-flex"
             >
-              <FontAwesomeIcon icon={faChevronDown} className="h-4 w-4" aria-hidden="true" />
+              <FontAwesomeIcon
+                icon={faChevronDown}
+                className="h-4 w-4"
+                aria-hidden="true"
+              />
             </motion.span>
           </button>
         )}

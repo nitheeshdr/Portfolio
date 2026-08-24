@@ -1,6 +1,12 @@
 import type { ReactNode } from "react";
 import { person } from "@/lib/person";
+import { getRelatedAwards } from "@/lib/awards";
 import { siteConfig } from "@/lib/metadata";
+
+/** Resolves a root-relative path against the site origin; leaves an already-absolute URL (e.g. Cloudinary) untouched. */
+function resolveUrl(path: string): string {
+  return /^https?:\/\//.test(path) ? path : `${siteConfig.url}${path}`;
+}
 
 const PERSON_ID = `${siteConfig.url}/#person`;
 const ORG_ID = `${person.company.url}/#organization`;
@@ -75,18 +81,35 @@ export function personSchema() {
       url: person.education.url,
       sameAs: person.education.sameAs,
     },
-    hasCredential: {
-      "@type": "EducationalOccupationalCredential",
-      credentialCategory: "degree",
-      educationalLevel: "Bachelor's degree",
-      about: person.education.degree,
-      recognizedBy: {
-        "@type": "CollegeOrUniversity",
-        name: person.education.school,
-        url: person.education.url,
-        sameAs: person.education.sameAs,
+    hasCredential: [
+      {
+        "@type": "EducationalOccupationalCredential",
+        credentialCategory: "degree",
+        educationalLevel: "Bachelor's degree",
+        about: person.education.degree,
+        recognizedBy: {
+          "@type": "CollegeOrUniversity",
+          name: person.education.school,
+          url: person.education.url,
+          sameAs: person.education.sameAs,
+        },
       },
-    },
+      ...person.awards.map((a, i) => ({
+        "@type": "Certification" as const,
+        "@id": `${siteConfig.url}/about#award-${i}`,
+        name: a.title,
+        about: "Responsible security disclosure",
+        dateCreated: a.dateISO,
+        image: resolveUrl(a.image),
+        url: `${siteConfig.url}/about#awards`,
+        issuedBy: {
+          "@type": "GovernmentOrganization",
+          name: a.issuer,
+          url: a.issuerUrl,
+          logo: resolveUrl(a.issuerLogo),
+        },
+      })),
+    ],
     hasOccupation: {
       "@type": "Occupation",
       name: person.company.role,
@@ -101,6 +124,7 @@ export function personSchema() {
       name,
     })),
     knowsAbout: person.knowsAbout,
+    award: person.awards.map((a) => `${a.title} — ${a.issuer} (${a.date})`),
     email: `mailto:${person.email}`,
     /**
      * Family relationships — schema.org Person.parent / Person.sibling.
@@ -187,9 +211,7 @@ export function profilePageSchema(path: string) {
   };
 }
 
-export function breadcrumbSchema(
-  items: Array<{ name: string; path: string }>
-) {
+export function breadcrumbSchema(items: Array<{ name: string; path: string }>) {
   return {
     "@type": "BreadcrumbList",
     itemListElement: items.map((item, index) => ({
@@ -288,9 +310,7 @@ export function projectDetailSchema(project: ProjectDetailSchemaInput) {
       author: PROJECT_CREATORS,
       creator: PROJECT_CREATORS,
       publisher: { "@id": ORG_ID },
-      ...(project.image
-        ? { image: `${siteConfig.url}${project.image}` }
-        : {}),
+      ...(project.image ? { image: `${siteConfig.url}${project.image}` } : {}),
     };
 
     const webPage = {
@@ -322,10 +342,17 @@ export function projectDetailSchema(project: ProjectDetailSchemaInput) {
     creator: PROJECT_CREATORS,
     publisher: { "@id": ORG_ID },
     ...(project.codeRepository ? { isBasedOn: { "@id": sourceCodeId } } : {}),
-    ...(project.techStack?.length ? { keywords: project.techStack.join(", ") } : {}),
-    ...(project.features?.length ? { featureList: project.features.join(", ") } : {}),
+    ...(project.techStack?.length
+      ? { keywords: project.techStack.join(", ") }
+      : {}),
+    ...(project.features?.length
+      ? { featureList: project.features.join(", ") }
+      : {}),
     ...(project.image
-      ? { screenshot: `${siteConfig.url}${project.image}`, image: `${siteConfig.url}${project.image}` }
+      ? {
+          screenshot: `${siteConfig.url}${project.image}`,
+          image: `${siteConfig.url}${project.image}`,
+        }
       : {}),
   };
 
@@ -376,6 +403,13 @@ export function blogPostSchema(post: BlogPostSchemaInput) {
   const postId = `${pageUrl}#article`;
   const webPageId = `${pageUrl}#webpage`;
 
+  /**
+   * Cross-links this post to a Certification node from personSchema() when a
+   * tag matches that award's issuer — e.g. a post tagged "StartupTN" picks up
+   * the StartupTN recognition automatically, no per-post wiring needed.
+   */
+  const relatedAwards = getRelatedAwards(post.tags);
+
   const blogPosting = {
     "@type": "BlogPosting",
     "@id": postId,
@@ -395,7 +429,18 @@ export function blogPostSchema(post: BlogPostSchemaInput) {
       },
     },
     ...(post.coverImage ? { image: post.coverImage } : {}),
-    ...(post.tags.length ? { keywords: post.tags.join(", ") } : {}),
+    ...(post.tags.length
+      ? { keywords: post.tags, articleSection: post.tags[0] }
+      : {}),
+    ...(relatedAwards.length
+      ? {
+          award: relatedAwards.map(({ award }) => award.title),
+          mentions: relatedAwards.map(({ index }) => ({
+            "@id": `${siteConfig.url}/about#award-${index}`,
+          })),
+        }
+      : {}),
+    isPartOf: { "@id": `${siteConfig.url}/blog#blog` },
     mainEntityOfPage: { "@id": webPageId },
   };
 

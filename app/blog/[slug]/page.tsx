@@ -7,10 +7,16 @@ import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { CertificateCta } from "@/components/shared/certificate-cta";
 import { ContactCard } from "@/components/contact/contact-card";
 import { getPostBySlug, getPublishedPosts } from "@/lib/blog";
 import { createMetadata } from "@/lib/metadata";
-import { JsonLd, blogPostSchema, breadcrumbSchema } from "@/components/seo/json-ld";
+import { getRelatedAwards } from "@/lib/awards";
+import {
+  JsonLd,
+  blogPostSchema,
+  breadcrumbSchema,
+} from "@/components/seo/json-ld";
 import { FadeIn } from "@/components/ui/motion-primitives";
 
 type Params = { slug: string };
@@ -40,6 +46,8 @@ export default async function BlogPostPage({
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post || !post.published) notFound();
+
+  const relatedAwards = getRelatedAwards(post.tags);
 
   return (
     <main id="main-content" className="flex flex-1 flex-col">
@@ -88,7 +96,7 @@ export default async function BlogPostPage({
               })}
             </time>
           ) : null}
-          <h1 className="font-serif mt-3 text-[2.25rem] font-medium leading-[1.05] tracking-tight text-foreground sm:text-[3rem]">
+          <h1 className="text-foreground mt-3 font-serif text-[2.25rem] leading-[1.05] font-medium tracking-tight sm:text-[3rem]">
             {post.title}
           </h1>
         </FadeIn>
@@ -109,15 +117,30 @@ export default async function BlogPostPage({
         ) : null}
 
         <FadeIn delay={0.15} className="prose-content mt-10">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {post.content}
+          </ReactMarkdown>
         </FadeIn>
+
+        {relatedAwards.length ? (
+          <FadeIn delay={0.2} className="mt-8 flex flex-col gap-3">
+            {relatedAwards.map(({ award }) => (
+              <CertificateCta
+                key={award.title}
+                title={award.title}
+                letterImage={award.image}
+                label={`View the ${award.issuer.split(" (")[0]} letter`}
+              />
+            ))}
+          </FadeIn>
+        ) : null}
 
         {post.tags.length ? (
           <div className="mt-10 flex flex-wrap gap-2">
             {post.tags.map((tag) => (
               <span
                 key={tag}
-                className="border-foreground/8 bg-foreground/2 dark:bg-foreground/5 rounded-full border px-3.5 py-1.5 text-[13px] tracking-tight text-foreground/70"
+                className="border-foreground/8 bg-foreground/2 dark:bg-foreground/5 text-foreground/70 rounded-full border px-3.5 py-1.5 text-[13px] tracking-tight"
               >
                 {tag}
               </span>
