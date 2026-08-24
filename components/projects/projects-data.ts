@@ -5,11 +5,19 @@ export const PROJECT_CATEGORIES = [
 ] as const;
 export type ProjectCategory = (typeof PROJECT_CATEGORIES)[number];
 
+export type ProjectPullRequest = {
+  title: string;
+  url: string;
+  number: number;
+};
+
 export type Project = {
   id: string;
   name: string;
   iconLabel: string;
-  category: ProjectCategory;
+  /** "Open Source" is a live-generated GitHub category (see lib/open-source.ts) shown in its own
+   * separate section, not a filterable tab — so it's excluded from PROJECT_CATEGORIES. */
+  category: ProjectCategory | "Open Source";
   headline: string;
   description: string;
   meta: string;
@@ -30,6 +38,8 @@ export type Project = {
   /** Shown on the project detail page only. */
   techStack?: string[];
   features?: string[];
+  /** Merged PRs for an open-source contribution — rendered as hyperlinks on the detail page instead of plain feature bullets. */
+  pullRequests?: ProjectPullRequest[];
   /**
    * "design" pieces (Dribbble shots) get CreativeWork JSON-LD instead of
    * SoftwareApplication — they're visual design work, not shipped software.
@@ -171,7 +181,8 @@ export const PROJECTS: Project[] = [
     liveUrl: "https://setups.works",
     language: "TypeScript",
     image: "/projects/setups-works.png",
-    imageAlt: "Setups Works homepage — we design & build digital products that convert",
+    imageAlt:
+      "Setups Works homepage — we design & build digital products that convert",
     logo: "/brand/setups-works-mark.png",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
@@ -329,10 +340,12 @@ export const PROJECTS: Project[] = [
     description:
       "A UI/UX design concept for a free streaming platform, covering the home screen with categories and recommendations, a movie detail page, and a seat/showtime booking screen. Designed in Figma as a portfolio concept piece.",
     meta: "UI/UX Design",
-    dribbbleUrl: "https://dribbble.com/shots/23384359-WOW-Flix-Streaming-Platform",
+    dribbbleUrl:
+      "https://dribbble.com/shots/23384359-WOW-Flix-Streaming-Platform",
     language: "Figma",
     image: "/projects/wow-flix.jpg",
-    imageAlt: "WOW Flix streaming app UI — home, movie detail, and seat booking screens",
+    imageAlt:
+      "WOW Flix streaming app UI — home, movie detail, and seat booking screens",
   },
   {
     id: "the-kitchen-food-app",
@@ -348,7 +361,8 @@ export const PROJECTS: Project[] = [
     dribbbleUrl: "https://dribbble.com/shots/21326194-The-Kitchen-Food-App-UI",
     language: "Figma",
     image: "/projects/the-kitchen-food-app.png",
-    imageAlt: "The Kitchen food app UI — home, product detail, and checkout screens",
+    imageAlt:
+      "The Kitchen food app UI — home, product detail, and checkout screens",
   },
   {
     id: "wow-bank-app-concept",
@@ -356,8 +370,7 @@ export const PROJECTS: Project[] = [
     iconLabel: "WOW Bank",
     category: "UI/UX Design",
     kind: "design",
-    headline:
-      "A UI concept for a neobank's onboarding and sign-in flow.",
+    headline: "A UI concept for a neobank's onboarding and sign-in flow.",
     description:
       "A UI/UX design concept for a digital-only bank, covering the onboarding screen, social/password sign-in, and email entry. Designed in Figma as a portfolio concept piece.",
     meta: "UI/UX Design",

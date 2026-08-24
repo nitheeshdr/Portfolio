@@ -4,6 +4,7 @@ import { ContactCard } from "@/components/contact/contact-card";
 import { GitHubActivity } from "@/components/home/github-activity";
 import { Hero } from "@/components/hero/hero";
 import { Projects } from "@/components/projects/projects";
+import { OpenSourceContributions } from "@/components/shared/open-source-contributions";
 import { JsonLd, profilePageSchema } from "@/components/seo/json-ld";
 import { createMetadata, siteConfig } from "@/lib/metadata";
 import { getAllProjects } from "@/lib/projects-db";
@@ -27,6 +28,7 @@ export default async function HomePage(): Promise<ReactNode> {
       <AboutTeaser />
       <GitHubActivity />
       <Projects projects={projects} withHeadline viewMoreVisible />
+      <OpenSourceContributions withHeadline />
       <section className="mx-auto w-full max-w-275 px-6 sm:px-10">
         <Stack />
       </section>
