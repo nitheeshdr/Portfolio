@@ -1,6 +1,7 @@
 import { AboutTeaser } from "@/components/about/about-teaser";
 import { Stack } from "@/components/about/stack";
 import { ContactCard } from "@/components/contact/contact-card";
+import { GitHubActivity } from "@/components/home/github-activity";
 import { Hero } from "@/components/hero/hero";
 import { Projects } from "@/components/projects/projects";
 import { JsonLd, profilePageSchema } from "@/components/seo/json-ld";
@@ -24,6 +25,7 @@ export default async function HomePage(): Promise<ReactNode> {
       <JsonLd items={[profilePageSchema("/")]} />
       <Hero />
       <AboutTeaser />
+      <GitHubActivity />
       <Projects projects={projects} withHeadline viewMoreVisible />
       <section className="mx-auto w-full max-w-275 px-6 sm:px-10">
         <Stack />
