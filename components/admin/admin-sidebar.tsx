@@ -6,7 +6,6 @@ import {
   faTableCellsLarge,
   faRightFromBracket,
   faNewspaper,
-  faHeart,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -16,7 +15,6 @@ const LINKS = [
   { label: "Dashboard", href: "/admin", icon: faTableCellsLarge },
   { label: "Blog", href: "/admin/blog", icon: faNewspaper },
   { label: "Projects", href: "/admin/projects", icon: faFolderTree },
-  { label: "Love letter", href: "/admin/love-letter", icon: faHeart },
 ] as const;
 
 export function AdminSidebar(): ReactNode {
@@ -42,7 +40,9 @@ export function AdminSidebar(): ReactNode {
       <nav className="flex flex-1 flex-col gap-1">
         {LINKS.map((link) => {
           const isActive =
-            link.href === "/admin" ? pathname === "/admin" : pathname.startsWith(link.href);
+            link.href === "/admin"
+              ? pathname === "/admin"
+              : pathname.startsWith(link.href);
           const Icon = link.icon;
           return (
             <Link
@@ -54,7 +54,11 @@ export function AdminSidebar(): ReactNode {
                   : "text-foreground/60 hover:text-foreground hover:bg-foreground/5"
               }`}
             >
-              <FontAwesomeIcon icon={Icon} className="h-4 w-4" aria-hidden="true" />
+              <FontAwesomeIcon
+                icon={Icon}
+                className="h-4 w-4"
+                aria-hidden="true"
+              />
               {link.label}
             </Link>
           );
@@ -67,7 +71,11 @@ export function AdminSidebar(): ReactNode {
         disabled={loggingOut}
         className="focus-ring text-foreground/60 hover:text-foreground hover:bg-foreground/5 flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-[14px] font-medium tracking-tight transition-colors disabled:opacity-60"
       >
-        <FontAwesomeIcon icon={faRightFromBracket} className="h-4 w-4" aria-hidden="true" />
+        <FontAwesomeIcon
+          icon={faRightFromBracket}
+          className="h-4 w-4"
+          aria-hidden="true"
+        />
         {loggingOut ? "Signing out..." : "Sign out"}
       </button>
     </aside>

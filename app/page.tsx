@@ -5,7 +5,6 @@ import { Hero } from "@/components/hero/hero";
 import { Projects } from "@/components/projects/projects";
 import { JsonLd, profilePageSchema } from "@/components/seo/json-ld";
 import { createMetadata, siteConfig } from "@/lib/metadata";
-import { getPublicLoveLetters } from "@/lib/love-letter";
 import { getAllProjects } from "@/lib/projects-db";
 import { person } from "@/lib/person";
 import type { Metadata } from "next";
@@ -18,18 +17,12 @@ export const metadata: Metadata = createMetadata({
 });
 
 export default async function HomePage(): Promise<ReactNode> {
-  const [projects, loveLetters] = await Promise.all([
-    getAllProjects(),
-    getPublicLoveLetters(),
-  ]);
+  const projects = await getAllProjects();
 
   return (
     <main id="main-content" className="flex flex-1 flex-col gap-10 sm:gap-14">
       <JsonLd items={[profilePageSchema("/")]} />
-      <Hero
-        letters={loveLetters.letters}
-        envelopeEnabled={loveLetters.envelopeEnabled}
-      />
+      <Hero />
       <AboutTeaser />
       <Projects projects={projects} withHeadline viewMoreVisible />
       <section className="mx-auto w-full max-w-275 px-6 sm:px-10">

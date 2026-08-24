@@ -5,26 +5,17 @@ import Image from "next/image";
 import { useState, type ReactNode } from "react";
 
 import { HeroCtas } from "./hero-ctas";
-import { LoveSurprise } from "./love-surprise";
 import {
   PolaroidFlashcards,
   type Polaroid,
 } from "@/components/about/polaroid-strip";
 import { FadeIn, ScaleUnblur } from "@/components/ui/motion-primitives";
-import type { PublicLetterSegment } from "@/lib/love-letter";
 
-export function Hero({
-  letters,
-  envelopeEnabled,
-}: {
-  letters: PublicLetterSegment[][];
-  envelopeEnabled: boolean;
-}): ReactNode {
+export function Hero(): ReactNode {
   const [ambient, setAmbient] = useState<Polaroid | null>(null);
 
   return (
     <section className="relative w-full">
-      <LoveSurprise letters={letters} envelopeEnabled={envelopeEnabled} />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
