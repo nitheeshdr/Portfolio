@@ -11,7 +11,10 @@ function getSecret(): string {
 
 function toBase64Url(bytes: ArrayBuffer | Uint8Array): string {
   const binary = String.fromCharCode(...new Uint8Array(bytes));
-  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  return btoa(binary)
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
 }
 
 function fromBase64Url(value: string): string {
@@ -28,7 +31,11 @@ async function hmacSign(payload: string): Promise<string> {
     false,
     ["sign"]
   );
-  const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload));
+  const signature = await crypto.subtle.sign(
+    "HMAC",
+    key,
+    new TextEncoder().encode(payload)
+  );
   return toBase64Url(signature);
 }
 
@@ -44,12 +51,16 @@ function constantTimeEqual(a: string, b: string): boolean {
 /** Creates a signed `<payload>.<signature>` session token — no external JWT dependency needed, Edge-runtime safe. */
 export async function createSessionToken(email: string): Promise<string> {
   const payload = toBase64Url(
-    new TextEncoder().encode(JSON.stringify({ email, exp: Date.now() + SESSION_TTL_MS }))
+    new TextEncoder().encode(
+      JSON.stringify({ email, exp: Date.now() + SESSION_TTL_MS })
+    )
   );
   return `${payload}.${await hmacSign(payload)}`;
 }
 
-export async function verifySessionToken(token: string | undefined): Promise<boolean> {
+export async function verifySessionToken(
+  token: string | undefined
+): Promise<boolean> {
   if (!token) return false;
   const [payload, signature] = token.split(".");
   if (!payload || !signature) return false;
@@ -65,10 +76,28 @@ export async function verifySessionToken(token: string | undefined): Promise<boo
   }
 }
 
-export function verifyAdminCredentials(email: string, password: string): boolean {
+/**
+ * Compares two values via HMAC digest rather than raw string equality.
+ * A plain constant-time loop still leaks the expected length (it
+ * short-circuits when lengths differ); hashing first means both sides are
+ * always a fixed-length digest, so length is never observable from timing.
+ */
+async function hashedEqual(a: string, b: string): Promise<boolean> {
+  const [hashA, hashB] = await Promise.all([hmacSign(a), hmacSign(b)]);
+  return constantTimeEqual(hashA, hashB);
+}
+
+export async function verifyAdminCredentials(
+  email: string,
+  password: string
+): Promise<boolean> {
   const adminEmail = process.env.ADMIN_EMAIL;
   const adminPassword = process.env.ADMIN_PASSWORD;
   if (!adminEmail || !adminPassword) return false;
 
-  return constantTimeEqual(email, adminEmail) && constantTimeEqual(password, adminPassword);
+  const [emailMatch, passwordMatch] = await Promise.all([
+    hashedEqual(email, adminEmail),
+    hashedEqual(password, adminPassword),
+  ]);
+  return emailMatch && passwordMatch;
 }
