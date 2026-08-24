@@ -19,7 +19,13 @@ export function Family(): ReactNode {
   );
 }
 
-function FamilyRow({ label, value }: { label: string; value: string }): ReactNode {
+function FamilyRow({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}): ReactNode {
   return (
     <div className="bg-background border-foreground/5 flex items-center gap-4 rounded-3xl border p-3">
       <span
@@ -27,13 +33,17 @@ function FamilyRow({ label, value }: { label: string; value: string }): ReactNod
         aria-hidden="true"
         style={{ borderRadius: 12 }}
       >
-        <FontAwesomeIcon icon={faUsers} className="h-4 w-4 text-foreground/50" />
+        <FontAwesomeIcon
+          icon={faUsers}
+          className="text-foreground/50 h-4 w-4"
+        />
       </span>
       <div className="flex min-w-0 flex-col">
         <span className="text-foreground/50 text-[12px] tracking-tight uppercase">
           {label}
         </span>
         <span className="text-foreground text-[15px] font-medium tracking-tight sm:text-[16px]">
+          <span className="sr-only">{label}: </span>
           {value}
         </span>
       </div>
