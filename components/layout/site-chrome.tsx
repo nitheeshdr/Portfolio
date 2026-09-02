@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { Nav } from "@/components/layout/nav";
 import { PageBackdrop } from "@/components/layout/page-backdrop";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { EasterEgg } from "@/components/shared/easter-egg";
 
 /**
  * Decorative/marketing-site chrome — the ambient backdrop, corner frame, and
@@ -30,6 +31,7 @@ export function SiteChrome(): ReactNode {
       <PageBackdrop />
       <ThemeToggle />
       <Nav />
+      <EasterEgg />
     </>
   );
 }
