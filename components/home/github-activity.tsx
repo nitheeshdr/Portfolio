@@ -2,48 +2,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import type { ReactNode } from "react";
 
+import { GitHubActivityGraph } from "@/components/home/github-activity-graph";
 import { FadeIn } from "@/components/ui/motion-primitives";
-import {
-  getContributionCalendar,
-  type ContributionDay,
-} from "@/lib/github-activity";
+import type { Activity } from "@/components/vritti/contribution-graph";
+import { getContributionCalendar } from "@/lib/github-activity";
 import { person } from "@/lib/person";
-
-const LEVEL_CLASSES = [
-  "bg-foreground/8 dark:bg-foreground/10",
-  "bg-emerald-200 dark:bg-emerald-950",
-  "bg-emerald-300 dark:bg-emerald-800",
-  "bg-emerald-500 dark:bg-emerald-600",
-  "bg-emerald-700 dark:bg-emerald-400",
-];
-
-/** Buckets a flat, date-sorted day list into GitHub-style Sunday-start weeks (columns). */
-function buildWeeks(days: ContributionDay[]): (ContributionDay | null)[][] {
-  if (!days.length) return [];
-  const sorted = [...days].sort((a, b) => a.date.localeCompare(b.date));
-  const weeks: (ContributionDay | null)[][] = [];
-  let week: (ContributionDay | null)[] = [];
-
-  for (const day of sorted) {
-    const dayOfWeek = new Date(`${day.date}T00:00:00Z`).getUTCDay();
-    if (dayOfWeek === 0 && week.length) {
-      weeks.push(week);
-      week = [];
-    }
-    if (week.length === 0 && dayOfWeek > 0) {
-      week = new Array(dayOfWeek).fill(null);
-    }
-    week.push(day);
-  }
-  if (week.length) weeks.push(week);
-  return weeks;
-}
 
 export async function GitHubActivity(): Promise<ReactNode> {
   const calendar = await getContributionCalendar();
   if (!calendar) return null;
 
-  const weeks = buildWeeks(calendar.days);
+  const activities: Activity[] = calendar.days;
   const username = person.links.github.split("/").filter(Boolean).pop();
 
   return (
@@ -73,36 +42,7 @@ export async function GitHubActivity(): Promise<ReactNode> {
               </a>
             </div>
 
-            {/* dir="rtl" on the scroll container makes it rest scrolled to the
-                right by default (today, the newest week) instead of the left
-                (a year ago) — dir="ltr" on the inner grid keeps the weeks
-                themselves reading oldest-to-newest as normal. */}
-            <div dir="rtl" className="overflow-x-auto pb-1">
-              <div dir="ltr" className="inline-flex gap-[3px]">
-                {weeks.map((week, weekIndex) => (
-                  <div key={weekIndex} className="flex flex-col gap-[3px]">
-                    {Array.from({ length: 7 }, (_, dayIndex) => {
-                      const day = week[dayIndex] ?? null;
-                      return (
-                        <div
-                          key={dayIndex}
-                          title={
-                            day
-                              ? `${day.count} contribution${day.count === 1 ? "" : "s"} on ${day.date}`
-                              : undefined
-                          }
-                          className={`h-[11px] w-[11px] rounded-[2px] ${
-                            day
-                              ? (LEVEL_CLASSES[day.level] ?? LEVEL_CLASSES[0])
-                              : "bg-transparent"
-                          }`}
-                        />
-                      );
-                    })}
-                  </div>
-                ))}
-              </div>
-            </div>
+            <GitHubActivityGraph activities={activities} />
           </div>
         </FadeIn>
       </div>
