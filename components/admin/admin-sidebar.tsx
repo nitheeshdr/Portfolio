@@ -3,6 +3,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFolderTree,
+  faImages,
   faTableCellsLarge,
   faRightFromBracket,
   faNewspaper,
@@ -15,6 +16,7 @@ const LINKS = [
   { label: "Dashboard", href: "/admin", icon: faTableCellsLarge },
   { label: "Blog", href: "/admin/blog", icon: faNewspaper },
   { label: "Projects", href: "/admin/projects", icon: faFolderTree },
+  { label: "Stories", href: "/admin/stories", icon: faImages },
 ] as const;
 
 export function AdminSidebar(): ReactNode {

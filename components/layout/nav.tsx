@@ -3,13 +3,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
-  faEnvelope,
   faFolderTree,
   faHouse,
+  faImages,
   faNewspaper,
-  faShareNodes,
 } from "@fortawesome/free-solid-svg-icons";
-import { faGithub, faYoutube } from "@fortawesome/free-brands-svg-icons";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,7 +15,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { Dock, DockIcon } from "@/components/ui/dock";
-import { person } from "@/lib/person";
 
 type NavItem = {
   label: string;
@@ -31,47 +28,8 @@ const NAV_ITEMS: readonly NavItem[] = [
   { label: "Projects", href: "/projects", icon: faFolderTree },
   { label: "About", href: "/about", avatar: true },
   { label: "Blog", href: "/blog", icon: faNewspaper },
+  { label: "Stories", href: "/stories", icon: faImages },
 ];
-
-const SOCIAL_LINKS = [
-  {
-    label: "Email",
-    href: `mailto:${person.email}`,
-    faIcon: faEnvelope,
-    bg: "#525252",
-  },
-  {
-    label: "LinkedIn",
-    href: person.links.linkedin,
-    imageSrc: "/linkedin.svg",
-    bg: "#0A66C2",
-  },
-  {
-    label: "GitHub",
-    href: person.links.github,
-    faIcon: faGithub,
-    bg: "#181717",
-  },
-  {
-    label: "Instagram",
-    href: person.links.instagram,
-    imageSrc: "/icons/instagram.svg",
-    bg: "linear-gradient(45deg, #F58529, #DD2A7B, #8134AF, #515BD4)",
-  },
-  {
-    label: "YouTube",
-    href: person.links.youtube,
-    faIcon: faYoutube,
-    bg: "#FF0000",
-  },
-  {
-    label: "IMDb",
-    href: person.links.imdb,
-    imageSrc: "/icons/imdb.svg",
-    bg: "#F5C518",
-    light: true,
-  },
-] as const;
 
 function IconTooltip({
   label,
@@ -90,74 +48,6 @@ function IconTooltip({
         {label}
       </span>
     </div>
-  );
-}
-
-function ProfileDockIcon({
-  open,
-  onToggle,
-}: {
-  open: boolean;
-  onToggle: () => void;
-}): ReactNode {
-  return (
-    <button
-      type="button"
-      onClick={onToggle}
-      aria-label={open ? "Hide social links" : "Show social links"}
-      aria-expanded={open}
-      className={`focus-ring flex h-full w-full cursor-pointer items-center justify-center rounded-full transition-colors ${
-        open
-          ? "bg-foreground/10 text-foreground"
-          : "text-foreground/60 hover:text-foreground"
-      }`}
-    >
-      <FontAwesomeIcon
-        icon={faShareNodes}
-        className="h-[45%] w-[45%]"
-        aria-hidden="true"
-      />
-    </button>
-  );
-}
-
-function SocialLinkButton({
-  href,
-  label,
-  faIcon,
-  imageSrc,
-  bg,
-  light,
-}: {
-  href: string;
-  label: string;
-  faIcon?: IconDefinition;
-  imageSrc?: string;
-  bg: string;
-  light?: boolean;
-}): ReactNode {
-  const isExternal = href.startsWith("http");
-  return (
-    <Link
-      href={href}
-      aria-label={label}
-      {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-      style={{ background: bg }}
-      className="focus-ring inline-flex h-10 w-10 items-center justify-center rounded-full text-white shadow-sm transition-transform hover:scale-110"
-    >
-      {faIcon ? (
-        <FontAwesomeIcon icon={faIcon} className="h-4 w-4" aria-hidden="true" />
-      ) : imageSrc ? (
-        <Image
-          src={imageSrc}
-          alt=""
-          width={16}
-          height={16}
-          aria-hidden="true"
-          className={`max-h-4 max-w-4 object-contain ${light ? "" : "brightness-0 invert"}`}
-        />
-      ) : null}
-    </Link>
   );
 }
 
@@ -211,8 +101,6 @@ function useNavScrollState(iconOnly: boolean): NavScrollState {
 
 export function Nav(): ReactNode {
   const pathname = usePathname();
-  const [socialsOpen, setSocialsOpen] = useState(false);
-  const navRef = useRef<HTMLElement>(null);
   const navState = useNavScrollState(true);
   const compact = navState !== "full";
 
@@ -223,37 +111,10 @@ export function Nav(): ReactNode {
         : pathname === item.href || pathname.startsWith(`${item.href}/`)
     ) ?? NAV_ITEMS[0]!;
 
-  const [lastPathname, setLastPathname] = useState(pathname);
-  if (pathname !== lastPathname) {
-    setLastPathname(pathname);
-    setSocialsOpen(false);
-  }
-
-  useEffect(() => {
-    if (!socialsOpen) return;
-
-    const handlePointerDown = (e: PointerEvent): void => {
-      if (navRef.current && !navRef.current.contains(e.target as Node)) {
-        setSocialsOpen(false);
-      }
-    };
-    const handleKeyDown = (e: KeyboardEvent): void => {
-      if (e.key === "Escape") setSocialsOpen(false);
-    };
-
-    document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [socialsOpen]);
-
   if (pathname.startsWith("/admin")) return null;
 
   return (
     <nav
-      ref={navRef}
       aria-label="Primary"
       className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2"
     >
@@ -351,31 +212,7 @@ export function Nav(): ReactNode {
                   </DockIcon>
                 );
               })}
-              <DockIcon>
-                <IconTooltip label="Social links">
-                  <ProfileDockIcon
-                    open={socialsOpen}
-                    onToggle={() => setSocialsOpen((v) => !v)}
-                  />
-                </IconTooltip>
-              </DockIcon>
             </Dock>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {socialsOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 8, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.96 }}
-            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="border-foreground/8 bg-background absolute bottom-full left-1/2 mb-3 flex -translate-x-1/2 items-center gap-2 rounded-full border p-2 shadow-sm"
-          >
-            {SOCIAL_LINKS.map((link) => (
-              <SocialLinkButton key={link.label} {...link} />
-            ))}
           </motion.div>
         )}
       </AnimatePresence>

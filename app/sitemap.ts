@@ -2,11 +2,16 @@ import type { MetadataRoute } from "next";
 import { getPublishedPosts } from "@/lib/blog";
 import { siteConfig } from "@/lib/metadata";
 import { getAllProjects } from "@/lib/projects-db";
+import { getPublishedStories } from "@/lib/web-stories";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = siteConfig.url;
   const lastModified = new Date();
-  const [projects, posts] = await Promise.all([getAllProjects(), getPublishedPosts()]);
+  const [projects, posts, stories] = await Promise.all([
+    getAllProjects(),
+    getPublishedPosts(),
+    getPublishedStories(),
+  ]);
 
   return [
     {
@@ -42,6 +47,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...posts.map((post) => ({
       url: `${baseUrl}/blog/${post.slug}`,
       lastModified: new Date(post.updatedAt),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    {
+      url: `${baseUrl}/stories`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    ...stories.map((story) => ({
+      url: `${baseUrl}/stories/${story.slug}`,
+      lastModified: new Date(story.updatedAt),
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),

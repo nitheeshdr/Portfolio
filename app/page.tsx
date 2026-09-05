@@ -6,6 +6,7 @@ import { HomePreloader } from "@/components/home/home-preloader";
 import { Hero } from "@/components/hero/hero";
 import { Projects } from "@/components/projects/projects";
 import { OpenSourceContributions } from "@/components/shared/open-source-contributions";
+import { WebStoriesTeaser } from "@/components/home/web-stories-teaser";
 import { JsonLd, profilePageSchema } from "@/components/seo/json-ld";
 import { createMetadata, siteConfig } from "@/lib/metadata";
 import { getAllProjects } from "@/lib/projects-db";
@@ -31,6 +32,7 @@ export default async function HomePage(): Promise<ReactNode> {
         <GitHubActivity />
         <Projects projects={projects} withHeadline viewMoreVisible />
         <OpenSourceContributions withHeadline />
+        <WebStoriesTeaser />
         <section className="mx-auto w-full max-w-275 px-6 sm:px-10">
           <Stack />
         </section>
