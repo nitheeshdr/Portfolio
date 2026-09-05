@@ -9,7 +9,9 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { CertificateCta } from "@/components/shared/certificate-cta";
 import { ContactCard } from "@/components/contact/contact-card";
+import { ShareButton } from "@/components/shared/share-button";
 import { getPostBySlug, getPublishedPosts } from "@/lib/blog";
+import { createStoryShareUrl } from "@/lib/instagram-story-share";
 import { createMetadata } from "@/lib/metadata";
 import { getRelatedAwards } from "@/lib/awards";
 import {
@@ -99,6 +101,20 @@ export default async function BlogPostPage({
           <h1 className="text-foreground mt-3 font-serif text-[2.25rem] leading-[1.05] font-medium tracking-tight sm:text-[3rem]">
             {post.title}
           </h1>
+
+          <div className="mt-6">
+            <ShareButton
+              type="blog"
+              data={{
+                slug: post.slug,
+                title: post.title,
+                description: post.excerpt,
+                image: post.coverImage,
+                tags: post.tags,
+                url: createStoryShareUrl(`/blog/${post.slug}`),
+              }}
+            />
+          </div>
         </FadeIn>
 
         {post.coverImage ? (

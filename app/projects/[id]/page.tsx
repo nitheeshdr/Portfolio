@@ -14,36 +14,19 @@ import type { ReactNode } from "react";
 
 import { ContactCard } from "@/components/contact/contact-card";
 import { ProjectMedia } from "@/components/projects/projects";
-import type { Project } from "@/components/projects/projects-data";
 import {
   JsonLd,
   breadcrumbSchema,
   projectDetailSchema,
 } from "@/components/seo/json-ld";
+import { ShareButton } from "@/components/shared/share-button";
 import { FadeIn } from "@/components/ui/motion-primitives";
+import { createStoryShareUrl } from "@/lib/instagram-story-share";
 import { createMetadata, siteConfig } from "@/lib/metadata";
-import { getAllProjects, getProjectBySlug } from "@/lib/projects-db";
-import {
-  getOpenSourceProjects,
-  OPEN_SOURCE_ID_PREFIX,
-} from "@/lib/open-source";
+import { getAllProjects, getProjectById } from "@/lib/projects-db";
+import { getOpenSourceProjects } from "@/lib/open-source";
 
 type Params = { id: string };
-
-/**
- * Open-source entries aren't in MongoDB — they're fetched live from GitHub
- * (see lib/open-source.ts) — so a miss on the DB lookup falls back to the
- * live-generated list before giving up. The id prefix lets us skip that
- * live fetch entirely for the (overwhelmingly common) DB-project case.
- */
-async function getProjectById(id: string): Promise<Project | null> {
-  const dbProject = await getProjectBySlug(id);
-  if (dbProject) return dbProject;
-  if (!id.startsWith(OPEN_SOURCE_ID_PREFIX)) return null;
-
-  const openSourceProjects = await getOpenSourceProjects();
-  return openSourceProjects.find((p) => p.id === id) ?? null;
-}
 
 export async function generateStaticParams(): Promise<Params[]> {
   const [dbProjects, openSourceProjects] = await Promise.all([
@@ -152,6 +135,17 @@ export default async function ProjectDetailPage({
               <p className="text-foreground/65 max-w-[56ch] text-[18px] leading-[1.5] tracking-tight sm:text-[20px]">
                 {project.headline}
               </p>
+              <ShareButton
+                type="project"
+                data={{
+                  slug: project.id,
+                  title: project.name,
+                  description: project.description,
+                  image: project.image,
+                  tags: project.techStack,
+                  url: createStoryShareUrl(`/projects/${project.id}`),
+                }}
+              />
             </div>
 
             <div className="flex shrink-0 items-center gap-3">

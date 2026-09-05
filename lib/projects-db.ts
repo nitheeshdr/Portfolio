@@ -1,6 +1,13 @@
 import { ObjectId } from "mongodb";
 import { getDb } from "@/lib/mongodb";
-import { PROJECT_CATEGORIES, type Project } from "@/components/projects/projects-data";
+import {
+  PROJECT_CATEGORIES,
+  type Project,
+} from "@/components/projects/projects-data";
+import {
+  getOpenSourceProjects,
+  OPEN_SOURCE_ID_PREFIX,
+} from "@/lib/open-source";
 
 function slugifyId(value: string): string {
   return value
@@ -16,11 +23,15 @@ function optionalString(value: unknown): string | undefined {
 
 function stringArray(value: unknown): string[] | undefined {
   if (!Array.isArray(value)) return undefined;
-  const arr = value.filter((v): v is string => typeof v === "string" && v.trim().length > 0);
+  const arr = value.filter(
+    (v): v is string => typeof v === "string" && v.trim().length > 0
+  );
   return arr.length ? arr : undefined;
 }
 
-export function parseProjectInput(body: Record<string, unknown>): Project | null {
+export function parseProjectInput(
+  body: Record<string, unknown>
+): Project | null {
   const { name, category, headline, description, meta, language } = body;
 
   if (typeof name !== "string" || !name.trim()) return null;
@@ -36,7 +47,12 @@ export function parseProjectInput(body: Record<string, unknown>): Project | null
   }
 
   const rawId = optionalString(body.id) ?? name;
-  const kind = body.kind === "design" ? "design" : body.kind === "software" ? "software" : undefined;
+  const kind =
+    body.kind === "design"
+      ? "design"
+      : body.kind === "software"
+        ? "software"
+        : undefined;
 
   return {
     id: slugifyId(rawId),
@@ -47,17 +63,35 @@ export function parseProjectInput(body: Record<string, unknown>): Project | null
     description: description.trim(),
     meta: meta.trim(),
     language: language.trim(),
-    ...(optionalString(body.githubUrl) ? { githubUrl: optionalString(body.githubUrl) } : {}),
-    ...(optionalString(body.liveUrl) ? { liveUrl: optionalString(body.liveUrl) } : {}),
-    ...(optionalString(body.playStoreUrl) ? { playStoreUrl: optionalString(body.playStoreUrl) } : {}),
-    ...(optionalString(body.dribbbleUrl) ? { dribbbleUrl: optionalString(body.dribbbleUrl) } : {}),
-    ...(optionalString(body.image) ? { image: optionalString(body.image) } : {}),
-    ...(optionalString(body.imageAlt) ? { imageAlt: optionalString(body.imageAlt) } : {}),
+    ...(optionalString(body.githubUrl)
+      ? { githubUrl: optionalString(body.githubUrl) }
+      : {}),
+    ...(optionalString(body.liveUrl)
+      ? { liveUrl: optionalString(body.liveUrl) }
+      : {}),
+    ...(optionalString(body.playStoreUrl)
+      ? { playStoreUrl: optionalString(body.playStoreUrl) }
+      : {}),
+    ...(optionalString(body.dribbbleUrl)
+      ? { dribbbleUrl: optionalString(body.dribbbleUrl) }
+      : {}),
+    ...(optionalString(body.image)
+      ? { image: optionalString(body.image) }
+      : {}),
+    ...(optionalString(body.imageAlt)
+      ? { imageAlt: optionalString(body.imageAlt) }
+      : {}),
     ...(optionalString(body.logo) ? { logo: optionalString(body.logo) } : {}),
     ...(body.logoIsDark === true ? { logoIsDark: true } : {}),
-    ...(optionalString(body.gradient) ? { gradient: optionalString(body.gradient) } : {}),
-    ...(stringArray(body.techStack) ? { techStack: stringArray(body.techStack) } : {}),
-    ...(stringArray(body.features) ? { features: stringArray(body.features) } : {}),
+    ...(optionalString(body.gradient)
+      ? { gradient: optionalString(body.gradient) }
+      : {}),
+    ...(stringArray(body.techStack)
+      ? { techStack: stringArray(body.techStack) }
+      : {}),
+    ...(stringArray(body.features)
+      ? { features: stringArray(body.features) }
+      : {}),
     ...(kind ? { kind } : {}),
     ...(optionalString(body.applicationCategory)
       ? { applicationCategory: optionalString(body.applicationCategory) }
@@ -101,7 +135,9 @@ export async function getAllProjects(): Promise<ProjectRecord[]> {
   return docs.map(toProjectRecord);
 }
 
-export async function getProjectBySlug(id: string): Promise<ProjectRecord | null> {
+export async function getProjectBySlug(
+  id: string
+): Promise<ProjectRecord | null> {
   const collection = await getCollection();
   const doc = await collection.findOne({ id });
   return doc ? toProjectRecord(doc) : null;
@@ -129,13 +165,24 @@ export async function isProjectSlugTaken(
   return existing !== null;
 }
 
-export async function createProject(input: ProjectInput): Promise<ProjectRecord> {
+export async function createProject(
+  input: ProjectInput
+): Promise<ProjectRecord> {
   const collection = await getCollection();
   const now = new Date();
-  const highest = await collection.find().sort({ order: -1 }).limit(1).toArray();
+  const highest = await collection
+    .find()
+    .sort({ order: -1 })
+    .limit(1)
+    .toArray();
   const order = (highest[0]?.order ?? -1) + 1;
 
-  const doc: Omit<ProjectDoc, "_id"> = { ...input, order, createdAt: now, updatedAt: now };
+  const doc: Omit<ProjectDoc, "_id"> = {
+    ...input,
+    order,
+    createdAt: now,
+    updatedAt: now,
+  };
   const result = await collection.insertOne(doc as ProjectDoc);
   return toProjectRecord({ ...doc, _id: result.insertedId } as ProjectDoc);
 }
@@ -159,4 +206,19 @@ export async function deleteProject(mongoId: string): Promise<boolean> {
   const collection = await getCollection();
   const result = await collection.deleteOne({ _id: new ObjectId(mongoId) });
   return result.deletedCount > 0;
+}
+
+/**
+ * Open-source entries aren't in MongoDB — they're fetched live from GitHub
+ * (see lib/open-source.ts) — so a miss on the DB lookup falls back to the
+ * live-generated list before giving up. The id prefix lets us skip that
+ * live fetch entirely for the (overwhelmingly common) DB-project case.
+ */
+export async function getProjectById(id: string): Promise<Project | null> {
+  const dbProject = await getProjectBySlug(id);
+  if (dbProject) return dbProject;
+  if (!id.startsWith(OPEN_SOURCE_ID_PREFIX)) return null;
+
+  const openSourceProjects = await getOpenSourceProjects();
+  return openSourceProjects.find((p) => p.id === id) ?? null;
 }

@@ -4,6 +4,8 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 
 import { Card, Carousel } from "@/components/vritti/apple-cards-carousel";
+import { ShareButton } from "@/components/shared/share-button";
+import { createStoryShareUrl } from "@/lib/instagram-story-share";
 import type { WebStory } from "@/lib/web-stories";
 
 function StoryCoverMedia({ story }: { story: WebStory }): ReactNode {
@@ -32,6 +34,15 @@ function StoryDetail({ story }: { story: WebStory }): ReactNode {
         >
           Watch story
         </a>
+        <ShareButton
+          type="story"
+          data={{
+            slug: story.slug,
+            title: story.title,
+            image: story.posterImage,
+            url: createStoryShareUrl(`/stories/${story.slug}`),
+          }}
+        />
       </div>
     </div>
   );
