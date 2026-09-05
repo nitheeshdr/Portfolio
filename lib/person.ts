@@ -40,9 +40,9 @@ export const person = {
   location: "Chennai, Tamil Nadu, India",
   homeLocation: "Elavur, Tamil Nadu, India",
   family: {
-    father: "Rajendran D",
-    mother: "Mari R",
-    siblings: ["Thilac D R", "Abinash D R"],
+    father: "Rajendran",
+    mother: "Mari Rajendran",
+    siblings: ["Thilac Rajendran", "Abinash Rajendran"],
   },
   email: "nitheeshdr@gmail.com",
   phone: "+91 6383984698",
