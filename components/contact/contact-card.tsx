@@ -7,6 +7,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { ContactCardCtas } from "./contact-card-ctas";
+import { SiteLikeButton } from "@/components/shared/site-like-button";
 import { FadeIn } from "@/components/ui/motion-primitives";
 import { person } from "@/lib/person";
 import { ShaderFlow } from "../shaders/shader-flow";
@@ -18,7 +19,7 @@ export function ContactCard(): ReactNode {
   return (
     <section className="mx-auto my-12 w-full max-w-275 px-6 sm:my-20 sm:px-10">
       <FadeIn>
-        <div className="relative w-full overflow-hidden rounded-4xl border border-foreground/8 bg-background p-1.5 shadow-sm">
+        <div className="border-foreground/8 bg-background relative w-full overflow-hidden rounded-4xl border p-1.5 shadow-sm">
           <div className="relative w-full overflow-hidden rounded-[1.6rem]">
             <div
               aria-hidden="true"
@@ -28,22 +29,23 @@ export function ContactCard(): ReactNode {
                 maskImage: CARD_FADE_MASK,
               }}
             >
-              <ShaderFlow scale={3} brightness={3}/>
+              <ShaderFlow scale={3} brightness={3} />
             </div>
 
             <div className="relative grid gap-8 p-6 sm:gap-10 sm:p-7 md:grid-cols-[1.2fr_1fr] md:items-stretch md:gap-6 md:p-6">
               <div className="flex flex-col gap-5">
-                <h2 className="font-serif text-[2.25rem] font-medium leading-[1.05] tracking-tight text-foreground sm:text-[2.75rem] lg:text-[3.25rem]">
+                <h2 className="text-foreground font-serif text-[2.25rem] leading-[1.05] font-medium tracking-tight sm:text-[2.75rem] lg:text-[3.25rem]">
                   Let&rsquo;s connect
                 </h2>
-                <p className="max-w-[29ch] text-[18px] leading-[1.4] tracking-tight text-foreground/65 sm:text-[22px] mb-6">
+                <p className="text-foreground/65 mb-6 max-w-[29ch] text-[18px] leading-[1.4] tracking-tight sm:text-[22px]">
                   I&rsquo;m always open to discussing new projects, creative
-                  ideas, or opportunities to be part of your visions. Just reach out!
+                  ideas, or opportunities to be part of your visions. Just reach
+                  out!
                 </p>
                 <ContactCardCtas />
               </div>
 
-              <div className="border-foreground/8 flex flex-col items-center justify-center gap-6 rounded-[1.1rem] border bg-background p-6 sm:p-8">
+              <div className="border-foreground/8 bg-background flex flex-col items-center justify-center gap-6 rounded-[1.1rem] border p-6 sm:p-8">
                 <div className="flex flex-wrap items-center justify-center gap-3 opacity-75">
                   <SocialIcon
                     href={`mailto:${person.email}`}
@@ -77,12 +79,13 @@ export function ContactCard(): ReactNode {
                     size={20}
                   />
                 </div>
+                <SiteLikeButton />
                 <div className="flex flex-col items-center gap-1 text-center">
-                  <p className="text-[13px] tracking-tight text-foreground/70">
+                  <p className="text-foreground/70 text-[13px] tracking-tight">
                     &copy; 2026 Nitheesh Rajendran
                     <span className="text-foreground/40"> (@nitheeshdr)</span>
                   </p>
-                  <p className="text-[12px] tracking-tight text-foreground/45">
+                  <p className="text-foreground/45 text-[12px] tracking-tight">
                     Chennai, India
                   </p>
                 </div>
@@ -118,7 +121,7 @@ function SocialIcon({
     <Link
       href={href}
       aria-label={label}
-      className="border-foreground/8 hover:border-foreground/15 focus-ring inline-flex h-11 w-11 items-center justify-center rounded-xl border bg-background text-foreground/70 transition-colors hover:text-foreground"
+      className="border-foreground/8 hover:border-foreground/15 focus-ring bg-background text-foreground/70 hover:text-foreground inline-flex h-11 w-11 items-center justify-center rounded-xl border transition-colors"
       {...props}
     >
       {faIcon ? (
