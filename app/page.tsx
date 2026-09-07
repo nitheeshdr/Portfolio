@@ -18,6 +18,7 @@ export const metadata: Metadata = createMetadata({
   description: siteConfig.description,
   path: "/",
   image: person.portraitSrc,
+  profile: true,
 });
 
 export default async function HomePage(): Promise<ReactNode> {

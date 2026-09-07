@@ -22,12 +22,6 @@ const ENTRIES: Entry[] = [
     period: "2024 – Present",
     logoSrc: "/brand/setups-works-mark.png",
   },
-  {
-    company: "CodeForge AI",
-    role: "Founder & CEO",
-    period: "2026 – Present",
-    logoSrc: "/brand/codeforge-ai-icon.svg",
-  },
 ];
 
 const COLLAPSED_COUNT = 2.5;
@@ -36,11 +30,13 @@ const ROW_GAP = 8;
 
 export function Experience(): ReactNode {
   const [open, setOpen] = useState(false);
-  const collapsedHeight =
-    Math.floor(COLLAPSED_COUNT) * ROW_HEIGHT +
-    Math.floor(COLLAPSED_COUNT) * ROW_GAP +
-    (COLLAPSED_COUNT % 1) * ROW_HEIGHT;
   const hiddenCount = ENTRIES.length - Math.floor(COLLAPSED_COUNT);
+  const collapsedHeight =
+    hiddenCount > 0
+      ? Math.floor(COLLAPSED_COUNT) * ROW_HEIGHT +
+        Math.floor(COLLAPSED_COUNT) * ROW_GAP +
+        (COLLAPSED_COUNT % 1) * ROW_HEIGHT
+      : "auto";
 
   return (
     <div className="flex flex-col gap-3">

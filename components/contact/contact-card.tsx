@@ -78,12 +78,29 @@ export function ContactCard(): ReactNode {
                     imageSrc="/icons/imdb.svg"
                     size={20}
                   />
+                  <SocialIcon
+                    href={person.links.twitter}
+                    label="X (Twitter)"
+                    imageSrc="/x.svg"
+                  />
                 </div>
                 <SiteLikeButton />
                 <div className="flex flex-col items-center gap-1 text-center">
                   <p className="text-foreground/70 text-[13px] tracking-tight">
                     &copy; 2026 Nitheesh Rajendran
-                    <span className="text-foreground/40"> (@nitheeshdr)</span>
+                    <span className="text-foreground/40">
+                      {" "}
+                      (
+                      <Link
+                        href={person.links.twitter}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-foreground/70 underline-offset-2 hover:underline"
+                      >
+                        @nitheeshdr
+                      </Link>
+                      )
+                    </span>
                   </p>
                   <p className="text-foreground/45 text-[12px] tracking-tight">
                     Chennai, India

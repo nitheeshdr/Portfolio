@@ -152,8 +152,9 @@ export function personSchema() {
       person.links.youtube,
       person.links.imdb,
       person.links.instagram,
+      person.links.twitter,
+      person.links.dribbble,
       person.links.wikidata,
-      person.links.knowledgePanel,
       person.links.crunchbase,
     ],
   };
@@ -197,7 +198,13 @@ export function siteNavigationSchema() {
   }));
 }
 
-/** Marks a page as the profile page for the Person, e.g. the homepage or /about. */
+/**
+ * Marks the homepage as the canonical profile page for the Person — the
+ * `personSchema()`'s `mainEntityOfPage` points at this one fixed `@id`, so
+ * only one page may claim it. Other pages about the Person (e.g. /about)
+ * use `aboutPageSchema()` instead, which gets its own `@id` rather than
+ * competing for this one with a different `url`.
+ */
 export function profilePageSchema(path: string) {
   const url = `${siteConfig.url}${path}`;
   return {
@@ -205,6 +212,21 @@ export function profilePageSchema(path: string) {
     "@id": `${siteConfig.url}/#profilepage`,
     url,
     name: `${person.name} — ${person.company.role}`,
+    isPartOf: { "@id": WEBSITE_ID },
+    about: { "@id": PERSON_ID },
+    mainEntity: { "@id": PERSON_ID },
+  };
+}
+
+/** The /about page's own WebPage node — distinct from the homepage's ProfilePage `@id` so the two pages don't assert conflicting `url`s for the same entity. */
+export function aboutPageSchema() {
+  const url = `${siteConfig.url}/about`;
+  return {
+    "@type": "WebPage",
+    "@id": `${url}#webpage`,
+    url,
+    name: `About — ${person.name}`,
+    description: person.bio,
     isPartOf: { "@id": WEBSITE_ID },
     about: { "@id": PERSON_ID },
     mainEntity: { "@id": PERSON_ID },
@@ -481,6 +503,38 @@ export function blogListSchema(posts: BlogListSchemaInput[]) {
       description: post.excerpt,
       url: `${siteConfig.url}/blog/${post.slug}`,
       datePublished: post.datePublished,
+    })),
+  };
+}
+
+type StoryListSchemaInput = {
+  slug: string;
+  title: string;
+  posterImage: string;
+  datePublished: string;
+};
+
+/**
+ * Web Stories listing page — an ItemList whose Article nodes share the same
+ * `@id` as the Article JSON-LD each AMP story page (lib/amp-story-html.ts)
+ * already emits, so both pages describe one consistent entity instead of
+ * two disconnected ones.
+ */
+export function storiesListSchema(stories: StoryListSchemaInput[]) {
+  return {
+    "@type": "ItemList",
+    "@id": `${siteConfig.url}/stories#stories`,
+    itemListElement: stories.map((story, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Article",
+        "@id": `${siteConfig.url}/stories/${story.slug}#article`,
+        headline: story.title,
+        image: story.posterImage,
+        url: `${siteConfig.url}/stories/${story.slug}`,
+        datePublished: story.datePublished,
+      },
     })),
   };
 }

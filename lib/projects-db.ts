@@ -129,6 +129,13 @@ function toProjectRecord(doc: ProjectDoc): ProjectRecord {
   return { ...project, mongoId: _id.toString(), order };
 }
 
+/** id -> real last-modified date, for the sitemap. `ProjectRecord` deliberately omits this field elsewhere. */
+export async function getProjectUpdateDates(): Promise<Map<string, Date>> {
+  const collection = await getCollection();
+  const docs = await collection.find().toArray();
+  return new Map(docs.map((doc) => [doc.id, doc.updatedAt]));
+}
+
 export async function getAllProjects(): Promise<ProjectRecord[]> {
   const collection = await getCollection();
   const docs = await collection.find().sort({ order: 1 }).toArray();

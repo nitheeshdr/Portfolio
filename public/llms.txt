@@ -1,6 +1,6 @@
 # Nitheesh Rajendran
 
-> Full-stack engineer and AI product builder based in Chennai, India. Founder & CEO of Setups Works (SaaS & AI product development studio) and CodeForge AI (AI-powered coding-interview platform). Also a UI/UX designer, digital marketer, and Indian filmmaker.
+> Full-stack engineer and AI product builder based in Chennai, India. Founder & CEO of Setups Works (SaaS & AI product development studio), whose products include CodeForge AI (AI-powered coding-interview platform). Also a UI/UX designer, digital marketer, and Indian filmmaker.
 
 Nitheesh Rajendran (also written Nitheesh D R) designs and ships production software end to end — architecture, AI/LLM integration, deployment, and post-launch support — across web, mobile, and developer tooling. He builds with React, Next.js, TypeScript, and Node.js on the web, and Flutter on mobile.
 
@@ -10,6 +10,7 @@ Nitheesh Rajendran (also written Nitheesh D R) designs and ships production soft
 - [About](https://nitheeshdr.in/about): Background, experience, education, filmography, skills, and stack.
 - [Projects](https://nitheeshdr.in/projects): Full list of shipped SaaS platforms, AI products, mobile apps, and UI/UX design work.
 - [Blog](https://nitheeshdr.in/blog): Writing on software engineering, AI products, and building at Setups Works.
+- [Web Stories](https://nitheeshdr.in/stories): Short, swipeable visual stories.
 
 ## Web & AI products
 
@@ -46,4 +47,5 @@ Nitheesh Rajendran (also written Nitheesh D R) designs and ships production soft
 - [Instagram](https://www.instagram.com/nitheesh.rajendran/)
 - [YouTube](https://www.youtube.com/@nitheeshrajendran)
 - [IMDb](https://www.imdb.com/name/nm16304237/)
+- [X](https://x.com/nitheeshdr)
 - [Dribbble](https://dribbble.com/nitheeshdr)

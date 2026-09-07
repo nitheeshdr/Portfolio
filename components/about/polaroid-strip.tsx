@@ -16,6 +16,8 @@ import {
   type ReactNode,
 } from "react";
 
+import { person } from "@/lib/person";
+
 export type Polaroid = {
   id: string;
   rotate: number;
@@ -24,7 +26,7 @@ export type Polaroid = {
 
 const PHOTOS: Polaroid[] = [
   { id: "g", rotate: -8, src: "/polaroids/photo-7.jpg" },
-  { id: "hero", rotate: 6, src: "/portrait.jpg" },
+  { id: "hero", rotate: 6, src: person.portraitSrc },
   { id: "a", rotate: -4, src: "/polaroids/photo-1.jpg" },
   { id: "b", rotate: 7, src: "/polaroids/photo-2.jpg" },
   { id: "c", rotate: -6, src: "/polaroids/photo-3.jpg" },
@@ -74,7 +76,12 @@ function PolaroidCard({
       ref={ref}
       onPointerMove={handleMove}
       onPointerLeave={handleLeave}
-      initial={{ opacity: 0, y: -120, filter: "blur(18px)", rotate: photo.rotate }}
+      initial={{
+        opacity: 0,
+        y: -120,
+        filter: "blur(18px)",
+        rotate: photo.rotate,
+      }}
       animate={{ opacity: 1, y: 0, filter: "blur(0px)", rotate: photo.rotate }}
       transition={{
         duration: 0.9,
@@ -200,7 +207,7 @@ export function PolaroidFlashcards({
           <span
             key={photo.id}
             className={`h-1.5 rounded-full transition-all duration-300 ${
-              i === active ? "w-4 bg-foreground/60" : "w-1.5 bg-foreground/20"
+              i === active ? "bg-foreground/60 w-4" : "bg-foreground/20 w-1.5"
             }`}
           />
         ))}
@@ -220,7 +227,9 @@ export function PolaroidStrip(): ReactNode {
   );
 
   if (!mounted) {
-    return <div aria-hidden="true" className="h-[clamp(8rem,15vw,12rem)] w-full" />;
+    return (
+      <div aria-hidden="true" className="h-[clamp(8rem,15vw,12rem)] w-full" />
+    );
   }
 
   return (

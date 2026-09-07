@@ -6,7 +6,7 @@ export const siteConfig = {
   shortName: "Nitheesh",
   description: person.summary,
   url: person.links.website,
-  creator: "@nitheeshdr",
+  twitterHandle: "@nitheeshdr",
   authors: [
     {
       name: person.name,
@@ -32,7 +32,7 @@ export const siteConfig = {
 export const baseMetadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} - Portfolio`,
+    default: `${siteConfig.name} — Developer, Builder & Creator`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
@@ -64,6 +64,8 @@ export const baseMetadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    site: siteConfig.twitterHandle,
+    creator: siteConfig.twitterHandle,
     title: siteConfig.name,
     description: siteConfig.description,
   },
@@ -72,9 +74,9 @@ export const baseMetadata: Metadata = {
     apple: "/apple-icon.svg",
   },
   manifest: "/site.webmanifest",
-  verification: {
-    google: "uH8AwiyTQRveEutMVXpmFTDTuRtUeANLFJbHk71kStk",
-  },
+  ...(process.env.GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } }
+    : {}),
 };
 
 export function createMetadata({
@@ -83,12 +85,15 @@ export function createMetadata({
   path = "/",
   image,
   noIndex = false,
+  profile = false,
 }: {
   title?: string;
   description?: string;
   path?: string;
   image?: string;
   noIndex?: boolean;
+  /** Marks this page as being fundamentally about the Person (home, /about) — emits `og:type=profile` with name parts instead of the generic `website` type. */
+  profile?: boolean;
 }): Metadata {
   const url = `${siteConfig.url}${path}`;
 
@@ -99,20 +104,37 @@ export function createMetadata({
       canonical: path,
     },
     openGraph: {
-      type: "website",
       locale: "en_US",
       siteName: siteConfig.name,
       title: title ?? siteConfig.name,
       description: description ?? siteConfig.description,
       url,
+      ...(profile
+        ? {
+            type: "profile" as const,
+            firstName: person.givenName,
+            lastName: person.familyName,
+          }
+        : { type: "website" as const }),
       // No `images` here when `image` is omitted — Next.js falls back to the
       // nearest route-segment opengraph-image.tsx (dynamic, per-page) instead.
       ...(image
-        ? { images: [{ url: image, width: 1200, height: 630, alt: title ?? siteConfig.name }] }
+        ? {
+            images: [
+              {
+                url: image,
+                width: 1200,
+                height: 630,
+                alt: title ?? siteConfig.name,
+              },
+            ],
+          }
         : {}),
     },
     twitter: {
       card: "summary_large_image",
+      site: siteConfig.twitterHandle,
+      creator: siteConfig.twitterHandle,
       title: title ?? siteConfig.name,
       description: description ?? siteConfig.description,
       ...(image ? { images: [image] } : {}),

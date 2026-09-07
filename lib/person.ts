@@ -46,7 +46,7 @@ export const person = {
   },
   email: "nitheeshdr@gmail.com",
   phone: "+91 6383984698",
-  portraitSrc: "/portrait.jpg",
+  portraitSrc: "/nitheesh-rajendran.jpg",
   portraitHoverSrc: "/avatar.jpg",
   links: {
     github: "https://github.com/nitheeshdr",
@@ -54,11 +54,11 @@ export const person = {
     youtube: "https://www.youtube.com/@nitheeshrajendran",
     imdb: "https://www.imdb.com/name/nm16304237/",
     instagram: "https://www.instagram.com/nitheesh.rajendran/",
+    twitter: "https://x.com/nitheeshdr",
+    dribbble: "https://dribbble.com/nitheeshdr",
     website: "https://nitheeshdr.in",
     crunchbase: "https://www.crunchbase.com/person/nitheesh-rajendran",
     wikidata: "https://www.wikidata.org/wiki/Q140500455",
-    /** Google Knowledge Panel share link — helps Google reconcile this Person entity with its existing panel. */
-    knowledgePanel: "https://share.google/jTjYj8LeszVeOSqF7",
   },
   identifiers: {
     wikidataId: "Q140500455",

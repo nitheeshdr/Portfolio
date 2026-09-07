@@ -2,6 +2,11 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
+import {
+  JsonLd,
+  breadcrumbSchema,
+  storiesListSchema,
+} from "@/components/seo/json-ld";
 import { FadeIn } from "@/components/ui/motion-primitives";
 import { createMetadata } from "@/lib/metadata";
 import { getPublishedStories } from "@/lib/web-stories";
@@ -17,6 +22,22 @@ export default async function StoriesPage(): Promise<ReactNode> {
 
   return (
     <main id="main-content" className="w-full">
+      <JsonLd
+        items={[
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Web Stories", path: "/stories" },
+          ]),
+          storiesListSchema(
+            stories.map((story) => ({
+              slug: story.slug,
+              title: story.title,
+              posterImage: story.posterImage,
+              datePublished: story.publishedAt ?? story.createdAt,
+            }))
+          ),
+        ]}
+      />
       <div className="mx-auto w-full max-w-275 px-6 py-16 sm:px-10 sm:py-20">
         <FadeIn className="flex flex-col items-start gap-3 pb-10 text-left">
           <h1 className="text-foreground font-serif text-[2.5rem] leading-[1.05] font-medium tracking-tight md:text-[3rem]">

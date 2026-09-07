@@ -1,46 +1,58 @@
 import type { MetadataRoute } from "next";
 import { getPublishedPosts } from "@/lib/blog";
 import { siteConfig } from "@/lib/metadata";
-import { getAllProjects } from "@/lib/projects-db";
+import { getAllProjects, getProjectUpdateDates } from "@/lib/projects-db";
 import { getPublishedStories } from "@/lib/web-stories";
+
+/** Latest of a set of dates, falling back to `fallback` when the list is empty (no real content dates to derive from). */
+function latestOf(dates: Date[], fallback: Date): Date {
+  return dates.length
+    ? new Date(Math.max(...dates.map((d) => d.getTime())))
+    : fallback;
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = siteConfig.url;
-  const lastModified = new Date();
-  const [projects, posts, stories] = await Promise.all([
+  const buildTime = new Date();
+  const [projects, projectUpdateDates, posts, stories] = await Promise.all([
     getAllProjects(),
+    getProjectUpdateDates(),
     getPublishedPosts(),
     getPublishedStories(),
   ]);
 
+  const projectDates = Array.from(projectUpdateDates.values());
+  const postDates = posts.map((p) => new Date(p.updatedAt));
+  const storyDates = stories.map((s) => new Date(s.updatedAt));
+
   return [
     {
       url: baseUrl,
-      lastModified,
+      lastModified: buildTime,
       changeFrequency: "weekly",
       priority: 1,
     },
     {
       url: `${baseUrl}/about`,
-      lastModified,
+      lastModified: buildTime,
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${baseUrl}/projects`,
-      lastModified,
+      lastModified: latestOf(projectDates, buildTime),
       changeFrequency: "weekly",
       priority: 0.9,
     },
     ...projects.map((project) => ({
       url: `${baseUrl}/projects/${project.id}`,
-      lastModified,
+      lastModified: projectUpdateDates.get(project.id) ?? buildTime,
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),
     {
       url: `${baseUrl}/blog`,
-      lastModified,
+      lastModified: latestOf(postDates, buildTime),
       changeFrequency: "weekly",
       priority: 0.8,
     },
@@ -52,7 +64,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     {
       url: `${baseUrl}/stories`,
-      lastModified,
+      lastModified: latestOf(storyDates, buildTime),
       changeFrequency: "weekly",
       priority: 0.7,
     },

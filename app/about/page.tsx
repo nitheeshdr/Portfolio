@@ -10,8 +10,8 @@ import { Stack } from "@/components/about/stack";
 import { ContactCard } from "@/components/contact/contact-card";
 import {
   JsonLd,
+  aboutPageSchema,
   breadcrumbSchema,
-  profilePageSchema,
 } from "@/components/seo/json-ld";
 import { FadeIn } from "@/components/ui/motion-primitives";
 import { createMetadata } from "@/lib/metadata";
@@ -23,6 +23,7 @@ export const metadata: Metadata = createMetadata({
   description:
     "Nitheesh Rajendran — Founder & CEO of Setups Works, full stack developer and AI product engineer in Chennai, India. Background, experience, and skills.",
   path: "/about",
+  profile: true,
 });
 
 export default function AboutPage(): ReactNode {
@@ -30,7 +31,7 @@ export default function AboutPage(): ReactNode {
     <main id="main-content" className="flex flex-1 flex-col">
       <JsonLd
         items={[
-          profilePageSchema("/about"),
+          aboutPageSchema(),
           breadcrumbSchema([
             { name: "Home", path: "/" },
             { name: "About", path: "/about" },
