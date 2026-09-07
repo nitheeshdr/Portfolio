@@ -6,7 +6,9 @@ import {
 } from "@/components/projects/projects-data";
 import {
   getOpenSourceProjects,
+  getOwnGithubProjects,
   OPEN_SOURCE_ID_PREFIX,
+  OWN_REPO_ID_PREFIX,
 } from "@/lib/open-source";
 
 function slugifyId(value: string): string {
@@ -224,8 +226,19 @@ export async function deleteProject(mongoId: string): Promise<boolean> {
 export async function getProjectById(id: string): Promise<Project | null> {
   const dbProject = await getProjectBySlug(id);
   if (dbProject) return dbProject;
-  if (!id.startsWith(OPEN_SOURCE_ID_PREFIX)) return null;
 
-  const openSourceProjects = await getOpenSourceProjects();
-  return openSourceProjects.find((p) => p.id === id) ?? null;
+  if (id.startsWith(OPEN_SOURCE_ID_PREFIX)) {
+    const openSourceProjects = await getOpenSourceProjects();
+    return openSourceProjects.find((p) => p.id === id) ?? null;
+  }
+
+  if (id.startsWith(OWN_REPO_ID_PREFIX)) {
+    const featuredUrls = (await getAllProjects())
+      .map((p) => p.githubUrl)
+      .filter((url): url is string => Boolean(url));
+    const ownRepoProjects = await getOwnGithubProjects(featuredUrls);
+    return ownRepoProjects.find((p) => p.id === id) ?? null;
+  }
+
+  return null;
 }

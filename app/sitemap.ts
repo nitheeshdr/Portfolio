@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getPublishedPosts } from "@/lib/blog";
 import { siteConfig } from "@/lib/metadata";
 import { getAllProjects, getProjectUpdateDates } from "@/lib/projects-db";
+import { getOpenSourceProjects, getOwnGithubProjects } from "@/lib/open-source";
 import { getPublishedStories } from "@/lib/web-stories";
 
 /** Latest of a set of dates, falling back to `fallback` when the list is empty (no real content dates to derive from). */
@@ -19,6 +20,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getProjectUpdateDates(),
     getPublishedPosts(),
     getPublishedStories(),
+  ]);
+
+  const featuredGithubUrls = projects
+    .map((p) => p.githubUrl)
+    .filter((url): url is string => Boolean(url));
+  const [openSourceProjects, ownGithubProjects] = await Promise.all([
+    getOpenSourceProjects(),
+    getOwnGithubProjects(featuredGithubUrls),
   ]);
 
   const projectDates = Array.from(projectUpdateDates.values());
@@ -49,6 +58,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: projectUpdateDates.get(project.id) ?? buildTime,
       changeFrequency: "monthly" as const,
       priority: 0.7,
+    })),
+    // Live-fetched from GitHub (contributions to others' repos, and his own
+    // repos not already curated above) — no stored updatedAt, so build time.
+    ...openSourceProjects.map((project) => ({
+      url: `${baseUrl}/projects/${project.id}`,
+      lastModified: buildTime,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
+    ...ownGithubProjects.map((project) => ({
+      url: `${baseUrl}/projects/${project.id}`,
+      lastModified: buildTime,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
     })),
     {
       url: `${baseUrl}/blog`,

@@ -1,5 +1,6 @@
 import { ContactCard } from "@/components/contact/contact-card";
 import { Projects } from "@/components/projects/projects";
+import { GithubRepos } from "@/components/shared/github-repos";
 import { OpenSourceContributions } from "@/components/shared/open-source-contributions";
 import {
   JsonLd,
@@ -9,7 +10,7 @@ import {
 import { FadeIn } from "@/components/ui/motion-primitives";
 import { createMetadata } from "@/lib/metadata";
 import { getAllProjects } from "@/lib/projects-db";
-import { getOpenSourceProjects } from "@/lib/open-source";
+import { getOpenSourceProjects, getOwnGithubProjects } from "@/lib/open-source";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
@@ -21,11 +22,15 @@ export const metadata: Metadata = createMetadata({
 });
 
 export default async function ProjectsPage(): Promise<ReactNode> {
-  const [dbProjects, openSourceProjects] = await Promise.all([
-    getAllProjects(),
+  const dbProjects = await getAllProjects();
+  const featuredGithubUrls = dbProjects
+    .map((p) => p.githubUrl)
+    .filter((url): url is string => Boolean(url));
+  const [openSourceProjects, ownGithubProjects] = await Promise.all([
     getOpenSourceProjects(),
+    getOwnGithubProjects(featuredGithubUrls),
   ]);
-  const projects = [...dbProjects, ...openSourceProjects];
+  const projects = [...dbProjects, ...openSourceProjects, ...ownGithubProjects];
 
   return (
     <main id="main-content" className="flex flex-1 flex-col">
@@ -66,6 +71,9 @@ export default async function ProjectsPage(): Promise<ReactNode> {
       <Projects projects={dbProjects} showFilters />
       <div className="pt-4 pb-16 sm:pb-20">
         <OpenSourceContributions withHeadline />
+      </div>
+      <div className="pb-16 sm:pb-20">
+        <GithubRepos excludeUrls={featuredGithubUrls} withHeadline />
       </div>
       <ContactCard />
     </main>

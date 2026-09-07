@@ -8,7 +8,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { Card, Carousel } from "@/components/vritti/apple-cards-carousel";
-import { openSourceProjectId, type OpenSourceRepo } from "@/lib/open-source";
+import type { OpenSourceRepo } from "@/lib/open-source";
 
 function RepoCoverMedia({ repo }: { repo: OpenSourceRepo }): ReactNode {
   return (
@@ -78,7 +78,7 @@ function RepoDetail({ repo }: { repo: OpenSourceRepo }): ReactNode {
           GitHub
         </Link>
         <Link
-          href={`/projects/${openSourceProjectId(repo.owner, repo.name)}`}
+          href={`/projects/${repo.projectId}`}
           className="focus-ring bg-foreground text-background inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium"
         >
           View full case study

@@ -24,18 +24,25 @@ import { FadeIn } from "@/components/ui/motion-primitives";
 import { createStoryShareUrl } from "@/lib/instagram-story-share";
 import { createMetadata, siteConfig } from "@/lib/metadata";
 import { getAllProjects, getProjectById } from "@/lib/projects-db";
-import { getOpenSourceProjects } from "@/lib/open-source";
+import { getOpenSourceProjects, getOwnGithubProjects } from "@/lib/open-source";
 
 type Params = { id: string };
 
 export async function generateStaticParams(): Promise<Params[]> {
-  const [dbProjects, openSourceProjects] = await Promise.all([
-    getAllProjects(),
+  const dbProjects = await getAllProjects();
+  const [openSourceProjects, ownGithubProjects] = await Promise.all([
     getOpenSourceProjects(),
+    getOwnGithubProjects(
+      dbProjects
+        .map((p) => p.githubUrl)
+        .filter((url): url is string => Boolean(url))
+    ),
   ]);
-  return [...dbProjects, ...openSourceProjects].map((project) => ({
-    id: project.id,
-  }));
+  return [...dbProjects, ...openSourceProjects, ...ownGithubProjects].map(
+    (project) => ({
+      id: project.id,
+    })
+  );
 }
 
 export async function generateMetadata({
