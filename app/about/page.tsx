@@ -21,7 +21,7 @@ import type { ReactNode } from "react";
 export const metadata: Metadata = createMetadata({
   title: "About",
   description:
-    "Nitheesh Rajendran — Founder & CEO of Setups Works, full stack developer and AI product engineer in Chennai, India. Background, experience, and skills.",
+    "Nitheesh Rajendran — Director, Founder & CEO of Setups Works, full stack developer and AI product engineer in Chennai, India. Background, experience, and skills.",
   path: "/about",
   profile: true,
 });
@@ -56,7 +56,7 @@ export default function AboutPage(): ReactNode {
               <p>
                 I&rsquo;m the{" "}
                 <strong className="text-foreground font-semibold">
-                  Founder &amp; CEO of Setups Works
+                  Director, Founder &amp; CEO of Setups Works
                 </strong>
                 , a digital product and technology studio where I work across
                 web development, ecommerce, product design, AI, automation, and

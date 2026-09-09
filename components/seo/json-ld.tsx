@@ -65,7 +65,7 @@ export function personSchema() {
      * Google's "suggest an edit" form only accepts factual corrections, not
      * custom subtitle text; this is the structured-data path instead.
      */
-    disambiguatingDescription: `${person.company.role} of ${person.company.name}`,
+    disambiguatingDescription: `Director, ${person.company.role} of ${person.company.name}`,
     url: siteConfig.url,
     image: {
       "@type": "ImageObject",

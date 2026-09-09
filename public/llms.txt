@@ -1,6 +1,6 @@
 # Nitheesh Rajendran
 
-> Full-stack engineer and AI product builder based in Chennai, India. Founder & CEO of Setups Works (SaaS & AI product development studio), whose products include CodeForge AI (AI-powered coding-interview platform). Also a UI/UX designer, digital marketer, and Indian filmmaker.
+> Full-stack engineer and AI product builder based in Chennai, India. Director, Founder & CEO of Setups Works (SaaS & AI product development studio), whose products include CodeForge AI (AI-powered coding-interview platform). Also a UI/UX designer, digital marketer, and Indian filmmaker.
 
 Nitheesh Rajendran (also written Nitheesh D R) designs and ships production software end to end — architecture, AI/LLM integration, deployment, and post-launch support — across web, mobile, and developer tooling. He builds with React, Next.js, TypeScript, and Node.js on the web, and Flutter on mobile.
 

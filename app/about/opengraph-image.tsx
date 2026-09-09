@@ -9,6 +9,7 @@ export default function OpengraphImage() {
   return renderOgImage({
     eyebrow: "nitheeshdr.in / about",
     title: "About Nitheesh",
-    subtitle: "Founder & CEO of Setups Works — software, AI, and film.",
+    subtitle:
+      "Director, Founder & CEO of Setups Works — software, AI, and film.",
   });
 }

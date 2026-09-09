@@ -27,7 +27,7 @@ export function AboutTeaser(): ReactNode {
                 <span className="text-foreground font-medium">
                   Nitheesh Rajendran
                 </span>{" "}
-                is the Founder &amp; CEO of{" "}
+                is a Director, Founder &amp; CEO of{" "}
                 <span className="text-foreground font-medium">
                   Setups Works
                 </span>
