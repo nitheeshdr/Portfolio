@@ -32,14 +32,42 @@ export function JsonLd({ items }: { items: object[] }): ReactNode {
 
 /** The organization the Person works for — corroborates the employment edge in both directions. */
 export function organizationSchema() {
+  const { company } = person;
   return {
-    "@type": "Organization",
+    "@type": ["Organization", "ProfessionalService"],
     "@id": ORG_ID,
-    name: person.company.name,
-    url: person.company.url,
-    description: person.company.description,
+    name: company.name,
+    legalName: company.name,
+    url: company.url,
+    description: company.description,
+    foundingDate: company.foundingDate,
     founder: { "@id": PERSON_ID },
-    sameAs: [person.company.url],
+    logo: {
+      "@type": "ImageObject",
+      "@id": `${company.url}/#logo`,
+      url: `${siteConfig.url}${company.logo}`,
+      contentUrl: `${siteConfig.url}${company.logo}`,
+    },
+    image: `${siteConfig.url}${company.logo}`,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: company.addressLocality,
+      addressRegion: company.addressRegion,
+      addressCountry: company.addressCountry,
+    },
+    areaServed: "Worldwide",
+    knowsAbout: person.knowsAbout,
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer support",
+      email: person.email,
+      availableLanguage: person.languages,
+    },
+    makesOffer: company.services.map((name) => ({
+      "@type": "Offer",
+      itemOffered: { "@type": "Service", name, provider: { "@id": ORG_ID } },
+    })),
+    sameAs: [company.url, company.github],
   };
 }
 
@@ -170,6 +198,9 @@ export function websiteSchema() {
     description: siteConfig.description,
     inLanguage: "en",
     publisher: { "@id": PERSON_ID },
+    creator: { "@id": PERSON_ID },
+    copyrightHolder: { "@id": PERSON_ID },
+    about: { "@id": PERSON_ID },
     hasPart: SITE_NAV_ITEMS.map((item) => ({
       "@id": `${siteConfig.url}${item.path}#navitem`,
     })),
@@ -227,6 +258,8 @@ export function aboutPageSchema() {
     url,
     name: `About — ${person.name}`,
     description: person.bio,
+    inLanguage: "en",
+    breadcrumb: { "@id": `${url}#breadcrumb` },
     isPartOf: { "@id": WEBSITE_ID },
     about: { "@id": PERSON_ID },
     mainEntity: { "@id": PERSON_ID },
@@ -234,8 +267,10 @@ export function aboutPageSchema() {
 }
 
 export function breadcrumbSchema(items: Array<{ name: string; path: string }>) {
+  const last = items[items.length - 1];
   return {
     "@type": "BreadcrumbList",
+    ...(last ? { "@id": `${siteConfig.url}${last.path}#breadcrumb` } : {}),
     itemListElement: items.map((item, index) => ({
       "@type": "ListItem",
       position: index + 1,
@@ -249,10 +284,16 @@ type ProjectSchemaInput = {
   name: string;
   description: string;
   url: string;
+  /** Detail-page URL on this site (not the live product URL). */
+  pageUrl?: string;
   codeRepository?: string;
   programmingLanguage?: string;
   /** "design" (Dribbble UI shots) gets CreativeWork instead of SoftwareApplication/SoftwareSourceCode. */
   kind?: "software" | "design";
+  applicationCategory?: string;
+  operatingSystem?: string;
+  /** A merged-PR contribution to someone else's repo — credited as `contributor`, never `author`. */
+  isContribution?: boolean;
 };
 
 /**
@@ -262,49 +303,150 @@ type ProjectSchemaInput = {
  */
 const PROJECT_CREATORS = [{ "@id": PERSON_ID }, { "@id": ORG_ID }];
 
-/** One SoftwareSourceCode/CreativeWork node per project, credited to Person + Organization. */
+/** Maps a platform to the most specific schema.org software type Google understands. */
+function softwareType(
+  operatingSystem?: string
+): "MobileApplication" | "WebApplication" | "SoftwareApplication" {
+  const os = operatingSystem?.toLowerCase();
+  if (os === "android" || os === "ios") return "MobileApplication";
+  if (os === "web") return "WebApplication";
+  return "SoftwareApplication";
+}
+
+/** Credit fields: full authorship for his own work, `contributor` for merged PRs into other people's repos. */
+function creditFields(isContribution?: boolean) {
+  return isContribution
+    ? { contributor: { "@id": PERSON_ID } }
+    : { author: PROJECT_CREATORS, creator: PROJECT_CREATORS };
+}
+
+/**
+ * One node per project, credited to Person + Organization. When `pageUrl` is
+ * known, each node reuses the `@id` of the matching node on that project's
+ * detail page, so the list and the detail page describe one entity.
+ */
 export function projectsSchema(projects: ProjectSchemaInput[]) {
   return {
     "@type": "ItemList",
     "@id": `${siteConfig.url}/projects#projects`,
-    itemListElement: projects.map((project, index) => ({
+    numberOfItems: projects.length,
+    itemListElement: projects.map((project, index) => {
+      const type =
+        project.kind === "design"
+          ? "CreativeWork"
+          : project.codeRepository && !project.operatingSystem
+            ? "SoftwareSourceCode"
+            : softwareType(project.operatingSystem);
+      const suffix = project.kind === "design" ? "creativework" : "software";
+      return {
+        "@type": "ListItem",
+        position: index + 1,
+        ...(project.pageUrl ? { url: project.pageUrl } : {}),
+        item: {
+          "@type": type,
+          ...(project.pageUrl ? { "@id": `${project.pageUrl}#${suffix}` } : {}),
+          name: project.name,
+          description: project.description,
+          url: project.url,
+          ...(project.pageUrl ? { mainEntityOfPage: project.pageUrl } : {}),
+          ...(project.kind === "design"
+            ? { genre: "User Interface Design" }
+            : {}),
+          ...(project.applicationCategory
+            ? { applicationCategory: project.applicationCategory }
+            : {}),
+          ...(project.operatingSystem
+            ? { operatingSystem: project.operatingSystem }
+            : {}),
+          ...(project.codeRepository
+            ? { codeRepository: project.codeRepository }
+            : {}),
+          ...(project.programmingLanguage
+            ? { programmingLanguage: project.programmingLanguage }
+            : {}),
+          ...creditFields(project.isContribution),
+        },
+      };
+    }),
+  };
+}
+
+/** /projects as a CollectionPage whose main entity is the ItemList above. */
+export function projectsPageSchema() {
+  const url = `${siteConfig.url}/projects`;
+  return {
+    "@type": "CollectionPage",
+    "@id": `${url}#webpage`,
+    url,
+    name: `Projects — ${person.name}`,
+    description:
+      "SaaS platforms, AI products, and mobile apps built by Nitheesh Rajendran.",
+    inLanguage: "en",
+    isPartOf: { "@id": WEBSITE_ID },
+    about: { "@id": PERSON_ID },
+    breadcrumb: { "@id": `${url}#breadcrumb` },
+    mainEntity: { "@id": `${url}#projects` },
+  };
+}
+
+/** Home-page "My apps" list — each entry reuses the detail-page `@id`, so it links to the full app node. */
+export function myAppsSchema(
+  apps: Array<{ id: string; name: string; description: string }>
+) {
+  return {
+    "@type": "ItemList",
+    "@id": `${siteConfig.url}/#my-apps`,
+    name: "My apps",
+    numberOfItems: apps.length,
+    itemListElement: apps.map((app, index) => ({
       "@type": "ListItem",
       position: index + 1,
+      url: `${siteConfig.url}/projects/${app.id}`,
       item: {
-        "@type":
-          project.kind === "design"
-            ? "CreativeWork"
-            : project.codeRepository
-              ? "SoftwareSourceCode"
-              : "SoftwareApplication",
-        name: project.name,
-        description: project.description,
-        url: project.url,
-        ...(project.kind === "design"
-          ? { genre: "User Interface Design" }
-          : {}),
-        ...(project.codeRepository
-          ? { codeRepository: project.codeRepository }
-          : {}),
-        ...(project.programmingLanguage
-          ? { programmingLanguage: project.programmingLanguage }
-          : {}),
-        author: PROJECT_CREATORS,
-        creator: PROJECT_CREATORS,
+        "@type": "MobileApplication",
+        "@id": `${siteConfig.url}/projects/${app.id}#software`,
+        name: app.name,
+        description: app.description,
       },
     })),
   };
 }
 
+/** Filmography as Movie nodes directed by the Person — corroborates the IMDb sameAs edge with typed entities. */
+export function filmographySchema() {
+  return person.filmography.map((film) => ({
+    "@type": "Movie",
+    "@id": `${siteConfig.url}/about#film-${film.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+    name: film.title,
+    description: film.description,
+    url: film.url,
+    sameAs: film.url,
+    genre: film.format.split("·").pop()?.trim(),
+    ...("year" in film ? { dateCreated: film.year } : {}),
+    director: { "@id": PERSON_ID },
+    author: { "@id": PERSON_ID },
+  }));
+}
+
 type ProjectDetailSchemaInput = ProjectSchemaInput & {
   /** Detail-page URL on this site (not the live product URL). */
   pageUrl: string;
-  /** Required for "software" kind (the default); unused for "design". */
-  applicationCategory?: string;
-  operatingSystem?: string;
   techStack?: string[];
   features?: string[];
   image?: string;
+  liveUrl?: string;
+  playStoreUrl?: string;
+  downloadUrl?: string;
+  packageName?: string;
+  screenshots?: string[];
+  softwareVersion?: string;
+  permissions?: string[];
+  keywords?: string[];
+  faqs?: Array<{ question: string; answer: string }>;
+  contentRating?: string;
+  lastUpdated?: string;
+  downloads?: number;
+  rating?: { value: number; count: number };
 };
 
 /**
@@ -332,6 +474,8 @@ export function projectDetailSchema(project: ProjectDetailSchemaInput) {
       author: PROJECT_CREATORS,
       creator: PROJECT_CREATORS,
       publisher: { "@id": ORG_ID },
+      inLanguage: "en",
+      mainEntityOfPage: { "@id": webPageId },
       ...(project.image ? { image: `${siteConfig.url}${project.image}` } : {}),
     };
 
@@ -341,6 +485,8 @@ export function projectDetailSchema(project: ProjectDetailSchemaInput) {
       url: project.pageUrl,
       name: project.name,
       description: project.description,
+      inLanguage: "en",
+      breadcrumb: { "@id": `${project.pageUrl}#breadcrumb` },
       isPartOf: { "@id": WEBSITE_ID },
       about: { "@id": creativeWorkId },
       mainEntity: { "@id": creativeWorkId },
@@ -352,30 +498,106 @@ export function projectDetailSchema(project: ProjectDetailSchemaInput) {
   const softwareId = `${project.pageUrl}#software`;
   const sourceCodeId = `${project.pageUrl}#sourcecode`;
 
+  const storeUrl = project.playStoreUrl ?? project.downloadUrl;
+  const sameAs = [
+    project.liveUrl,
+    project.playStoreUrl,
+    project.downloadUrl,
+    project.codeRepository,
+  ].filter((u): u is string => Boolean(u));
+  const imageUrl = project.image
+    ? resolveUrl(project.image)
+    : undefined;
+
   const softwareApplication = {
-    "@type": "SoftwareApplication",
+    "@type": softwareType(project.operatingSystem),
     "@id": softwareId,
     name: project.name,
     description: project.description,
     url: project.url,
+    mainEntityOfPage: { "@id": webPageId },
     applicationCategory: project.applicationCategory ?? "WebApplication",
     operatingSystem: project.operatingSystem ?? "Web",
-    author: PROJECT_CREATORS,
-    creator: PROJECT_CREATORS,
-    publisher: { "@id": ORG_ID },
+    inLanguage: "en",
+    ...creditFields(project.isContribution),
+    ...(project.isContribution ? {} : { publisher: { "@id": ORG_ID } }),
     ...(project.codeRepository ? { isBasedOn: { "@id": sourceCodeId } } : {}),
-    ...(project.techStack?.length
-      ? { keywords: project.techStack.join(", ") }
-      : {}),
-    ...(project.features?.length
-      ? { featureList: project.features.join(", ") }
-      : {}),
-    ...(project.image
+    ...(sameAs.length ? { sameAs } : {}),
+    ...(storeUrl
       ? {
-          screenshot: `${siteConfig.url}${project.image}`,
-          image: `${siteConfig.url}${project.image}`,
+          installUrl: storeUrl,
+          downloadUrl: project.downloadUrl ?? storeUrl,
+          isAccessibleForFree: true,
+          offers: {
+            "@type": "Offer",
+            price: "0",
+            priceCurrency: "INR",
+            availability: "https://schema.org/InStock",
+            url: storeUrl,
+          },
         }
       : {}),
+    ...(project.techStack?.length || project.keywords?.length
+      ? {
+          keywords: [
+            ...(project.keywords ?? []),
+            ...(project.techStack ?? []),
+          ].join(", "),
+        }
+      : {}),
+    ...(project.softwareVersion
+      ? { softwareVersion: project.softwareVersion }
+      : {}),
+    ...(project.contentRating ? { contentRating: project.contentRating } : {}),
+    ...(project.lastUpdated ? { dateModified: project.lastUpdated } : {}),
+    ...(project.downloads
+      ? {
+          interactionStatistic: {
+            "@type": "InteractionCounter",
+            interactionType: { "@type": "DownloadAction" },
+            userInteractionCount: project.downloads,
+          },
+        }
+      : {}),
+    // Only emitted when a real store rating has been saved — never invented.
+    ...(project.rating
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: project.rating.value,
+            ratingCount: project.rating.count,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : {}),
+    ...(project.permissions?.length
+      ? { permissions: project.permissions.join(", ") }
+      : {}),
+    ...(project.features?.length
+      ? { featureList: project.features }
+      : {}),
+    ...(project.packageName
+      ? {
+          identifier: {
+            "@type": "PropertyValue",
+            propertyID: "Android package name",
+            value: project.packageName,
+          },
+        }
+      : {}),
+    ...(project.screenshots?.length
+      ? {
+          screenshot: project.screenshots.map((url) => ({
+            "@type": "ImageObject",
+            url,
+            contentUrl: url,
+          })),
+          image: imageUrl ?? project.screenshots[0]!,
+        }
+      : imageUrl
+        ? { screenshot: imageUrl, image: imageUrl }
+        : {}),
   };
 
   const webPage = {
@@ -384,13 +606,32 @@ export function projectDetailSchema(project: ProjectDetailSchemaInput) {
     url: project.pageUrl,
     name: project.name,
     description: project.description,
+    inLanguage: "en",
+    breadcrumb: { "@id": `${project.pageUrl}#breadcrumb` },
     isPartOf: { "@id": WEBSITE_ID },
     about: { "@id": softwareId },
     mainEntity: { "@id": softwareId },
+    ...(imageUrl ? { primaryImageOfPage: { "@type": "ImageObject", url: imageUrl } } : {}),
   };
 
+  const faqPage = project.faqs?.length
+    ? {
+        "@type": "FAQPage",
+        "@id": `${project.pageUrl}#faq`,
+        url: project.pageUrl,
+        about: { "@id": softwareId },
+        isPartOf: { "@id": webPageId },
+        mainEntity: project.faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: { "@type": "Answer", text: faq.answer },
+        })),
+      }
+    : null;
+  const extras = faqPage ? [faqPage] : [];
+
   if (!project.codeRepository) {
-    return [softwareApplication, webPage];
+    return [softwareApplication, webPage, ...extras];
   }
 
   const softwareSourceCode = {
@@ -402,11 +643,11 @@ export function projectDetailSchema(project: ProjectDetailSchemaInput) {
     ...(project.programmingLanguage
       ? { programmingLanguage: project.programmingLanguage }
       : {}),
-    author: PROJECT_CREATORS,
-    creator: PROJECT_CREATORS,
+    ...creditFields(project.isContribution),
+    ...(project.isContribution ? {} : { publisher: { "@id": ORG_ID } }),
   };
 
-  return [softwareApplication, softwareSourceCode, webPage];
+  return [softwareApplication, softwareSourceCode, webPage, ...extras];
 }
 
 type BlogPostSchemaInput = {

@@ -4,11 +4,13 @@ import { ContactCard } from "@/components/contact/contact-card";
 import { GitHubActivity } from "@/components/home/github-activity";
 import { HomePreloader } from "@/components/home/home-preloader";
 import { Hero } from "@/components/hero/hero";
+import { MyApps } from "@/components/apps/my-apps";
 import { Projects } from "@/components/projects/projects";
 import { OpenSourceContributions } from "@/components/shared/open-source-contributions";
 import { WebStoriesTeaser } from "@/components/home/web-stories-teaser";
-import { JsonLd, profilePageSchema } from "@/components/seo/json-ld";
+import { JsonLd, myAppsSchema, profilePageSchema } from "@/components/seo/json-ld";
 import { createMetadata, siteConfig } from "@/lib/metadata";
+import { getMyApps, isMyApp } from "@/lib/my-apps";
 import { getAllProjects } from "@/lib/projects-db";
 import { person } from "@/lib/person";
 import type { Metadata } from "next";
@@ -22,16 +24,32 @@ export const metadata: Metadata = createMetadata({
 });
 
 export default async function HomePage(): Promise<ReactNode> {
-  const projects = await getAllProjects();
+  const [projects, apps] = await Promise.all([getAllProjects(), getMyApps()]);
 
   return (
     <HomePreloader>
       <main id="main-content" className="flex flex-1 flex-col gap-10 sm:gap-14">
-        <JsonLd items={[profilePageSchema("/")]} />
+        <JsonLd
+          items={[
+            profilePageSchema("/"),
+            ...(apps.length
+              ? [
+                  myAppsSchema(
+                    apps.map((a) => ({
+                      id: a.id,
+                      name: a.name,
+                      description: a.description,
+                    }))
+                  ),
+                ]
+              : []),
+          ]}
+        />
         <Hero />
         <AboutTeaser />
         <GitHubActivity />
-        <Projects projects={projects} withHeadline viewMoreVisible />
+        <Projects projects={projects.filter((p) => !isMyApp(p))} withHeadline viewMoreVisible />
+        <MyApps withHeadline />
         <OpenSourceContributions withHeadline />
         <WebStoriesTeaser />
         <section className="mx-auto w-full max-w-275 px-6 sm:px-10">

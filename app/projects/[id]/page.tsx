@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
@@ -59,6 +60,12 @@ export async function generateMetadata({
     description: project.description,
     path: `/projects/${project.id}`,
     ...(project.image ? { image: project.image } : {}),
+    keywords: [
+      project.name,
+      ...(project.packageName ? [project.packageName] : []),
+      ...(project.keywords ?? []),
+      ...(project.techStack ?? []),
+    ],
   });
 }
 
@@ -73,8 +80,8 @@ export default async function ProjectDetailPage({
 
   const primaryUrl =
     project.liveUrl ??
-    project.githubUrl ??
     project.playStoreUrl ??
+    project.githubUrl ??
     project.dribbbleUrl ??
     "";
 
@@ -111,6 +118,36 @@ export default async function ProjectDetailPage({
                 }
               : {}),
             ...(project.image ? { image: project.image } : {}),
+            ...(project.liveUrl ? { liveUrl: project.liveUrl } : {}),
+            ...(project.playStoreUrl
+              ? { playStoreUrl: project.playStoreUrl }
+              : {}),
+            ...(project.downloadUrl
+              ? { downloadUrl: project.downloadUrl }
+              : {}),
+            ...(project.pullRequests?.length ? { isContribution: true } : {}),
+            ...(project.packageName
+              ? { packageName: project.packageName }
+              : {}),
+            ...(project.screenshots?.length
+              ? { screenshots: project.screenshots }
+              : {}),
+            ...(project.softwareVersion
+              ? { softwareVersion: project.softwareVersion }
+              : {}),
+            ...(project.permissions?.length
+              ? { permissions: project.permissions }
+              : {}),
+            ...(project.keywords?.length ? { keywords: project.keywords } : {}),
+            ...(project.faqs?.length ? { faqs: project.faqs } : {}),
+            ...(project.contentRating
+              ? { contentRating: project.contentRating }
+              : {}),
+            ...(project.lastUpdated
+              ? { lastUpdated: project.lastUpdated }
+              : {}),
+            ...(project.downloads ? { downloads: project.downloads } : {}),
+            ...(project.rating ? { rating: project.rating } : {}),
           }),
         ]}
       />
@@ -135,6 +172,12 @@ export default async function ProjectDetailPage({
                 {project.meta}
                 <span className="text-foreground/30 mx-2">&bull;</span>
                 {project.language}
+                {project.packageName ? (
+                  <>
+                    <span className="text-foreground/30 mx-2">&bull;</span>
+                    <code className="text-[13px]">{project.packageName}</code>
+                  </>
+                ) : null}
               </span>
               <h1 className="text-foreground font-serif text-[2.25rem] leading-[1.05] font-medium tracking-tight sm:text-[3rem] lg:text-[3.5rem]">
                 {project.name}
@@ -227,6 +270,33 @@ export default async function ProjectDetailPage({
         </FadeIn>
       </section>
 
+      {project.screenshots?.length ? (
+        <section
+          aria-label={`${project.name} screenshots`}
+          className="mx-auto mt-10 w-full max-w-275 px-6 sm:px-10"
+        >
+          <h2 className="text-foreground mb-4 text-[15px] font-semibold tracking-tight">
+            Screenshots
+          </h2>
+          <ul className="-mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-3 sm:-mx-10 sm:px-10">
+            {project.screenshots.map((src, index) => (
+              <li
+                key={src}
+                className="ring-foreground/5 bg-foreground/5 relative aspect-[554/1200] h-[26rem] shrink-0 snap-start overflow-hidden rounded-2xl ring-1 sm:h-[32rem]"
+              >
+                <Image
+                  src={src}
+                  alt={`${project.name} screenshot ${index + 1}`}
+                  fill
+                  sizes="(min-width: 640px) 240px, 200px"
+                  className="object-cover"
+                />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
       <section className="mx-auto w-full max-w-275 px-6 py-16 sm:px-10 sm:py-20">
         <FadeIn delay={0.15}>
           <div className="grid grid-cols-1 gap-10 md:grid-cols-[1.4fr_1fr]">
@@ -305,6 +375,115 @@ export default async function ProjectDetailPage({
               </div>
             ) : null}
           </div>
+
+          {project.packageName ? (
+            <div className="mt-12 flex flex-col gap-3">
+              <h2 className="text-foreground text-[15px] font-semibold tracking-tight">
+                App details
+              </h2>
+              <dl className="border-foreground/5 bg-foreground/2 dark:bg-foreground/5 grid gap-x-8 gap-y-4 rounded-4xl border p-6 text-[14px] tracking-tight sm:grid-cols-2 sm:text-[15px]">
+                <div>
+                  <dt className="text-foreground/50">Package name</dt>
+                  <dd className="text-foreground mt-1 break-all font-mono text-[13px] sm:text-[14px]">
+                    {project.packageName}
+                  </dd>
+                </div>
+                {project.operatingSystem ? (
+                  <div>
+                    <dt className="text-foreground/50">Platform</dt>
+                    <dd className="text-foreground mt-1">
+                      {project.operatingSystem}
+                    </dd>
+                  </div>
+                ) : null}
+                {project.applicationCategory ? (
+                  <div>
+                    <dt className="text-foreground/50">Category</dt>
+                    <dd className="text-foreground mt-1">
+                      {project.applicationCategory.replace(/Application$/, "")}
+                    </dd>
+                  </div>
+                ) : null}
+                {project.softwareVersion ? (
+                  <div>
+                    <dt className="text-foreground/50">Version</dt>
+                    <dd className="text-foreground mt-1">
+                      {project.softwareVersion}
+                    </dd>
+                  </div>
+                ) : null}
+                {project.downloads ? (
+                  <div>
+                    <dt className="text-foreground/50">Downloads</dt>
+                    <dd className="text-foreground mt-1">
+                      {project.downloads.toLocaleString("en-IN")}+
+                    </dd>
+                  </div>
+                ) : null}
+                {project.contentRating ? (
+                  <div>
+                    <dt className="text-foreground/50">Content rating</dt>
+                    <dd className="text-foreground mt-1">
+                      {project.contentRating}
+                    </dd>
+                  </div>
+                ) : null}
+                {project.lastUpdated ? (
+                  <div>
+                    <dt className="text-foreground/50">Last updated</dt>
+                    <dd className="text-foreground mt-1">
+                      <time dateTime={project.lastUpdated}>
+                        {new Date(project.lastUpdated).toLocaleDateString(
+                          "en-IN",
+                          { day: "numeric", month: "short", year: "numeric" }
+                        )}
+                      </time>
+                    </dd>
+                  </div>
+                ) : null}
+                {project.rating ? (
+                  <div>
+                    <dt className="text-foreground/50">Google Play rating</dt>
+                    <dd className="text-foreground mt-1">
+                      {project.rating.value.toFixed(1)} / 5 (
+                      {project.rating.count.toLocaleString("en-IN")} ratings)
+                    </dd>
+                  </div>
+                ) : null}
+                {project.permissions?.length ? (
+                  <div className="sm:col-span-2">
+                    <dt className="text-foreground/50">Permissions</dt>
+                    <dd className="text-foreground mt-1">
+                      {project.permissions.join(" · ")}
+                    </dd>
+                  </div>
+                ) : null}
+              </dl>
+            </div>
+          ) : null}
+
+          {project.faqs?.length ? (
+            <div className="mt-12 flex flex-col gap-3">
+              <h2 className="text-foreground text-[15px] font-semibold tracking-tight">
+                Frequently asked questions
+              </h2>
+              <div className="flex flex-col gap-2.5">
+                {project.faqs.map((faq) => (
+                  <details
+                    key={faq.question}
+                    className="border-foreground/5 bg-foreground/2 dark:bg-foreground/5 group rounded-2xl border px-4 py-3"
+                  >
+                    <summary className="text-foreground cursor-pointer text-[15px] font-medium tracking-tight">
+                      {faq.question}
+                    </summary>
+                    <p className="text-foreground/70 mt-2 text-[14px] leading-[1.6] tracking-tight sm:text-[15px]">
+                      {faq.answer}
+                    </p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </FadeIn>
       </section>
 

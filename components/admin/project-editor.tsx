@@ -41,6 +41,15 @@ export function ProjectEditor({ project }: { project?: ProjectRecord }): ReactNo
     project?.applicationCategory ?? ""
   );
   const [operatingSystem, setOperatingSystem] = useState(project?.operatingSystem ?? "");
+  const [featuredApp, setFeaturedApp] = useState(project?.featuredApp ?? false);
+  const [softwareVersion, setSoftwareVersion] = useState(project?.softwareVersion ?? "");
+  const [permissions, setPermissions] = useState(project?.permissions?.join("\n") ?? "");
+  const [keywords, setKeywords] = useState(project?.keywords?.join(", ") ?? "");
+  const [faqs, setFaqs] = useState(
+    project?.faqs?.map((f) => `${f.question} | ${f.answer}`).join("\n") ?? ""
+  );
+  const [packageName, setPackageName] = useState(project?.packageName ?? "");
+  const [screenshots, setScreenshots] = useState(project?.screenshots?.join("\n") ?? "");
 
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -96,6 +105,17 @@ export function ProjectEditor({ project }: { project?: ProjectRecord }): ReactNo
       features: features.split("\n").map((f) => f.trim()).filter(Boolean),
       applicationCategory: applicationCategory || undefined,
       operatingSystem: operatingSystem || undefined,
+      featuredApp,
+      softwareVersion: softwareVersion || undefined,
+      permissions: permissions.split("\n").map((p) => p.trim()).filter(Boolean),
+      keywords: keywords.split(",").map((k) => k.trim()).filter(Boolean),
+      faqs: faqs
+        .split("\n")
+        .map((line) => line.split("|").map((part) => part.trim()))
+        .filter(([q, a]) => q && a)
+        .map(([question, answer]) => ({ question, answer })),
+      packageName: packageName || undefined,
+      screenshots: screenshots.split("\n").map((s) => s.trim()).filter(Boolean),
     };
 
     try {
@@ -246,6 +266,50 @@ export function ProjectEditor({ project }: { project?: ProjectRecord }): ReactNo
               <input type="url" value={dribbbleUrl} onChange={(e) => setDribbbleUrl(e.target.value)} className={inputClass} />
             </label>
           </div>
+
+          <label className="flex flex-col gap-1.5">
+            <span className={labelClass}>Package name (e.g. com.company.app)</span>
+            <input type="text" value={packageName} onChange={(e) => setPackageName(e.target.value)} className={inputClass} />
+          </label>
+
+          <label className="flex flex-col gap-1.5">
+            <span className={labelClass}>Version (e.g. 3.5.2)</span>
+            <input type="text" value={softwareVersion} onChange={(e) => setSoftwareVersion(e.target.value)} className={inputClass} />
+          </label>
+
+          <label className="flex flex-col gap-1.5">
+            <span className={labelClass}>Permissions (one per line)</span>
+            <textarea value={permissions} onChange={(e) => setPermissions(e.target.value)} rows={3} className={`${inputClass} resize-none`} />
+          </label>
+
+          <label className="flex flex-col gap-1.5">
+            <span className={labelClass}>SEO keywords (comma-separated)</span>
+            <input type="text" value={keywords} onChange={(e) => setKeywords(e.target.value)} className={inputClass} />
+          </label>
+
+          <label className="flex flex-col gap-1.5">
+            <span className={labelClass}>FAQs (one per line: Question | Answer)</span>
+            <textarea value={faqs} onChange={(e) => setFaqs(e.target.value)} rows={5} className={`${inputClass} resize-none`} />
+          </label>
+
+          <label className="flex flex-col gap-1.5">
+            <span className={labelClass}>Screenshot URLs (one per line)</span>
+            <textarea
+              value={screenshots}
+              onChange={(e) => setScreenshots(e.target.value)}
+              rows={4}
+              className={`${inputClass} resize-none`}
+            />
+          </label>
+
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={featuredApp}
+              onChange={(e) => setFeaturedApp(e.target.checked)}
+            />
+            <span className={labelClass}>Show in &ldquo;My apps&rdquo; (instead of the main projects carousel)</span>
+          </label>
 
           <label className="flex flex-col gap-1.5">
             <span className={labelClass}>Tech stack (comma-separated)</span>

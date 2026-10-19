@@ -86,7 +86,10 @@ export function createMetadata({
   image,
   noIndex = false,
   profile = false,
+  keywords,
 }: {
+  /** Page-specific keywords, merged ahead of the site-wide ones. */
+  keywords?: string[];
   title?: string;
   description?: string;
   path?: string;
@@ -100,6 +103,9 @@ export function createMetadata({
   return {
     ...(title ? { title } : {}),
     description,
+    ...(keywords?.length
+      ? { keywords: [...keywords, ...siteConfig.keywords] }
+      : {}),
     alternates: {
       canonical: path,
     },

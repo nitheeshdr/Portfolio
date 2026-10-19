@@ -3,6 +3,7 @@ import { getDb } from "@/lib/mongodb";
 import {
   PROJECT_CATEGORIES,
   type Project,
+  type ProjectFaq,
 } from "@/components/projects/projects-data";
 import {
   getOpenSourceProjects,
@@ -29,6 +30,30 @@ function stringArray(value: unknown): string[] | undefined {
     (v): v is string => typeof v === "string" && v.trim().length > 0
   );
   return arr.length ? arr : undefined;
+}
+
+function isRating(value: unknown): value is { value: number; count: number } {
+  if (typeof value !== "object" || value === null) return false;
+  const { value: v, count } = value as Record<string, unknown>;
+  return (
+    typeof v === "number" &&
+    v >= 1 &&
+    v <= 5 &&
+    typeof count === "number" &&
+    count > 0
+  );
+}
+
+function faqArray(value: unknown): ProjectFaq[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  const faqs = value.flatMap((item): ProjectFaq[] => {
+    if (typeof item !== "object" || item === null) return [];
+    const { question, answer } = item as Record<string, unknown>;
+    const q = optionalString(question);
+    const a = optionalString(answer);
+    return q && a ? [{ question: q, answer: a }] : [];
+  });
+  return faqs.length ? faqs : undefined;
 }
 
 export function parseProjectInput(
@@ -73,6 +98,36 @@ export function parseProjectInput(
       : {}),
     ...(optionalString(body.playStoreUrl)
       ? { playStoreUrl: optionalString(body.playStoreUrl) }
+      : {}),
+    ...(body.featuredApp === true ? { featuredApp: true } : {}),
+    ...(optionalString(body.softwareVersion)
+      ? { softwareVersion: optionalString(body.softwareVersion) }
+      : {}),
+    ...(stringArray(body.permissions)
+      ? { permissions: stringArray(body.permissions) }
+      : {}),
+    ...(stringArray(body.keywords)
+      ? { keywords: stringArray(body.keywords) }
+      : {}),
+    ...(faqArray(body.faqs) ? { faqs: faqArray(body.faqs) } : {}),
+    ...(optionalString(body.contentRating)
+      ? { contentRating: optionalString(body.contentRating) }
+      : {}),
+    ...(optionalString(body.lastUpdated)
+      ? { lastUpdated: optionalString(body.lastUpdated) }
+      : {}),
+    ...(typeof body.downloads === "number" && body.downloads > 0
+      ? { downloads: body.downloads }
+      : {}),
+    ...(isRating(body.rating) ? { rating: body.rating } : {}),
+    ...(optionalString(body.packageName)
+      ? { packageName: optionalString(body.packageName) }
+      : {}),
+    ...(stringArray(body.screenshots)
+      ? { screenshots: stringArray(body.screenshots) }
+      : {}),
+    ...(optionalString(body.downloadUrl)
+      ? { downloadUrl: optionalString(body.downloadUrl) }
       : {}),
     ...(optionalString(body.dribbbleUrl)
       ? { dribbbleUrl: optionalString(body.dribbbleUrl) }

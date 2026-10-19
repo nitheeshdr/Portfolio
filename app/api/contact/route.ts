@@ -1,12 +1,27 @@
 import nodemailer from "nodemailer";
 import { NextResponse } from "next/server";
 
+import { getClientIp, hitRateLimit } from "@/lib/rate-limit";
+
 export const runtime = "nodejs";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_LEN = { name: 100, email: 200, message: 4000 };
 
 export async function POST(request: Request): Promise<NextResponse> {
+  const retryAfter = await hitRateLimit(
+    "contact",
+    getClientIp(request),
+    5,
+    60 * 60 * 1000
+  );
+  if (retryAfter !== null) {
+    return NextResponse.json(
+      { ok: false, error: "Too many messages. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(retryAfter) } }
+    );
+  }
+
   let body: unknown;
   try {
     body = await request.json();

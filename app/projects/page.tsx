@@ -1,14 +1,17 @@
 import { ContactCard } from "@/components/contact/contact-card";
+import { MyApps } from "@/components/apps/my-apps";
 import { Projects } from "@/components/projects/projects";
 import { GithubRepos } from "@/components/shared/github-repos";
 import { OpenSourceContributions } from "@/components/shared/open-source-contributions";
 import {
   JsonLd,
   breadcrumbSchema,
+  projectsPageSchema,
   projectsSchema,
 } from "@/components/seo/json-ld";
 import { FadeIn } from "@/components/ui/motion-primitives";
-import { createMetadata } from "@/lib/metadata";
+import { createMetadata, siteConfig } from "@/lib/metadata";
+import { isMyApp } from "@/lib/my-apps";
 import { getAllProjects } from "@/lib/projects-db";
 import { getOpenSourceProjects, getOwnGithubProjects } from "@/lib/open-source";
 import type { Metadata } from "next";
@@ -40,14 +43,23 @@ export default async function ProjectsPage(): Promise<ReactNode> {
             { name: "Home", path: "/" },
             { name: "Projects", path: "/projects" },
           ]),
+          projectsPageSchema(),
           projectsSchema(
             projects.map((p) => ({
               name: p.name,
+              pageUrl: `${siteConfig.url}/projects/${p.id}`,
+              ...(p.applicationCategory
+                ? { applicationCategory: p.applicationCategory }
+                : {}),
+              ...(p.operatingSystem
+                ? { operatingSystem: p.operatingSystem }
+                : {}),
+              ...(p.pullRequests?.length ? { isContribution: true } : {}),
               description: p.description,
               url:
                 p.liveUrl ??
-                p.githubUrl ??
                 p.playStoreUrl ??
+                p.githubUrl ??
                 p.dribbbleUrl ??
                 "",
               ...(p.githubUrl ? { codeRepository: p.githubUrl } : {}),
@@ -68,8 +80,11 @@ export default async function ProjectsPage(): Promise<ReactNode> {
           </p>
         </FadeIn>
       </section>
-      <Projects projects={dbProjects} showFilters />
+      <Projects projects={dbProjects.filter((p) => !isMyApp(p))} showFilters />
       <div className="pt-4 pb-16 sm:pb-20">
+        <MyApps withHeadline />
+      </div>
+      <div className="pb-16 sm:pb-20">
         <OpenSourceContributions withHeadline />
       </div>
       <div className="pb-16 sm:pb-20">

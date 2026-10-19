@@ -11,6 +11,7 @@ import { ContactCard } from "@/components/contact/contact-card";
 import {
   JsonLd,
   aboutPageSchema,
+  filmographySchema,
   breadcrumbSchema,
 } from "@/components/seo/json-ld";
 import { FadeIn } from "@/components/ui/motion-primitives";
@@ -32,6 +33,7 @@ export default function AboutPage(): ReactNode {
       <JsonLd
         items={[
           aboutPageSchema(),
+          ...filmographySchema(),
           breadcrumbSchema([
             { name: "Home", path: "/" },
             { name: "About", path: "/about" },

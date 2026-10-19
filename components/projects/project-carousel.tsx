@@ -6,7 +6,7 @@ import {
   faMobileScreen,
   faPalette,
 } from "@fortawesome/free-solid-svg-icons";
-import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import { faAndroid, faGithub } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -122,6 +122,21 @@ function ProjectDetail({ project }: { project: Project }): ReactNode {
               aria-hidden="true"
             />
             Play Store
+          </Link>
+        ) : null}
+        {project.downloadUrl ? (
+          <Link
+            href={project.downloadUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="focus-ring border-foreground/10 text-foreground hover:bg-foreground/5 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors"
+          >
+            <FontAwesomeIcon
+              icon={faAndroid}
+              className="h-3.5 w-3.5"
+              aria-hidden="true"
+            />
+            Download APK
           </Link>
         ) : null}
         {project.dribbbleUrl ? (
