@@ -52,6 +52,8 @@ export const person = {
   bio: "Director, Founder & CEO of Setups Works, an AI & SaaS product studio in Chennai. I design and ship full-stack products end to end — from architecture and AI integration to deployment and production support — across web, mobile, and developer tooling.",
   location: "Chennai, Tamil Nadu, India",
   homeLocation: "Elavur, Tamil Nadu, India",
+  birthDate: "2005-06-20",
+  birthPlace: "Elavur, Tamil Nadu, India",
   family: {
     father: "Rajendran",
     mother: "Mari Rajendran",

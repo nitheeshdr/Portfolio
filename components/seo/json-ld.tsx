@@ -34,7 +34,7 @@ export function JsonLd({ items }: { items: object[] }): ReactNode {
 export function organizationSchema() {
   const { company } = person;
   return {
-    "@type": ["Organization", "ProfessionalService"],
+    "@type": "Organization",
     "@id": ORG_ID,
     name: company.name,
     legalName: company.name,
@@ -138,12 +138,39 @@ export function personSchema() {
         },
       })),
     ],
-    hasOccupation: {
-      "@type": "Occupation",
-      name: person.company.role,
-      occupationLocation: { "@type": "City", name: "Chennai" },
-      skills: person.skills.join(", "),
+    hasOccupation: [
+      {
+        "@type": "Occupation",
+        name: "Film Director",
+        occupationLocation: { "@type": "City", name: "Chennai" },
+        description:
+          "Director and writer of the short films Neram and Number Thaan Kaasu.",
+      },
+      {
+        "@type": "Occupation",
+        name: person.company.role,
+        occupationLocation: { "@type": "City", name: "Chennai" },
+        skills: person.skills.join(", "),
+      },
+      {
+        "@type": "Occupation",
+        name: "Full Stack Developer",
+        occupationLocation: { "@type": "City", name: "Chennai" },
+        skills: person.skills.join(", "),
+      },
+    ],
+    birthDate: person.birthDate,
+    birthPlace: {
+      "@type": "Place",
+      name: person.birthPlace,
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Elavur",
+        addressRegion: "Tamil Nadu",
+        addressCountry: "IN",
+      },
     },
+    affiliation: { "@id": ORG_ID },
     homeLocation: { "@type": "Place", name: person.homeLocation },
     workLocation: { "@type": "Place", name: person.location },
     nationality: { "@type": "Country", name: "India" },
@@ -173,7 +200,9 @@ export function personSchema() {
       value: person.identifiers.wikidataId,
       url: person.links.wikidata,
     },
-    mainEntityOfPage: { "@id": `${siteConfig.url}/#profilepage` },
+    // The home page is the one canonical profile page. Plain URL (not an @id
+    // that only exists on `/`) so this node resolves on every page it's in.
+    mainEntityOfPage: `${siteConfig.url}/`,
     sameAs: [
       person.links.github,
       person.links.linkedin,
@@ -253,9 +282,20 @@ export function profilePageSchema(path: string) {
 export function aboutPageSchema() {
   const url = `${siteConfig.url}/about`;
   return {
-    "@type": "WebPage",
+    "@type": ["WebPage", "AboutPage"],
     "@id": `${url}#webpage`,
     url,
+    primaryImageOfPage: {
+      "@type": "ImageObject",
+      url: `${siteConfig.url}${person.portraitSrc}`,
+    },
+    significantLink: [
+      person.links.imdb,
+      person.links.linkedin,
+      person.links.github,
+      person.links.youtube,
+      person.company.url,
+    ],
     name: `About — ${person.name}`,
     description: person.bio,
     inLanguage: "en",
@@ -330,44 +370,15 @@ export function projectsSchema(projects: ProjectSchemaInput[]) {
     "@type": "ItemList",
     "@id": `${siteConfig.url}/projects#projects`,
     numberOfItems: projects.length,
-    itemListElement: projects.map((project, index) => {
-      const type =
-        project.kind === "design"
-          ? "CreativeWork"
-          : project.codeRepository && !project.operatingSystem
-            ? "SoftwareSourceCode"
-            : softwareType(project.operatingSystem);
-      const suffix = project.kind === "design" ? "creativework" : "software";
-      return {
-        "@type": "ListItem",
-        position: index + 1,
-        ...(project.pageUrl ? { url: project.pageUrl } : {}),
-        item: {
-          "@type": type,
-          ...(project.pageUrl ? { "@id": `${project.pageUrl}#${suffix}` } : {}),
-          name: project.name,
-          description: project.description,
-          url: project.url,
-          ...(project.pageUrl ? { mainEntityOfPage: project.pageUrl } : {}),
-          ...(project.kind === "design"
-            ? { genre: "User Interface Design" }
-            : {}),
-          ...(project.applicationCategory
-            ? { applicationCategory: project.applicationCategory }
-            : {}),
-          ...(project.operatingSystem
-            ? { operatingSystem: project.operatingSystem }
-            : {}),
-          ...(project.codeRepository
-            ? { codeRepository: project.codeRepository }
-            : {}),
-          ...(project.programmingLanguage
-            ? { programmingLanguage: project.programmingLanguage }
-            : {}),
-          ...creditFields(project.isContribution),
-        },
-      };
-    }),
+    // Plain links only (position + name + url). Typed nested entities here are
+    // validated by Google as standalone items, and a stub app/software node
+    // fails its required fields — the full node lives on each detail page.
+    itemListElement: projects.map((project, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: project.name,
+      url: project.pageUrl ?? project.url,
+    })),
   };
 }
 
@@ -389,7 +400,7 @@ export function projectsPageSchema() {
   };
 }
 
-/** Home-page "My apps" list — each entry reuses the detail-page `@id`, so it links to the full app node. */
+/** Home-page "My apps" list — plain links to each app's detail page, where the full app node lives. */
 export function myAppsSchema(
   apps: Array<{ id: string; name: string; description: string }>
 ) {
@@ -401,13 +412,8 @@ export function myAppsSchema(
     itemListElement: apps.map((app, index) => ({
       "@type": "ListItem",
       position: index + 1,
+      name: app.name,
       url: `${siteConfig.url}/projects/${app.id}`,
-      item: {
-        "@type": "MobileApplication",
-        "@id": `${siteConfig.url}/projects/${app.id}#software`,
-        name: app.name,
-        description: app.description,
-      },
     })),
   };
 }
@@ -509,6 +515,18 @@ export function projectDetailSchema(project: ProjectDetailSchemaInput) {
     ? resolveUrl(project.image)
     : undefined;
 
+  /**
+   * Only claim an application when the project really has a category or
+   * platform. A merged-PR contribution (or a bare repo) is a codebase, not an
+   * app Nitheesh ships — those are described by the SoftwareSourceCode node
+   * alone, so no made-up category/OS is asserted.
+   */
+  const isApp =
+    !project.isContribution &&
+    Boolean(project.applicationCategory ?? project.operatingSystem);
+  const mainId =
+    isApp || !project.codeRepository ? softwareId : sourceCodeId;
+
   const softwareApplication = {
     "@type": softwareType(project.operatingSystem),
     "@id": softwareId,
@@ -516,8 +534,12 @@ export function projectDetailSchema(project: ProjectDetailSchemaInput) {
     description: project.description,
     url: project.url,
     mainEntityOfPage: { "@id": webPageId },
-    applicationCategory: project.applicationCategory ?? "WebApplication",
-    operatingSystem: project.operatingSystem ?? "Web",
+    ...(project.applicationCategory
+      ? { applicationCategory: project.applicationCategory }
+      : {}),
+    ...(project.operatingSystem
+      ? { operatingSystem: project.operatingSystem }
+      : {}),
     inLanguage: "en",
     ...creditFields(project.isContribution),
     ...(project.isContribution ? {} : { publisher: { "@id": ORG_ID } }),
@@ -609,8 +631,8 @@ export function projectDetailSchema(project: ProjectDetailSchemaInput) {
     inLanguage: "en",
     breadcrumb: { "@id": `${project.pageUrl}#breadcrumb` },
     isPartOf: { "@id": WEBSITE_ID },
-    about: { "@id": softwareId },
-    mainEntity: { "@id": softwareId },
+    about: { "@id": mainId },
+    mainEntity: { "@id": mainId },
     ...(imageUrl ? { primaryImageOfPage: { "@type": "ImageObject", url: imageUrl } } : {}),
   };
 
@@ -619,7 +641,7 @@ export function projectDetailSchema(project: ProjectDetailSchemaInput) {
         "@type": "FAQPage",
         "@id": `${project.pageUrl}#faq`,
         url: project.pageUrl,
-        about: { "@id": softwareId },
+        about: { "@id": mainId },
         isPartOf: { "@id": webPageId },
         mainEntity: project.faqs.map((faq) => ({
           "@type": "Question",
@@ -639,7 +661,12 @@ export function projectDetailSchema(project: ProjectDetailSchemaInput) {
     "@id": sourceCodeId,
     name: project.name,
     description: project.description,
+    url: project.url,
     codeRepository: project.codeRepository,
+    inLanguage: "en",
+    ...(mainId === sourceCodeId
+      ? { mainEntityOfPage: { "@id": webPageId } }
+      : {}),
     ...(project.programmingLanguage
       ? { programmingLanguage: project.programmingLanguage }
       : {}),
@@ -647,7 +674,12 @@ export function projectDetailSchema(project: ProjectDetailSchemaInput) {
     ...(project.isContribution ? {} : { publisher: { "@id": ORG_ID } }),
   };
 
-  return [softwareApplication, softwareSourceCode, webPage, ...extras];
+  return [
+    ...(isApp ? [softwareApplication] : []),
+    softwareSourceCode,
+    webPage,
+    ...extras,
+  ];
 }
 
 type BlogPostSchemaInput = {
@@ -682,15 +714,9 @@ export function blogPostSchema(post: BlogPostSchemaInput) {
     datePublished: post.datePublished,
     dateModified: post.dateModified,
     author: PROJECT_CREATORS,
-    publisher: {
-      "@id": ORG_ID,
-      "@type": "Organization",
-      name: person.company.name,
-      logo: {
-        "@type": "ImageObject",
-        url: `${siteConfig.url}/brand/setups-works-mark.png`,
-      },
-    },
+    // Reference, not a second definition — the Organization (with its logo) is
+    // already in this page's graph via the site layout.
+    publisher: { "@id": ORG_ID },
     ...(post.coverImage ? { image: post.coverImage } : {}),
     ...(post.tags.length
       ? { keywords: post.tags, articleSection: post.tags[0] }
@@ -703,7 +729,12 @@ export function blogPostSchema(post: BlogPostSchemaInput) {
           })),
         }
       : {}),
-    isPartOf: { "@id": `${siteConfig.url}/blog#blog` },
+    isPartOf: {
+      "@type": "Blog",
+      "@id": `${siteConfig.url}/blog#blog`,
+      name: `${person.name} — Blog`,
+      url: `${siteConfig.url}/blog`,
+    },
     mainEntityOfPage: { "@id": webPageId },
   };
 

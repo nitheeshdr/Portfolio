@@ -13,7 +13,8 @@ import { getPublishedStories } from "@/lib/web-stories";
 
 export const metadata: Metadata = createMetadata({
   title: "Web Stories",
-  description: "Short, swipeable visual stories.",
+  description:
+    "Short, swipeable Google Web Stories by Nitheesh Rajendran — recognition, projects, and behind-the-scenes moments from building products and making films.",
   path: "/stories",
 });
 

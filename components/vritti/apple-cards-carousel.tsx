@@ -78,6 +78,37 @@ export function Carousel({
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const drag = useRef({
+    active: false,
+    moved: false,
+    startX: 0,
+    lastX: 0,
+    startScroll: 0,
+  });
+
+  // Touch swiping is native (overflow scroll + snap). Mouse needs explicit
+  // click-and-drag; snapping is switched off while dragging so it tracks the
+  // pointer. A mouse has no flick momentum, so on release a drag past a small
+  // threshold advances one card in the drag direction before snapping settles.
+  const endDrag = (): void => {
+    const state = drag.current;
+    if (!state.active) return;
+    state.active = false;
+    setIsDragging(false);
+
+    const element = carouselRef.current;
+    const dx = state.lastX - state.startX;
+    if (!state.moved || !element || Math.abs(dx) < 40) return;
+
+    const cards = element.querySelectorAll<HTMLElement>(":scope > div > div");
+    const step =
+      cards.length > 1 ? cards[1]!.offsetLeft - cards[0]!.offsetLeft : 300;
+    const target = state.startScroll - Math.sign(dx) * step;
+    requestAnimationFrame(() =>
+      element.scrollTo({ left: target, behavior: "smooth" })
+    );
+  };
 
   const checkScrollability = (): void => {
     if (!carouselRef.current) return;
@@ -118,9 +149,53 @@ export function Carousel({
     >
       <div className="relative w-full">
         <div
-          className="flex w-full snap-x snap-mandatory overflow-x-scroll overscroll-x-auto scroll-smooth py-6 [scrollbar-width:none] sm:py-8 [&::-webkit-scrollbar]:hidden"
+          className={`flex w-full overflow-x-scroll overscroll-x-contain py-6 [scrollbar-width:none] sm:py-8 [&::-webkit-scrollbar]:hidden ${
+            isDragging
+              ? "cursor-grabbing select-none"
+              : "cursor-grab snap-x snap-mandatory scroll-smooth"
+          }`}
           ref={carouselRef}
           onScroll={checkScrollability}
+          onDragStart={(event) => event.preventDefault()}
+          onPointerDown={(event) => {
+            if (
+              event.pointerType !== "mouse" ||
+              event.button !== 0 ||
+              !carouselRef.current
+            ) {
+              return;
+            }
+            drag.current = {
+              active: true,
+              moved: false,
+              startX: event.clientX,
+              lastX: event.clientX,
+              startScroll: carouselRef.current.scrollLeft,
+            };
+          }}
+          onPointerMove={(event) => {
+            if (!drag.current.active || !carouselRef.current) return;
+            drag.current.lastX = event.clientX;
+            const dx = event.clientX - drag.current.startX;
+            if (!drag.current.moved && Math.abs(dx) > 5) {
+              drag.current.moved = true;
+              setIsDragging(true);
+            }
+            if (drag.current.moved) {
+              carouselRef.current.scrollLeft = drag.current.startScroll - dx;
+            }
+          }}
+          onPointerUp={endDrag}
+          onPointerLeave={endDrag}
+          onPointerCancel={endDrag}
+          // A drag that ends on a card must not also count as a click on it.
+          onClickCapture={(event) => {
+            if (drag.current.moved) {
+              event.preventDefault();
+              event.stopPropagation();
+              drag.current.moved = false;
+            }
+          }}
         >
           <div className="flex flex-row justify-start gap-4 pl-[max(1.5rem,calc((100vw-68.75rem)/2+1.5rem))] sm:gap-6 sm:pl-[max(2.5rem,calc((100vw-68.75rem)/2+2.5rem))]">
             {items.map((item, index) => (

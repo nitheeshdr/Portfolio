@@ -1,4 +1,5 @@
 import { Achievements } from "@/components/about/achievements";
+import { AtAGlance } from "@/components/about/at-a-glance";
 import { Awards } from "@/components/about/awards";
 import { Education } from "@/components/about/education";
 import { Experience } from "@/components/about/experience";
@@ -136,6 +137,7 @@ export default function AboutPage(): ReactNode {
       <section className="mx-auto w-full max-w-[40rem] px-6 pb-20 sm:px-10 sm:pb-28">
         <FadeIn delay={0.1}>
           <div className="flex flex-col gap-10">
+            <AtAGlance />
             <Awards />
             <Experience />
             <Skills />

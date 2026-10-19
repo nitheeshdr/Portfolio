@@ -8,13 +8,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { ContactCard } from "@/components/contact/contact-card";
 import { ProjectMedia } from "@/components/projects/projects";
+import { ScreenshotCarousel } from "@/components/projects/screenshot-carousel";
 import {
   JsonLd,
   breadcrumbSchema,
@@ -273,27 +273,17 @@ export default async function ProjectDetailPage({
       {project.screenshots?.length ? (
         <section
           aria-label={`${project.name} screenshots`}
-          className="mx-auto mt-10 w-full max-w-275 px-6 sm:px-10"
+          className="mt-10 w-full"
         >
-          <h2 className="text-foreground mb-4 text-[15px] font-semibold tracking-tight">
-            Screenshots
-          </h2>
-          <ul className="-mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-3 sm:-mx-10 sm:px-10">
-            {project.screenshots.map((src, index) => (
-              <li
-                key={src}
-                className="ring-foreground/5 bg-foreground/5 relative aspect-[554/1200] h-[26rem] shrink-0 snap-start overflow-hidden rounded-2xl ring-1 sm:h-[32rem]"
-              >
-                <Image
-                  src={src}
-                  alt={`${project.name} screenshot ${index + 1}`}
-                  fill
-                  sizes="(min-width: 640px) 240px, 200px"
-                  className="object-cover"
-                />
-              </li>
-            ))}
-          </ul>
+          <div className="mx-auto w-full max-w-275 px-6 sm:px-10">
+            <h2 className="text-foreground text-[15px] font-semibold tracking-tight">
+              Screenshots
+            </h2>
+          </div>
+          <ScreenshotCarousel
+            screenshots={project.screenshots}
+            name={project.name}
+          />
         </section>
       ) : null}
 
