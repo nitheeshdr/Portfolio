@@ -11,7 +11,7 @@ import { WebStoriesTeaser } from "@/components/home/web-stories-teaser";
 import { JsonLd, myAppsSchema, profilePageSchema } from "@/components/seo/json-ld";
 import { createMetadata, siteConfig } from "@/lib/metadata";
 import { getMyApps, isMyApp } from "@/lib/my-apps";
-import { getAllProjects } from "@/lib/projects-db";
+import { getAllProjects, getProjectUpdateDates } from "@/lib/projects-db";
 import { person } from "@/lib/person";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
@@ -24,14 +24,25 @@ export const metadata: Metadata = createMetadata({
 });
 
 export default async function HomePage(): Promise<ReactNode> {
-  const [projects, apps] = await Promise.all([getAllProjects(), getMyApps()]);
+  const [projects, apps, updatedAt] = await Promise.all([
+    getAllProjects(),
+    getMyApps(),
+    getProjectUpdateDates(),
+  ]);
+  // Real last-modified time of the site's content: the newest project edit.
+  const lastModified = [...updatedAt.values()].reduce<Date | undefined>(
+    (latest, date) => (!latest || date > latest ? date : latest),
+    undefined
+  );
 
   return (
     <HomePreloader>
       <main id="main-content" className="flex flex-1 flex-col gap-10 sm:gap-14">
         <JsonLd
           items={[
-            profilePageSchema("/"),
+            profilePageSchema("/", {
+              ...(lastModified ? { dateModified: lastModified } : {}),
+            }),
             ...(apps.length
               ? [
                   myAppsSchema(

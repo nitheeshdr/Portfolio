@@ -265,16 +265,31 @@ export function siteNavigationSchema() {
  * use `aboutPageSchema()` instead, which gets its own `@id` rather than
  * competing for this one with a different `url`.
  */
-export function profilePageSchema(path: string) {
+/** When the site was first published (first commit) — the ProfilePage `dateCreated`. */
+const SITE_CREATED = "2026-08-14";
+
+export function profilePageSchema(
+  path: string,
+  { dateModified }: { dateModified?: Date | string } = {}
+) {
   const url = `${siteConfig.url}${path}`;
+  const modified = dateModified
+    ? new Date(dateModified).toISOString()
+    : undefined;
   return {
     "@type": "ProfilePage",
     "@id": `${siteConfig.url}/#profilepage`,
     url,
     name: `${person.name} — ${person.company.role}`,
+    inLanguage: "en",
+    dateCreated: SITE_CREATED,
+    ...(modified ? { dateModified: modified } : {}),
     isPartOf: { "@id": WEBSITE_ID },
     about: { "@id": PERSON_ID },
-    mainEntity: { "@id": PERSON_ID },
+    // The full Person is repeated here, inside the same JSON-LD block. Google
+    // reads each <script> separately, so an `@id`-only pointer to the Person in
+    // the layout's block leaves the ProfilePage with no readable main entity.
+    mainEntity: personSchema(),
   };
 }
 
@@ -713,10 +728,33 @@ export function blogPostSchema(post: BlogPostSchemaInput) {
     url: pageUrl,
     datePublished: post.datePublished,
     dateModified: post.dateModified,
-    author: PROJECT_CREATORS,
-    // Reference, not a second definition — the Organization (with its logo) is
-    // already in this page's graph via the site layout.
-    publisher: { "@id": ORG_ID },
+    author: [
+      {
+        "@type": "Person",
+        "@id": PERSON_ID,
+        name: person.name,
+        url: siteConfig.url,
+      },
+      {
+        "@type": "Organization",
+        "@id": ORG_ID,
+        name: person.company.name,
+        url: person.company.url,
+      },
+    ],
+    // Inline (same @id as the layout's nodes) so name/logo are readable inside
+    // this block — Google parses each <script> separately and won't follow a
+    // bare @id into the layout's block.
+    publisher: {
+      "@type": "Organization",
+      "@id": ORG_ID,
+      name: person.company.name,
+      url: person.company.url,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteConfig.url}${person.company.logo}`,
+      },
+    },
     ...(post.coverImage ? { image: post.coverImage } : {}),
     ...(post.tags.length
       ? { keywords: post.tags, articleSection: post.tags[0] }
