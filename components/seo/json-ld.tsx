@@ -83,6 +83,10 @@ export function organizationSchema() {
       name: "Naazhi",
       url: "https://naazhi.app",
       applicationCategory: "ProductivityApplication",
+      // Google's software-app check needs at least two of offers, aggregateRating,
+      // applicationCategory and operatingSystem. Same values naazhi.app publishes.
+      operatingSystem: "Android, macOS, Windows, Web",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "INR", url: "https://naazhi.app/pricing" },
       author: { "@id": PERSON_ID },
     },
     sameAs: [company.url, company.github],
