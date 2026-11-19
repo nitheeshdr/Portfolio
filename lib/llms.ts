@@ -108,7 +108,8 @@ export async function buildLlmsTxt({ full }: { full: boolean }): Promise<string>
     section("Contact & profiles", [
       `- Email: ${person.email}`,
       ...Object.entries(person.links)
-        .filter(([key]) => key !== "website")
+        // The panel's share link is a second address for the same panel, so list it once.
+        .filter(([key]) => key !== "website" && key !== "knowledgePanelShare")
         .map(([key, url]) => `- [${key[0]!.toUpperCase()}${key.slice(1)}](${url})`),
     ]),
     section(

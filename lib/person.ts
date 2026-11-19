@@ -28,9 +28,10 @@ export const person = {
   company: {
     name: "Setups Works",
     role: "Founder & CEO",
-    period: "2024 – Present",
+    period: "2020 – Present",
     url: "https://setups.works",
-    foundingDate: "2024",
+    // Same date setups.works and naazhi.app publish.
+    foundingDate: "2020-06-20",
     logo: "/brand/setups-works-mark.png",
     github: "https://github.com/Setups-Works",
     addressLocality: "Chennai",
@@ -74,6 +75,9 @@ export const person = {
     website: "https://nitheeshdr.in",
     crunchbase: "https://www.crunchbase.com/person/nitheesh-rajendran",
     wikidata: "https://www.wikidata.org/wiki/Q140500455",
+    // Google Knowledge Panel: its permanent kgmid URL and its share link; setups.works and naazhi.app list the same two.
+    knowledgePanel: "https://www.google.com/search?kgmid=/g/11mvs7d_hp",
+    knowledgePanelShare: "https://share.google/ZDfPNUlpU4z1mW2uW",
   },
   identifiers: {
     wikidataId: "Q140500455",

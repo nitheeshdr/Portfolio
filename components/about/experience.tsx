@@ -19,7 +19,7 @@ const ENTRIES: Entry[] = [
   {
     company: "Setups Works",
     role: "Founder & CEO",
-    period: "2024 – Present",
+    period: "2020 – Present",
     logoSrc: "/brand/setups-works-mark.png",
   },
 ];

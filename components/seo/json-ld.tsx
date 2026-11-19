@@ -67,6 +67,24 @@ export function organizationSchema() {
       "@type": "Offer",
       itemOffered: { "@type": "Service", name, provider: { "@id": ORG_ID } },
     })),
+    // Naazhi, the company's own product, by the @ids naazhi.app publishes. naazhi.app
+    // names Setups Works as parentOrganization/creator and this Person as founder,
+    // and setups.works states the same edges, so all three domains agree.
+    subOrganization: {
+      "@type": "Organization",
+      "@id": "https://naazhi.app/#organization",
+      name: "Naazhi",
+      url: "https://naazhi.app",
+      founder: { "@id": PERSON_ID },
+    },
+    owns: {
+      "@type": "SoftwareApplication",
+      "@id": "https://naazhi.app/#software",
+      name: "Naazhi",
+      url: "https://naazhi.app",
+      applicationCategory: "ProductivityApplication",
+      author: { "@id": PERSON_ID },
+    },
     sameAs: [company.url, company.github],
   };
 }
@@ -213,6 +231,11 @@ export function personSchema() {
       person.links.dribbble,
       person.links.wikidata,
       person.links.crunchbase,
+      person.links.knowledgePanel,
+      person.links.knowledgePanelShare,
+      // His founder profile on the company site (its ProfilePage, Person @id
+      // setups.works/#founder), so the two Person nodes reconcile as one.
+      `${person.company.url}/about/nitheesh-rajendran`,
     ],
   };
 }
