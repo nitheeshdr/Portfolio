@@ -74,9 +74,12 @@ export const baseMetadata: Metadata = {
     apple: "/apple-icon.svg",
   },
   manifest: "/site.webmanifest",
-  ...(process.env.GOOGLE_SITE_VERIFICATION
-    ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } }
-    : {}),
+  // Search Console ownership token (public by design — it's emitted in the page HTML).
+  verification: {
+    google:
+      process.env.GOOGLE_SITE_VERIFICATION ??
+      "gaTKPQmAwmIQc9oor3TYhoMot0XwsvOQtszW6lGo4ZI",
+  },
 };
 
 export function createMetadata({
